@@ -1,6 +1,6 @@
 ---
 type: questions
-module: 'EMP'
+module: "EMP"
 ---
 
 # Empresas — Preguntas
@@ -156,3 +156,48 @@ module: 'EMP'
 - **Recomendación del agente:** no deducir una Cuenta de Empresa a partir de la función del responsable; el Ingeniero elige la representación necesaria. La pregunta fue presentada en el chat al refinar el módulo.
 - **Respuesta:** Solo nombre escrito.
 - **Respondida por / fecha:** Parodi Lucas / 2026-11-02 (respuesta en el chat).
+
+## EMP-Q-011 — Límites y normalización de textos
+
+- **Estado:** Respondida
+- **Bloqueante:** Sí
+- **Origen:** `B-04`; exigencia de `convenciones.md` §2 para todo atributo de tipo Texto
+- **Afecta:** `EMP-BR-001`, `EMP-BR-003`, `EMP-REQ-001`, `EMP-REQ-004`, `EMP-ENT-001`, `EMP-ENT-002`
+- **Pregunta:** ¿Qué longitudes máximas y normalización deben aplicarse a los textos de Empresa?
+- **Interpretaciones posibles:**
+  - a) `nombre` 120, `responsableNombre` 120, `ubicacionTexto` 500 y `descripcionActividad` 2000 caracteres; se eliminan espacios exteriores, se conservan los interiores y un texto opcional vacío queda ausente. El CUIT admite exactamente once dígitos sin separadores. La zona horaria admite hasta 255 caracteres y debe coincidir con un nombre IANA.
+  - b) Usar los mismos criterios de normalización, pero indicar otros máximos concretos.
+  - c) No limitar los textos descriptivos; esta opción contradice la exigencia global vigente para atributos Texto.
+- **Recomendación del agente:** opción a). Los límites cubren nombres y descripciones habituales sin convertir campos descriptivos en contenido ilimitado; la normalización no altera el significado escrito.
+- **Respuesta:** a.
+- **Respondida por / fecha:** Parodi Lucas / 2026-11-03 (respuesta registrada en el archivo).
+
+## EMP-Q-012 — Modificaciones según el estado de Empresa
+
+- **Estado:** Respondida
+- **Bloqueante:** Sí
+- **Origen:** propuesta `IA` para completar el ciclo de vida definido por `EMP-Q-002`
+- **Afecta:** `EMP-BR-004`, `EMP-BR-005`, `EMP-BR-007`, `EMP-REQ-004`, `EMP-REQ-008`, `EMP-UC-004`, `EMP-UC-008`
+- **Pregunta:** ¿Se pueden modificar los datos y la configuración general de una Empresa suspendida o cerrada?
+- **Interpretaciones posibles:**
+  - a) `ACTIVA`: SuperAdministrador y su Administrador pueden modificarla; `SUSPENDIDA`: solo el SuperAdministrador puede corregir datos o configuración; `CERRADA`: queda inmutable y solo puede consultarse.
+  - b) El SuperAdministrador puede modificar también una Empresa cerrada; el Administrador solo modifica una Empresa activa.
+  - c) Los actores autorizados pueden modificar datos y configuración sin importar el estado.
+- **Recomendación del agente:** opción a). Permite corregir una suspensión para rehabilitarla y hace coherente el cierre irreversible con una historia estable.
+- **Respuesta:** a.
+- **Respondida por / fecha:** Parodi Lucas / 2026-11-03 (respuesta registrada en el archivo).
+
+## EMP-Q-013 — Alias para resolver la Empresa al acceder
+
+- **Estado:** Respondida
+- **Bloqueante:** Sí
+- **Origen:** propuesta `IA` ante el contrato pendiente declarado por `ACC-DEP-001`
+- **Afecta:** `EMP-DEP-001`, `EMP-DEP-003`, `EMP-ENT-001`; también afecta `ACC-DEP-001`
+- **Pregunta:** Identidad y acceso requiere resolver inequívocamente una Empresa mediante un alias. ¿Quién debe definirlo y con qué estabilidad?
+- **Interpretaciones posibles:**
+  - a) `EMP` es dueño de un alias obligatorio, globalmente único y no reutilizable; lo indica el SuperAdministrador al registrar la Empresa, usa de 3 a 63 caracteres en minúscula, dígitos o guiones, comienza y termina con letra o dígito y queda inmutable después del alta.
+  - b) Igual que a), pero el SuperAdministrador puede cambiarlo mientras la Empresa no esté cerrada; el alias anterior deja de resolver el acceso.
+  - c) El alias queda diferido y `ACC` permanece bloqueado hasta definir su dueño.
+- **Recomendación del agente:** opción a). El alias identifica de forma estable a la Empresa para el acceso; no reutilizarlo evita que una referencia histórica o credencial termine resolviendo otra Empresa.
+- **Respuesta:** a.
+- **Respondida por / fecha:** Parodi Lucas / 2026-11-03 (respuesta registrada en el archivo).

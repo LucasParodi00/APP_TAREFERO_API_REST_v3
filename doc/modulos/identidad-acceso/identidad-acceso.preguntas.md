@@ -263,8 +263,8 @@ La decisión se incorpora a la especificación propuesta de ACC. No requiere una
   - a) Exigir contraseña actual para cambio propio; restablecimiento administrativo sin contraseña anterior; definir expresamente qué sesiones se conservan o revocan.
   - b) Permitir cambio propio con la Sesión vigente y sin comprobar contraseña actual; definir expresamente el tratamiento de sesiones.
 - **Recomendación del agente:** opción a). Las longitudes y la comparación de correos requieren propuesta y aprobación específicas antes de cerrar los atributos; no se fijan valores por suposición. Se mantiene la decisión de `ACC-Q-013`: no se fuerza el cambio al siguiente ingreso.
-- **Respuesta:** Exigir contraseña actual para cambio propio; restablecimiento administrativo sin contraseña anterior; Las sesiones del usuario caducan todas
-- **Respondida por / fecha:** Parodi Lucas / 2026-11-02 (respuesta incorporada al refinar).
+- **Respuesta:** Exigir contraseña actual para cambio propio; restablecimiento administrativo sin contraseña anterior; todas las Sesiones de la cuenta afectada caducan. Correo: máximo 254 caracteres, eliminar espacios exteriores y normalizar a minúsculas. Contraseña: entre 15 y 128 caracteres, conservar exactamente lo ingresado, sin recortar ni cambiar mayúsculas. Motivo de soporte: máximo 1000 caracteres, eliminar espacios exteriores y exigir contenido.
+- **Respondida por / fecha:** Parodi Lucas / 2026-11-03 (respuesta ampliada y aprobada en el chat).
 
-**Alcance de la respuesta:** quedan definidos el control de contraseña actual y la caducidad de sesiones de la cuenta afectada. La respuesta no fija longitudes ni normalización; se conservan como detalle pendiente antes de planificar los atributos, sin inventar valores.
+**Alcance de la respuesta:** quedan definidos el control de contraseña actual, la caducidad de Sesiones de la cuenta afectada y los límites y normalización de correo, contraseña y motivo de soporte.
 

@@ -1,7 +1,7 @@
 ---
 type: requirements
 module: "EMP"
-status: Propuesto
+status: Aprobado
 owner: "Analista"
 ---
 
@@ -9,24 +9,25 @@ owner: "Analista"
 
 ## 1. Reglas de negocio
 
-### EMP-BR-001 — Nombre obligatorio
+### EMP-BR-001 — Nombre de Empresa válido
 
-- **Estado:** Propuesto
-- **Origen:** `B-04`
+- **Estado:** Aprobado
+- **Origen:** `B-04`, `EMP-Q-011`
 - **Tipo:** Invariante
-- **Regla:** Toda Empresa debe tener un nombre presente y con al menos un carácter distinto de espacio.
-- **Si se incumple:** se rechaza la operación con `EMP_NOMBRE_OBLIGATORIO`.
+- **Regla:** Toda Empresa debe tener un nombre de hasta 120 caracteres; se eliminan los espacios exteriores y el resultado debe contener al menos un carácter.
+- **Si se incumple:** la ausencia o el resultado vacío se rechazan con `EMP_NOMBRE_OBLIGATORIO`; superar la longitud se rechaza con `EMP_NOMBRE_INVALIDO`.
 - **Ejemplos:**
 
 | Situación | Resultado |
 |---|---|
-| Nombre `Yerba Norte` | Se acepta. |
-| Nombre de un carácter visible | Se acepta. |
+| Nombre ` Yerba Norte ` | Se acepta y se conserva como `Yerba Norte`. |
+| Nombre de 120 caracteres, con al menos uno visible | Se acepta. |
 | Nombre ausente, vacío o compuesto solo por espacios | Se rechaza con `EMP_NOMBRE_OBLIGATORIO`. |
+| Nombre de 121 caracteres después de eliminar espacios exteriores | Se rechaza con `EMP_NOMBRE_INVALIDO`. |
 
 ### EMP-BR-002 — Punto geográfico completo
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `EMP-Q-005`
 - **Tipo:** Invariante
 - **Regla:** La ubicación geográfica es opcional; si se informa, debe contener latitud entre -90 y 90 y longitud entre -180 y 180.
@@ -41,10 +42,10 @@ owner: "Analista"
 
 ### EMP-BR-003 — CUIT opcional de once dígitos
 
-- **Estado:** Propuesto
-- **Origen:** `B-04`, `EMP-Q-004`
+- **Estado:** Aprobado
+- **Origen:** `B-04`, `EMP-Q-004`, `EMP-Q-011`
 - **Tipo:** Validación
-- **Regla:** El CUIT es opcional y, cuando se informa, se registra como una cadena de once dígitos, sin comprobar el dígito verificador ni exigir unicidad.
+- **Regla:** El CUIT es opcional y, cuando se informa, se registra como una cadena de once dígitos sin espacios ni separadores, sin comprobar el dígito verificador ni exigir unicidad.
 - **Si se incumple:** se rechaza el formato con `EMP_CUIT_INVALIDO`.
 - **Ejemplos:**
 
@@ -52,11 +53,11 @@ owner: "Analista"
 |---|---|
 | No se informa CUIT | Se acepta. |
 | Once dígitos, incluso si se repiten en otra Empresa o no cumplen el verificador | Se acepta. |
-| Cantidad de dígitos distinta de once | Se rechaza con `EMP_CUIT_INVALIDO`. |
+| Once dígitos con guiones, espacios o una cantidad distinta de once | Se rechaza con `EMP_CUIT_INVALIDO`. |
 
 ### EMP-BR-004 — Transiciones de estado
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `EMP-Q-002`
 - **Tipo:** Transición
 - **Regla:** Una Empresa se crea `ACTIVA`; puede pasar de `ACTIVA` a `SUSPENDIDA`, de `SUSPENDIDA` a `ACTIVA`, y de `ACTIVA` o `SUSPENDIDA` a `CERRADA`. Una Empresa `CERRADA` no cambia nuevamente de estado.
@@ -71,7 +72,7 @@ owner: "Analista"
 
 ### EMP-BR-005 — Acceso según estado
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `EMP-Q-002`
 - **Tipo:** Invariante
 - **Regla:** Solo una Empresa `ACTIVA` puede utilizarse como contexto de operaciones de negocio; la suspensión o cierre conserva todos sus datos e historial.
@@ -86,10 +87,10 @@ owner: "Analista"
 
 ### EMP-BR-006 — Configuración general inicial
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `EMP-Q-007`
 - **Tipo:** Invariante
-- **Regla:** Toda Empresa tiene país, zona horaria y moneda principal; al crearla sin datos adicionales se asignan `AR`, `America/Argentina/Buenos_Aires` y `ARS`.
+- **Regla:** Toda Empresa tiene país ISO 3166-1 alfa-2, zona horaria IANA de hasta 255 caracteres y moneda ISO 4217; al crearla sin datos adicionales se asignan `AR`, `America/Argentina/Buenos_Aires` y `ARS`.
 - **Si se incumple:** se rechaza la operación con `EMP_CONFIGURACION_GENERAL_INVALIDA`.
 - **Ejemplos:**
 
@@ -101,22 +102,22 @@ owner: "Analista"
 
 ### EMP-BR-007 — Alcance del Administrador
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `EMP-Q-001`; relacionado con `B-01` y `B-06`
 - **Tipo:** Autorización de dominio
-- **Regla:** Un Administrador solo puede consultar o modificar la Empresa de su `ContextoSolicitud`; no puede indicar otra Empresa como destino de la operación.
+- **Regla:** Un Administrador solo puede consultar o intentar modificar la Empresa de su `ContextoSolicitud`; no puede indicar otra Empresa como destino de la operación. La habilitación de la modificación según el estado se determina mediante `EMP-BR-014`.
 - **Si se incumple:** se rechaza la operación con `EMP_ACCESO_DENEGADO` sin revelar datos de otra Empresa.
 - **Ejemplos:**
 
 | Situación | Resultado |
 |---|---|
 | Un Administrador consulta su propia Empresa | Se acepta. |
-| Un Administrador modifica la configuración general de su Empresa | Se acepta. |
+| Un Administrador modifica la configuración general de su propia Empresa | Se cumple esta regla; además debe cumplirse `EMP-BR-014`. |
 | Un Administrador intenta consultar o modificar otra Empresa | Se rechaza con `EMP_ACCESO_DENEGADO`. |
 
 ### EMP-BR-008 — Conservación de la Empresa
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `EMP-Q-009`
 - **Tipo:** Invariante
 - **Regla:** Una Empresa no se elimina físicamente; el cierre irreversible conserva su identidad, relaciones e historial.
@@ -131,7 +132,7 @@ owner: "Analista"
 
 ### EMP-BR-009 — Asignación comercial contemplada
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-03`, `EMP-Q-008`
 - **Tipo:** Invariante
 - **Regla:** Toda Empresa debe tener una asignación comercial vigente o provisional administrada fuera de `EMP`.
@@ -144,19 +145,94 @@ owner: "Analista"
 | Empresa con Suscripción vigente cuando `SUS` esté implementado | Se acepta. |
 | Empresa sin ninguna asignación confirmada | Se rechaza con `EMP_ASIGNACION_COMERCIAL_REQUERIDA`. |
 
+### EMP-BR-010 — Textos descriptivos normalizados
+
+- **Estado:** Aprobado
+- **Origen:** `EMP-Q-011`
+- **Tipo:** Validación
+- **Regla:** Los textos opcionales eliminan espacios exteriores, conservan los interiores y, si quedan vacíos, se consideran ausentes. `responsableNombre` admite hasta 120 caracteres, `ubicacionTexto` hasta 500 y `descripcionActividad` hasta 2000.
+- **Si se incumple:** se rechaza la operación con `EMP_TEXTO_INVALIDO`.
+- **Ejemplos:**
+
+| Situación | Resultado |
+|---|---|
+| Se informa ` responsable ` y una ubicación de 500 caracteres | Se aceptan; el responsable se conserva como `responsable`. |
+| Un texto opcional contiene solo espacios | Se considera ausente. |
+| La descripción de actividad tiene 2001 caracteres | Se rechaza con `EMP_TEXTO_INVALIDO`. |
+
+### EMP-BR-011 — Formato del alias de Empresa
+
+- **Estado:** Aprobado
+- **Origen:** `EMP-Q-013`
+- **Tipo:** Invariante
+- **Regla:** Toda Empresa debe tener un alias de 3 a 63 caracteres formado por letras minúsculas, dígitos o guiones, que comience y termine con letra o dígito.
+- **Si se incumple:** se rechaza la operación con `EMP_ALIAS_INVALIDO`.
+- **Ejemplos:**
+
+| Situación | Resultado |
+|---|---|
+| Alias `yerba-norte` | Se acepta. |
+| Alias de 3 o de 63 caracteres con formato válido | Se acepta. |
+| Alias `-Yerba Norte-`, de 2 caracteres o de 64 caracteres | Se rechaza con `EMP_ALIAS_INVALIDO`. |
+
+### EMP-BR-012 — Alias único y no reutilizable
+
+- **Estado:** Aprobado
+- **Origen:** `EMP-Q-013`
+- **Tipo:** Invariante
+- **Regla:** El alias identifica globalmente a una única Empresa y no puede asignarse nuevamente, aunque esa Empresa esté cerrada.
+- **Si se incumple:** se rechaza la operación con `EMP_ALIAS_NO_DISPONIBLE`.
+- **Ejemplos:**
+
+| Situación | Resultado |
+|---|---|
+| Alias que nunca fue asignado | Se acepta. |
+| Alias perteneciente a la misma Empresa | Continúa identificándola. |
+| Alias de una Empresa activa, suspendida o cerrada usado para una Empresa nueva | Se rechaza con `EMP_ALIAS_NO_DISPONIBLE`. |
+
+### EMP-BR-013 — Alias inmutable
+
+- **Estado:** Aprobado
+- **Origen:** `EMP-Q-013`
+- **Tipo:** Invariante
+- **Regla:** El alias asignado al registrar una Empresa no puede modificarse durante su ciclo de vida.
+- **Si se incumple:** se rechaza la operación con `EMP_ALIAS_INMUTABLE`.
+- **Ejemplos:**
+
+| Situación | Resultado |
+|---|---|
+| Se modifican datos de la Empresa sin indicar un alias diferente | Se acepta si las demás reglas se cumplen. |
+| Se conserva el alias original al actualizar | Se acepta. |
+| Se intenta reemplazar el alias | Se rechaza con `EMP_ALIAS_INMUTABLE`. |
+
+### EMP-BR-014 — Modificación según estado de Empresa
+
+- **Estado:** Aprobado
+- **Origen:** `EMP-Q-012`
+- **Tipo:** Autorización de dominio
+- **Regla:** Los datos y la configuración general de una Empresa `ACTIVA` pueden modificarse según la matriz de permisos; si está `SUSPENDIDA`, solo puede modificarlos el SuperAdministrador; si está `CERRADA`, quedan inmutables para todos los actores.
+- **Si se incumple:** se rechaza la operación con `EMP_MODIFICACION_NO_PERMITIDA`.
+- **Ejemplos:**
+
+| Situación | Resultado |
+|---|---|
+| Un Administrador modifica su Empresa activa | Se acepta si las demás reglas se cumplen. |
+| Un SuperAdministrador corrige datos de una Empresa suspendida | Se acepta. |
+| Un Administrador modifica una Empresa suspendida o cualquier actor modifica una cerrada | Se rechaza con `EMP_MODIFICACION_NO_PERMITIDA`. |
+
 ## 2. Requerimientos funcionales
 
 ### EMP-REQ-001 — Registrar Empresa
 
-- **Estado:** Propuesto
-- **Origen:** `EMP-Q-001`, `EMP-Q-003`, `EMP-Q-004`, `EMP-Q-005`, `EMP-Q-006`, `EMP-Q-008`, `EMP-Q-010`
+- **Estado:** Aprobado
+- **Origen:** `EMP-Q-001`, `EMP-Q-003`, `EMP-Q-004`, `EMP-Q-005`, `EMP-Q-006`, `EMP-Q-008`, `EMP-Q-010`, `EMP-Q-011`, `EMP-Q-013`
 - **Prioridad:** Must
-- **Requerimiento:** El sistema debe permitir registrar una Empresa con nombre obligatorio y los datos opcionales aprobados.
-- **Reglas que aplica:** `EMP-BR-001`, `EMP-BR-002`, `EMP-BR-003`, `EMP-BR-004`, `EMP-BR-006`, `EMP-BR-009`.
+- **Requerimiento:** El sistema debe permitir registrar una Empresa con nombre y alias obligatorios y los datos opcionales aprobados.
+- **Reglas que aplica:** `EMP-BR-001`, `EMP-BR-002`, `EMP-BR-003`, `EMP-BR-004`, `EMP-BR-006`, `EMP-BR-009`, `EMP-BR-010`, `EMP-BR-011`, `EMP-BR-012`, `EMP-BR-013`.
 
 ### EMP-REQ-002 — Consultar Empresa
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `EMP-Q-001`
 - **Prioridad:** Must
 - **Requerimiento:** El sistema debe permitir consultar los datos y el estado de una Empresa dentro del alcance autorizado.
@@ -164,7 +240,7 @@ owner: "Analista"
 
 ### EMP-REQ-003 — Listar Empresas
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `EMP-Q-001`
 - **Prioridad:** Must
 - **Requerimiento:** El sistema debe permitir al actor de plataforma autorizado listar Empresas con filtros y paginación conforme a `convenciones.md` §3.
@@ -172,15 +248,15 @@ owner: "Analista"
 
 ### EMP-REQ-004 — Modificar Empresa
 
-- **Estado:** Propuesto
-- **Origen:** `B-04`; decisiones de `EMP-Q-001`, `EMP-Q-003`, `EMP-Q-004`, `EMP-Q-005` y `EMP-Q-006`, `EMP-Q-010`
+- **Estado:** Aprobado
+- **Origen:** `B-04`; decisiones de `EMP-Q-001`, `EMP-Q-003`, `EMP-Q-004`, `EMP-Q-005`, `EMP-Q-006`, `EMP-Q-010`, `EMP-Q-011`, `EMP-Q-012`, `EMP-Q-013`
 - **Prioridad:** Must
-- **Requerimiento:** El sistema debe permitir modificar el nombre y los datos opcionales de una Empresa dentro del alcance autorizado.
-- **Reglas que aplica:** `EMP-BR-001`, `EMP-BR-002`, `EMP-BR-003`, `EMP-BR-007`.
+- **Requerimiento:** El sistema debe permitir modificar el nombre y los datos opcionales de una Empresa dentro del alcance autorizado, sin modificar su alias.
+- **Reglas que aplica:** `EMP-BR-001`, `EMP-BR-002`, `EMP-BR-003`, `EMP-BR-007`, `EMP-BR-010`, `EMP-BR-013`, `EMP-BR-014`.
 
 ### EMP-REQ-005 — Suspender Empresa
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `EMP-Q-001`, `EMP-Q-002`
 - **Prioridad:** Must
 - **Requerimiento:** El sistema debe permitir suspender temporalmente una Empresa sin eliminar su historial.
@@ -188,7 +264,7 @@ owner: "Analista"
 
 ### EMP-REQ-006 — Reactivar Empresa
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `EMP-Q-001`, `EMP-Q-002`
 - **Prioridad:** Must
 - **Requerimiento:** El sistema debe permitir reactivar una Empresa suspendida.
@@ -196,7 +272,7 @@ owner: "Analista"
 
 ### EMP-REQ-007 — Cerrar Empresa
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `EMP-Q-001`, `EMP-Q-002`, `EMP-Q-009`
 - **Prioridad:** Should
 - **Requerimiento:** El sistema debe permitir cerrar irreversiblemente una Empresa conservando sus datos e historial.
@@ -204,17 +280,17 @@ owner: "Analista"
 
 ### EMP-REQ-008 — Modificar configuración general
 
-- **Estado:** Propuesto
-- **Origen:** `B-04`; alcance definido en `EMP-Q-007`
+- **Estado:** Aprobado
+- **Origen:** `B-04`; alcance definido en `EMP-Q-007` y estados definidos en `EMP-Q-012`
 - **Prioridad:** Must
 - **Requerimiento:** El sistema debe permitir modificar la configuración general de una Empresa dentro del alcance autorizado.
-- **Reglas que aplica:** `EMP-BR-006`, `EMP-BR-007`.
+- **Reglas que aplica:** `EMP-BR-006`, `EMP-BR-007`, `EMP-BR-014`.
 
 ## 3. Dependencias con otros módulos
 
 ### EMP-DEP-001 — Identidad y acceso — Contexto de autorización
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-01`, `B-05`, `B-06`
 - **Módulo:** `ACC` (Identidad y acceso)
 - **Dirección:** Este módulo consume
@@ -223,25 +299,25 @@ owner: "Analista"
 
 ### EMP-DEP-002 — Suscripciones — Asignación comercial
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-03`, `EMP-Q-008`
 - **Módulo:** `SUS` (Suscripciones)
 - **Dirección:** Este módulo consume
 - **Qué:** confirmación de que la Empresa posee una asignación comercial vigente o provisional.
 - **Para qué:** `EMP-REQ-001`.
 
-### EMP-DEP-003 — Identidad y acceso — Estado de Empresa
+### EMP-DEP-003 — Identidad y acceso — Identidad, alias y estado de Empresa
 
-- **Estado:** Propuesto
-- **Origen:** `B-03`, `B-05`, `B-06`
+- **Estado:** Aprobado
+- **Origen:** `B-03`, `B-05`, `B-06`, `EMP-Q-013`
 - **Módulo:** `ACC` (Identidad y acceso)
 - **Dirección:** Este módulo provee
-- **Qué:** identidad y estado vigente de la Empresa, sin exponer sus datos operativos.
+- **Qué:** identidad, alias inmutable y estado vigente de la Empresa, sin exponer sus demás datos administrativos u operativos.
 - **Para qué:** `EMP-BR-005`.
 
 ### EMP-DEP-004 — Economía — Configuración económica
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-04`, `EMP-Q-007`
 - **Módulo:** `ECO` (Economía)
 - **Dirección:** Este módulo provee
@@ -250,7 +326,7 @@ owner: "Analista"
 
 ### EMP-DEP-005 — Labores — Configuración de labores
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-04`, `EMP-Q-007`
 - **Módulo:** `LAB` (Labores)
 - **Dirección:** Este módulo provee

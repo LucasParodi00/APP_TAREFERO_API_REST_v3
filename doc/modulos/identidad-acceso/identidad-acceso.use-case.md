@@ -1,7 +1,7 @@
 ---
 type: use-cases
 module: "ACC"
-status: Propuesto
+status: Aprobado
 owner: "Analista"
 ---
 
@@ -19,7 +19,7 @@ owner: "Analista"
 
 ## 2. Permisos
 
-La matriz describe la propuesta del alcance de ACC. No concede permisos en los demás módulos. Los permisos generales se comprueban además de las condiciones indicadas. Las decisiones de consulta, ciclo de vida y cambio de contraseña provienen de `ACC-Q-016` y `ACC-Q-018`. La aprobación de esta redacción sigue pendiente.
+La matriz describe el alcance aprobado de ACC. No concede permisos en los demás módulos. Los permisos generales se comprueban además de las condiciones indicadas. Las decisiones de consulta, ciclo de vida y cambio de contraseña provienen de `ACC-Q-016` y `ACC-Q-018`.
 
 | Caso de uso | SuperAdministrador | Administrador | Capataz | Empleado | Condición |
 |---|:---:|:---:|:---:|:---:|---|
@@ -39,11 +39,11 @@ La matriz describe la propuesta del alcance de ACC. No concede permisos en los d
 
 ### ACC-UC-001 — Habilitar una Cuenta de Empresa
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Actor:** Administrador o SuperAdministrador.
 - **Objetivo:** Habilitar una Cuenta de Empresa.
 - **Requerimientos:** `ACC-REQ-001`.
-- **Reglas:** `ACC-BR-001`, `ACC-BR-002`, `ACC-BR-003`, `ACC-BR-004`, `ACC-BR-006`, `ACC-BR-007`, `ACC-BR-015`, `ACC-BR-016`.
+- **Reglas:** `ACC-BR-001`, `ACC-BR-002`, `ACC-BR-003`, `ACC-BR-004`, `ACC-BR-006`, `ACC-BR-007`, `ACC-BR-015`, `ACC-BR-016`, `ACC-BR-018`, `ACC-BR-019`.
 
 **Precondiciones**
 
@@ -53,7 +53,7 @@ La matriz describe la propuesta del alcance de ACC. No concede permisos en los d
 
 1. El actor solicita habilitar acceso para una persona de la Empresa, indicando correo, contraseña, canales y roles.
 2. El sistema comprueba el permiso y ACC-BR-002.
-3. El sistema comprueba ACC-DEP-003 y valida ACC-BR-001, ACC-BR-003, ACC-BR-004, ACC-BR-007 y ACC-BR-015.
+3. El sistema comprueba ACC-DEP-003 y valida ACC-BR-001, ACC-BR-003, ACC-BR-004, ACC-BR-007, ACC-BR-015, ACC-BR-018 y ACC-BR-019.
 4. El sistema valida ACC-BR-006 mediante ACC-DEP-002.
 5. El sistema registra la Cuenta de Empresa aplicando ACC-BR-016 y el control concurrente de convenciones.md §3.5.
 6. El sistema informa el resultado sin devolver la contraseña ni su representación protegida.
@@ -67,6 +67,8 @@ La matriz describe la propuesta del alcance de ACC. No concede permisos en los d
 | No se cumple `ACC-BR-002` | 2 | Se rechaza sin ejecutar el cambio solicitado | `ACC_EMPRESA_FUERA_DE_ALCANCE` |
 | No se cumple `ACC-BR-003` | 3 | Se rechaza sin ejecutar el cambio solicitado | `ACC_CORREO_DUPLICADO` |
 | No se cumple `ACC-BR-004` | 3 | Se rechaza sin ejecutar el cambio solicitado | `ACC_CREDENCIALES_REQUERIDAS` |
+| No se cumple `ACC-BR-018` | 3 | Se rechaza sin ejecutar el cambio solicitado | `ACC_CORREO_INVALIDO` |
+| No se cumple `ACC-BR-019` | 3 | Se rechaza sin ejecutar el cambio solicitado | `ACC_CONTRASENIA_INVALIDA` |
 | No se cumple `ACC-BR-006` | 4 | Se rechaza sin ejecutar el cambio solicitado | `ACC_LIMITE_ACCESOS_ALCANZADO` |
 | No se cumple `ACC-BR-007` | 3 | Se rechaza sin ejecutar el cambio solicitado | `ACC_ROL_NO_ADMITIDO` |
 | Persona inexistente o ajena a la Empresa | 3 | Se rechaza; los fallos relevantes se auditan | `ACC_PERSONA_NO_DISPONIBLE` |
@@ -155,15 +157,27 @@ Escenario: Aplicar ACC-BR-016
   Cuando se solicita la operación de este caso
   Entonces se rechaza con ACC_TRANSICION_NO_PERMITIDA
   Y no se confirma un cambio parcial
+
+@ACC-UC-001 @AC-13
+Escenario: Rechazar un correo de acceso demasiado extenso
+  Dado que la habilitación informa un correo de acceso de 255 caracteres luego de eliminar espacios exteriores
+  Cuando solicita habilitar una cuenta de empresa
+  Entonces se rechaza con ACC_CORREO_INVALIDO
+
+@ACC-UC-001 @AC-14
+Escenario: Rechazar una contraseña demasiado corta
+  Dado que la habilitación informa una contraseña de 14 caracteres
+  Cuando solicita habilitar una cuenta de empresa
+  Entonces se rechaza con ACC_CONTRASENIA_INVALIDA
 ```
 
 ### ACC-UC-002 — Iniciar sesión en una Empresa
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Actor:** Administrador, Capataz o Empleado con Cuenta de Empresa.
 - **Objetivo:** Iniciar sesión en una Empresa.
 - **Requerimientos:** `ACC-REQ-002`.
-- **Reglas:** `ACC-BR-001`, `ACC-BR-005`, `ACC-BR-012`.
+- **Reglas:** `ACC-BR-001`, `ACC-BR-005`, `ACC-BR-012`, `ACC-BR-018`, `ACC-BR-019`.
 
 **Precondiciones**
 
@@ -172,7 +186,7 @@ Escenario: Aplicar ACC-BR-016
 **Flujo principal**
 
 1. El titular solicita iniciar sesión en un canal indicando alias de Empresa y sus credenciales.
-2. El sistema resuelve la Empresa mediante ACC-DEP-001 y verifica las credenciales de su cuenta.
+2. El sistema resuelve la Empresa mediante ACC-DEP-001, normaliza el correo según ACC-BR-018 y verifica la contraseña sin transformarla según ACC-BR-019.
 3. El sistema aplica ACC-BR-001 y ACC-BR-005 y comprueba la habilitación actual según arquitectura.md §13.2.
 4. El sistema crea la Sesión conforme a la fundación y registra el resultado de autenticación.
 5. El sistema informa el acceso aplicando ACC-BR-012.
@@ -185,6 +199,8 @@ Escenario: Aplicar ACC-BR-016
 | No se cumple `ACC-BR-001` | 3 | Se rechaza sin ejecutar el cambio solicitado | `ACC_CUENTA_EMPRESA_INCOMPATIBLE` |
 | No se cumple `ACC-BR-005` | 3 | Se rechaza sin ejecutar el cambio solicitado | `ACC_CANAL_NO_HABILITADO` |
 | Credenciales o identificación de Empresa no válidas | 2 | Se rechaza; los fallos relevantes se auditan | `ACC_AUTENTICACION_INVALIDA` |
+| No se cumple `ACC-BR-018` | 2 | Se rechaza sin iniciar Sesión | `ACC_CORREO_INVALIDO` |
+| No se cumple `ACC-BR-019` | 2 | Se rechaza sin iniciar Sesión | `ACC_CONTRASENIA_INVALIDA` |
 | Empresa, cuenta o suscripción no habilitada | 3 | Se rechaza; los fallos relevantes se auditan | `ACC_ACCESO_NO_HABILITADO` |
 
 **Postcondiciones**
@@ -236,11 +252,17 @@ Escenario: Empresa, cuenta o suscripción no habilitada
   Dado empresa, cuenta o suscripción no habilitada
   Cuando solicita iniciar sesión en una empresa
   Entonces se rechaza con ACC_ACCESO_NO_HABILITADO
+
+@ACC-UC-002 @AC-08
+Escenario: Normalizar el correo sin transformar la contraseña
+  Dado una cuenta cuyo correo normalizado es titular@ejemplo.com y cuya contraseña contiene mayúsculas y espacios significativos
+  Cuando solicita iniciar sesión con espacios exteriores y mayúsculas en el correo y con la contraseña exacta
+  Entonces se inicia una Sesión de esa Cuenta de Empresa
 ```
 
 ### ACC-UC-003 — Resolver el acceso vigente de una solicitud
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Actor:** Administrador, Capataz o Empleado con Cuenta de Empresa.
 - **Objetivo:** Resolver el acceso vigente de una solicitud.
 - **Requerimientos:** `ACC-REQ-003`.
@@ -314,11 +336,11 @@ Escenario: Permiso o alcance insuficiente
 
 ### ACC-UC-004 — Cambiar la propia contraseña
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Actor:** Administrador, Capataz o Empleado con Cuenta de Empresa.
 - **Objetivo:** Cambiar la propia contraseña.
 - **Requerimientos:** `ACC-REQ-004`.
-- **Reglas:** `ACC-BR-001`, `ACC-BR-005`, `ACC-BR-012`, `ACC-BR-013`, `ACC-BR-014`.
+- **Reglas:** `ACC-BR-001`, `ACC-BR-005`, `ACC-BR-012`, `ACC-BR-013`, `ACC-BR-014`, `ACC-BR-019`.
 
 **Precondiciones**
 
@@ -327,7 +349,7 @@ Escenario: Permiso o alcance insuficiente
 **Flujo principal**
 
 1. El titular solicita cambiar la contraseña de su propia cuenta, informando la contraseña actual y la nueva.
-2. El sistema comprueba el permiso de titular, ACC-BR-001, ACC-BR-005 y ACC-BR-013.
+2. El sistema comprueba el permiso de titular, ACC-BR-001, ACC-BR-005, ACC-BR-013 y ACC-BR-019.
 3. El sistema sustituye la credencial conforme a convenciones.md §7.1 y aplica ACC-BR-014 en la misma operación de cambio.
 4. El sistema informa el resultado y conserva ACC-BR-012.
 
@@ -340,6 +362,7 @@ Escenario: Permiso o alcance insuficiente
 | No se cumple `ACC-BR-005` | 2 | Se rechaza sin ejecutar el cambio solicitado | `ACC_CANAL_NO_HABILITADO` |
 | Solicitud dirigida a una cuenta diferente de la propia | 2 | Se rechaza; los fallos relevantes se auditan | `ACC_ACCESO_DENEGADO` |
 | No se cumple `ACC-BR-013` | 2 | Se rechaza sin confirmar efectos parciales | `ACC_CAMBIO_PROPIO_NO_AUTORIZADO` |
+| No se cumple `ACC-BR-019` | 2 | Se rechaza sin confirmar efectos parciales | `ACC_CONTRASENIA_INVALIDA` |
 | No se cumple `ACC-BR-014` | 3 | Se rechaza sin confirmar efectos parciales | `ACC_CAMBIO_CREDENCIAL_NO_COMPLETADO` |
 
 **Postcondiciones**
@@ -406,15 +429,21 @@ Escenario: Caducar todas las sesiones de la cuenta afectada
   Cuando se confirma el cambio de contraseña de este caso
   Entonces ninguna sesión previa de la cuenta destino permite operar ni renovar
   Y las sesiones de la otra Empresa permanecen intactas
+
+@ACC-UC-004 @AC-10
+Escenario: Rechazar una contraseña nueva demasiado corta
+  Dado que el titular informa una contraseña nueva de 14 caracteres
+  Cuando solicita cambiar la propia contraseña
+  Entonces se rechaza con ACC_CONTRASENIA_INVALIDA
 ```
 
 ### ACC-UC-005 — Restablecer una contraseña de Empresa
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Actor:** Administrador o SuperAdministrador.
 - **Objetivo:** Restablecer una contraseña de Empresa.
 - **Requerimientos:** `ACC-REQ-005`.
-- **Reglas:** `ACC-BR-001`, `ACC-BR-002`, `ACC-BR-010`, `ACC-BR-011`, `ACC-BR-012`, `ACC-BR-014`.
+- **Reglas:** `ACC-BR-001`, `ACC-BR-002`, `ACC-BR-010`, `ACC-BR-011`, `ACC-BR-012`, `ACC-BR-014`, `ACC-BR-019`, `ACC-BR-020`.
 
 **Precondiciones**
 
@@ -423,7 +452,7 @@ Escenario: Caducar todas las sesiones de la cuenta afectada
 **Flujo principal**
 
 1. El actor solicita restablecer una cuenta e informa una nueva contraseña.
-2. El sistema comprueba el permiso, ACC-BR-002, ACC-BR-010 y, para plataforma, ACC-BR-011.
+2. El sistema comprueba el permiso, ACC-BR-002, ACC-BR-010, ACC-BR-019 y, para plataforma, ACC-BR-011 y ACC-BR-020.
 3. El sistema aplica ACC-BR-001, reemplaza la credencial protegida según convenciones.md §7.1 y aplica ACC-BR-014.
 4. El sistema registra la intervención sin conservar contraseñas en auditoría.
 5. El sistema informa el resultado y aplica ACC-BR-012.
@@ -437,6 +466,8 @@ Escenario: Caducar todas las sesiones de la cuenta afectada
 | No se cumple `ACC-BR-002` | 2 | Se rechaza sin ejecutar el cambio solicitado | `ACC_EMPRESA_FUERA_DE_ALCANCE` |
 | No se cumple `ACC-BR-010` | 2 | Se rechaza sin ejecutar el cambio solicitado | `ACC_RESTABLECIMIENTO_FUERA_DE_ALCANCE` |
 | No se cumple `ACC-BR-011` | 2 | Se rechaza sin ejecutar el cambio solicitado | `ACC_CONTEXTO_SOPORTE_REQUERIDO` |
+| No se cumple `ACC-BR-019` | 2 | Se rechaza sin ejecutar el cambio solicitado | `ACC_CONTRASENIA_INVALIDA` |
+| No se cumple `ACC-BR-020` | 2 | Se rechaza sin ejecutar el cambio solicitado | `ACC_MOTIVO_SOPORTE_INVALIDO` |
 | Cuenta inexistente dentro del alcance | 2 | Se rechaza; los fallos relevantes se auditan | `ACC_CUENTA_NO_ENCONTRADA` |
 | No se cumple `ACC-BR-014` | 3 | Se rechaza sin confirmar efectos parciales | `ACC_CAMBIO_CREDENCIAL_NO_COMPLETADO` |
 
@@ -509,11 +540,23 @@ Escenario: Caducar todas las sesiones de la cuenta afectada
   Cuando se confirma el cambio de contraseña de este caso
   Entonces ninguna sesión previa de la cuenta destino permite operar ni renovar
   Y las sesiones de la otra Empresa permanecen intactas
+
+@ACC-UC-005 @AC-11
+Escenario: Rechazar una contraseña nueva demasiado extensa
+  Dado que el actor informa una contraseña nueva de 129 caracteres
+  Cuando solicita restablecer una contraseña de empresa
+  Entonces se rechaza con ACC_CONTRASENIA_INVALIDA
+
+@ACC-UC-005 @AC-12
+Escenario: Rechazar un motivo de soporte vacío
+  Dado que un SuperAdministrador informa un motivo compuesto solo por espacios
+  Cuando solicita restablecer una contraseña de empresa
+  Entonces se rechaza con ACC_MOTIVO_SOPORTE_INVALIDO
 ```
 
 ### ACC-UC-006 — Crear un SuperAdministrador
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Actor:** SuperAdministrador; proceso de inicialización para el primero.
 - **Objetivo:** Crear un SuperAdministrador.
 - **Requerimientos:** `ACC-REQ-006`.
@@ -579,11 +622,11 @@ Escenario: La inicialización intenta ejecutarse de nuevo sobre una plataforma y
 
 ### ACC-UC-007 — Operar mediante soporte de plataforma
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Actor:** SuperAdministrador.
 - **Objetivo:** Operar mediante soporte de plataforma.
 - **Requerimientos:** `ACC-REQ-007`.
-- **Reglas:** `ACC-BR-002`, `ACC-BR-011`.
+- **Reglas:** `ACC-BR-002`, `ACC-BR-011`, `ACC-BR-020`.
 
 **Precondiciones**
 
@@ -592,7 +635,7 @@ Escenario: La inicialización intenta ejecutarse de nuevo sobre una plataforma y
 **Flujo principal**
 
 1. El SuperAdministrador solicita intervenir en una Empresa e informa el motivo.
-2. El sistema comprueba el permiso de plataforma y aplica ACC-BR-011 y ACC-BR-002.
+2. El sistema comprueba el permiso de plataforma y aplica ACC-BR-011, ACC-BR-020 y ACC-BR-002.
 3. El sistema construye el contexto explícito de soporte conforme a arquitectura.md §13.4.
 4. El SuperAdministrador solicita la acción de negocio y el módulo dueño conserva sus validaciones.
 5. El sistema vincula la intervención con el actor real, Empresa, Sesión y solicitud.
@@ -604,6 +647,7 @@ Escenario: La inicialización intenta ejecutarse de nuevo sobre una plataforma y
 | El actor no tiene permiso | 2 | Se rechaza sin ejecutar el cambio solicitado | `ACC_ACCESO_DENEGADO` |
 | No se cumple `ACC-BR-002` | 2 | Se rechaza sin ejecutar el cambio solicitado | `ACC_EMPRESA_FUERA_DE_ALCANCE` |
 | No se cumple `ACC-BR-011` | 2 | Se rechaza sin ejecutar el cambio solicitado | `ACC_CONTEXTO_SOPORTE_REQUERIDO` |
+| No se cumple `ACC-BR-020` | 2 | Se rechaza sin ejecutar el cambio solicitado | `ACC_MOTIVO_SOPORTE_INVALIDO` |
 | Empresa destino inexistente | 2 | Se rechaza; los fallos relevantes se auditan | `ACC_EMPRESA_NO_ENCONTRADA` |
 | Regla del módulo de negocio incumplida | 4 | Se rechaza; los fallos relevantes se auditan | Código del módulo dueño |
 
@@ -650,11 +694,17 @@ Escenario: Regla del módulo de negocio incumplida
   Dado regla del módulo de negocio incumplida
   Cuando solicita operar mediante soporte de plataforma
   Entonces se rechaza con Código del módulo dueño
+
+@ACC-UC-007 @AC-07
+Escenario: Rechazar un motivo de soporte demasiado extenso
+  Dado que el SuperAdministrador informa un motivo de soporte de 1001 caracteres luego de eliminar espacios exteriores
+  Cuando solicita operar mediante soporte de plataforma
+  Entonces se rechaza con ACC_MOTIVO_SOPORTE_INVALIDO
 ```
 
 ### ACC-UC-008 — Consultar cuentas de Empresa
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Actor:** Administrador o SuperAdministrador.
 - **Objetivo:** Consultar cuentas de Empresa.
 - **Requerimientos:** `ACC-REQ-008`.
@@ -721,7 +771,7 @@ Escenario: Cuenta inexistente dentro del alcance
 
 ### ACC-UC-009 — Renovar la sesión de Empresa
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Actor:** Administrador, Capataz o Empleado con Cuenta de Empresa.
 - **Objetivo:** Renovar la sesión de Empresa.
 - **Requerimientos:** `ACC-REQ-009`.
@@ -795,7 +845,7 @@ Escenario: Cuenta o Empresa ya no habilitada
 
 ### ACC-UC-010 — Administrar habilitación de acceso
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Actor:** Administrador o SuperAdministrador.
 - **Objetivo:** Administrar habilitación de acceso.
 - **Requerimientos:** `ACC-REQ-010`.
@@ -892,7 +942,7 @@ Escenario: Aplicar ACC-BR-017
 
 ### ACC-UC-011 — Consultar intervenciones de soporte
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Actor:** Administrador o SuperAdministrador.
 - **Objetivo:** Consultar intervenciones de soporte.
 - **Requerimientos:** `ACC-REQ-011`.

@@ -73,6 +73,15 @@ El brief no se reescribe: la normalización ocurre al derivar la especificación
 - **Módulo dueño:** `INV`
 - **Ejemplo:** fertilizante, bolsa, combustible o producto obtenido de una cosecha.
 
+### Campaña
+
+- **Definición:** período integral de gestión productiva de una Empresa cliente, desde el inicio de la preparación del suelo hasta la finalización declarada después de las etapas productivas y comerciales correspondientes. Su alcance se compone de Chacras completas y/o Lotes específicos y agrupa sus Ciclos productivos. Cada Campaña conserva sus propios hechos y resultados sin reiniciar ni eliminar la historia de Campañas anteriores.
+- **Sinónimos aceptados:** campaña productiva
+- **No usar:** Ciclo productivo como sustituto; campaña comercial
+- **Nombre en código:** `Campania`
+- **Módulo dueño:** `CUL`
+- **Ejemplo:** una Campaña puede incluir todos los Lotes de una Chacra y determinados Lotes de otra.
+
 ### Chacra
 
 - **Definición:** establecimiento físico administrado por una Empresa cliente. Contiene uno o más Lotes y conserva su propia identidad territorial.
@@ -81,6 +90,15 @@ El brief no se reescribe: la normalización ocurre al derivar la especificación
 - **Nombre en código:** `Chacra`
 - **Módulo dueño:** `TER`
 - **Ejemplo:** una Empresa cliente administra tres Chacras ubicadas en localidades diferentes.
+
+### Ciclo productivo
+
+- **Definición:** período productivo de una Implantación dentro de una Campaña, utilizado para conservar su contexto y relacionar los hechos operativos que le correspondan.
+- **Sinónimos aceptados:** ciclo de producción
+- **No usar:** Campaña; Implantación
+- **Nombre en código:** `CicloProductivo`
+- **Módulo dueño:** `CUL`
+- **Ejemplo:** la Implantación de un Lote participa en una Campaña mediante un Ciclo productivo.
 
 ### Configuración de empresa
 
@@ -99,6 +117,15 @@ El brief no se reescribe: la normalización ocurre al derivar la especificación
 - **Nombre en código:** `CuentaEmpresa`
 - **Módulo dueño:** `ACC`
 - **Ejemplo:** el Administrador inicial recibe una Cuenta de Empresa activa creada durante el alta del cliente SaaS.
+
+### Cultivo
+
+- **Definición:** identidad de aquello que se produce y que determina las Variedades y Perfiles de cultivo aplicables. No representa su establecimiento concreto en un Lote ni una Cosecha determinada.
+- **Sinónimos aceptados:** tipo de cultivo
+- **No usar:** Implantación; plantación; Producto obtenido
+- **Nombre en código:** `Cultivo`
+- **Módulo dueño:** `CUL`
+- **Ejemplo:** Yerba mate y Naranja son Cultivos diferentes.
 
 ### Empresa cliente
 
@@ -127,6 +154,15 @@ El brief no se reescribe: la normalización ocurre al derivar la especificación
 - **Módulo dueño:** `INV`
 - **Ejemplo:** fertilizante consumido durante una labor de aplicación.
 
+### Implantación
+
+- **Definición:** establecimiento de un Cultivo en un Lote o en un sector o superficie diferenciados durante una vigencia. Conserva la historia aunque el Lote cambie de Cultivo.
+- **Sinónimos aceptados:** plantación
+- **No usar:** Cultivo actual como atributo permanente del Lote
+- **Nombre en código:** `Implantacion`
+- **Módulo dueño:** `CUL`
+- **Ejemplo:** un Lote puede conservar Implantaciones históricas y tener más de una activa solo cuando sus sectores o superficies sean diferenciables.
+
 ### Lote
 
 - **Definición:** subdivisión territorial u operativa de una Chacra en la que puede desarrollarse actividad productiva. No conserva un cultivo permanente como parte de su identidad.
@@ -144,6 +180,15 @@ El brief no se reescribe: la normalización ocurre al derivar la especificación
 - **Nombre en código:** `PlanSuscripcion`
 - **Módulo dueño:** `SUS`; su desarrollo funcional se realizará al final del proyecto
 - **Ejemplo:** un Plan de suscripción puede ofrecer un cupo determinado de Cuentas de Empresa activas y Chacras.
+
+### Perfil de cultivo
+
+- **Definición:** configuración tipada y versionada que determina los campos, unidades y validaciones aplicables a un Cultivo y que puede especializarse para una Empresa cliente y un Lote sin desactivar los datos base obligatorios.
+- **Sinónimos aceptados:** perfil productivo del cultivo
+- **No usar:** formulario libre; Cultivo
+- **Nombre en código:** `PerfilCultivo`
+- **Módulo dueño:** `CUL`
+- **Ejemplo:** un Perfil de cultivo puede determinar qué datos de Implantación o Cosecha se solicitan para una Empresa cliente.
 
 ### Producto obtenido
 
@@ -180,6 +225,15 @@ El brief no se reescribe: la normalización ocurre al derivar la especificación
 - **Nombre en código:** `Usuario`
 - **Módulo dueño:** `ACC`
 - **Ejemplo:** un Capataz puede ser un Empleado vinculado a un Usuario con una Cuenta de Empresa activa.
+
+### Variedad
+
+- **Definición:** variante identificada de un Cultivo a la que puede pertenecer una Implantación.
+- **Sinónimos aceptados:** variedad de cultivo
+- **No usar:** Cultivo como sustituto de la variedad
+- **Nombre en código:** `Variedad`
+- **Módulo dueño:** `CUL`
+- **Ejemplo:** una Variedad de Naranja pertenece al Cultivo Naranja.
 
 ## 3. Palabras que siempre requieren pregunta
 

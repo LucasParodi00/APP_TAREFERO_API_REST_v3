@@ -1,7 +1,7 @@
 ---
 type: requirements
 module: "ACC"
-status: Propuesto
+status: Aprobado
 owner: "Analista"
 ---
 
@@ -13,7 +13,7 @@ Borrador derivado del brief y de las respuestas del Ingeniero. Los ítems requie
 
 ### ACC-BR-001 — Cuentas independientes por Empresa
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-10`, `ACC-Q-001`
 - **Tipo:** Invariante
 - **Regla:** Las credenciales, roles, permisos y estado de una Cuenta de Empresa pertenecen exclusivamente a esa Empresa y sus cambios no modifican cuentas de otras Empresas.
@@ -28,7 +28,7 @@ Borrador derivado del brief y de las respuestas del Ingeniero. Los ítems requie
 
 ### ACC-BR-002 — Pertenencia al contexto autorizado
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-03`, `B-05`
 - **Tipo:** Autorización de dominio
 - **Regla:** Una operación de administración de cuentas solo puede afectar la Empresa del contexto autorizado del actor; el soporte de plataforma requiere el contexto de ACC-BR-011.
@@ -43,10 +43,10 @@ Borrador derivado del brief y de las respuestas del Ingeniero. Los ítems requie
 
 ### ACC-BR-003 — Correo único dentro de la Empresa
 
-- **Estado:** Propuesto
-- **Origen:** `B-10`
+- **Estado:** Aprobado
+- **Origen:** `B-10`, `ACC-Q-018`
 - **Tipo:** Invariante
-- **Regla:** El correo de acceso de una Cuenta de Empresa no puede repetirse dentro de la misma Empresa.
+- **Regla:** El correo de acceso normalizado conforme a `ACC-BR-018` no puede repetirse dentro de la misma Empresa.
 - **Si se incumple:** se rechaza con `ACC_CORREO_DUPLICADO`.
 - **Ejemplos:**
 
@@ -58,7 +58,7 @@ Borrador derivado del brief y de las respuestas del Ingeniero. Los ítems requie
 
 ### ACC-BR-004 — Credenciales para habilitar acceso
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-07`, `B-08`
 - **Tipo:** Validación
 - **Regla:** Habilitar una Cuenta de Empresa requiere correo de acceso y una contraseña establecida por el actor autorizado.
@@ -73,7 +73,7 @@ Borrador derivado del brief y de las respuestas del Ingeniero. Los ítems requie
 
 ### ACC-BR-005 — Canal habilitado
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `ACC-Q-010`
 - **Tipo:** Validación
 - **Regla:** Una Cuenta de Empresa solo puede autenticarse u operar desde un canal habilitado expresamente para ella.
@@ -88,7 +88,7 @@ Borrador derivado del brief y de las respuestas del Ingeniero. Los ítems requie
 
 ### ACC-BR-006 — Cupo por cuenta activa
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-01`, `ACC-Q-004`, `ACC-Q-010`, `ACC-Q-011`
 - **Tipo:** Invariante
 - **Regla:** La habilitación de una Cuenta de Empresa debe respetar el cupo de accesos de su Suscripción de Empresa; una cuenta habilitada en ambos canales ocupa un solo acceso.
@@ -103,7 +103,7 @@ Borrador derivado del brief y de las respuestas del Ingeniero. Los ítems requie
 
 ### ACC-BR-007 — Roles iniciales del sistema
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-11`, `ACC-Q-006`
 - **Tipo:** Invariante
 - **Regla:** Las asignaciones iniciales de rol deben utilizar el catálogo fijo del sistema y respetar la separación entre roles de Empresa y de plataforma.
@@ -118,7 +118,7 @@ Borrador derivado del brief y de las respuestas del Ingeniero. Los ítems requie
 
 ### ACC-BR-008 — Último SuperAdministrador activo
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-05`, `B-12`, `ACC-Q-007`
 - **Tipo:** Invariante
 - **Regla:** Una operación no puede dejar la plataforma sin al menos un SuperAdministrador activo.
@@ -133,7 +133,7 @@ Borrador derivado del brief y de las respuestas del Ingeniero. Los ítems requie
 
 ### ACC-BR-009 — Directorio de Empresa sin SuperAdministradores
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-04`, `ACC-Q-008`
 - **Tipo:** Invariante
 - **Regla:** Las consultas de cuentas de una Empresa no deben incluir las identidades de SuperAdministradores de plataforma.
@@ -148,7 +148,7 @@ Borrador derivado del brief y de las respuestas del Ingeniero. Los ítems requie
 
 ### ACC-BR-010 — Restablecimiento limitado a la Empresa
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-15`, `ACC-Q-001`, `ACC-Q-009`
 - **Tipo:** Autorización de dominio
 - **Regla:** Un restablecimiento administrativo de contraseña solo puede afectar una cuenta de la Empresa autorizada y no concede acceso a sus contraseñas anteriores.
@@ -163,7 +163,7 @@ Borrador derivado del brief y de las respuestas del Ingeniero. Los ítems requie
 
 ### ACC-BR-011 — Contexto explícito de soporte
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-05`, `B-13`, `ACC-Q-005`
 - **Tipo:** Autorización de dominio
 - **Regla:** Una intervención de soporte requiere Empresa destino y motivo, conserva la identidad real del SuperAdministrador y no omite las reglas de integridad del negocio.
@@ -178,7 +178,7 @@ Borrador derivado del brief y de las respuestas del Ingeniero. Los ítems requie
 
 ### ACC-BR-012 — Cambio de contraseña voluntario
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-08`, `ACC-Q-013`
 - **Tipo:** Invariante
 - **Regla:** Una contraseña creada o restablecida por un Administrador o SuperAdministrador no obliga al titular a cambiarla al iniciar sesión.
@@ -193,7 +193,7 @@ Borrador derivado del brief y de las respuestas del Ingeniero. Los ítems requie
 
 ### ACC-BR-013 — Titularidad del cambio propio
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-08`, `ACC-Q-018`
 - **Tipo:** Autorización de dominio
 - **Regla:** El cambio propio de contraseña solo puede modificar la cuenta del titular autenticado y exige comprobar su contraseña actual.
@@ -208,7 +208,7 @@ Borrador derivado del brief y de las respuestas del Ingeniero. Los ítems requie
 
 ### ACC-BR-014 — Caducidad tras cambiar credenciales
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `ACC-Q-001`, `ACC-Q-018`
 - **Tipo:** Transición
 - **Regla:** Cambiar o restablecer la contraseña invalida todas las Sesiones de la Cuenta de Empresa afectada, incluida la Sesión desde la que se hizo el cambio propio, sin invalidar cuentas de otras Empresas.
@@ -223,7 +223,7 @@ Borrador derivado del brief y de las respuestas del Ingeniero. Los ítems requie
 
 ### ACC-BR-015 — Cuenta única por persona y Empresa
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `ACC-Q-016`
 - **Tipo:** Invariante
 - **Regla:** Cada persona puede tener como máximo una Cuenta de Empresa en una misma Empresa, incluso si la cuenta existente está suspendida.
@@ -238,7 +238,7 @@ Borrador derivado del brief y de las respuestas del Ingeniero. Los ítems requie
 
 ### ACC-BR-016 — Ciclo de acceso de Empresa
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `ACC-Q-016`
 - **Tipo:** Transición
 - **Regla:** Una Cuenta de Empresa habilitada se crea ACTIVA y admite las transiciones ACTIVA a SUSPENDIDA y SUSPENDIDA a ACTIVA; reactivar está sujeto a las condiciones vigentes de habilitación.
@@ -253,7 +253,7 @@ Borrador derivado del brief y de las respuestas del Ingeniero. Los ítems requie
 
 ### ACC-BR-017 — Conservación de la cuenta
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `ACC-Q-016`
 - **Tipo:** Invariante
 - **Regla:** Una Cuenta de Empresa no se elimina físicamente; la baja de acceso se expresa por suspensión y conserva su identidad e historial.
@@ -266,27 +266,72 @@ Borrador derivado del brief y de las respuestas del Ingeniero. Los ítems requie
 | Suspender una cuenta sin operaciones previas | Se conserva igualmente. |
 | Solicitar borrado físico de la cuenta | Se rechaza con `ACC_ELIMINACION_NO_PERMITIDA`. |
 
+### ACC-BR-018 — Normalización del correo de acceso
+
+- **Estado:** Aprobado
+- **Origen:** `ACC-Q-018`
+- **Tipo:** Validación
+- **Regla:** El correo de acceso admite hasta 254 caracteres después de eliminar espacios exteriores y se normaliza a minúsculas para identificar y comparar la Cuenta de Empresa.
+- **Si se incumple:** se rechaza con `ACC_CORREO_INVALIDO`.
+- **Ejemplos:**
+
+| Situación | Resultado |
+|---|---|
+| Correo ` Usuario@Empresa.com ` | Se normaliza como `usuario@empresa.com`. |
+| Correo de 254 caracteres después de eliminar espacios exteriores | Se admite si satisface las demás condiciones. |
+| Correo de 255 caracteres después de eliminar espacios exteriores | Se rechaza con `ACC_CORREO_INVALIDO`. |
+
+### ACC-BR-019 — Longitud y conservación de la contraseña
+
+- **Estado:** Aprobado
+- **Origen:** `ACC-Q-018`
+- **Tipo:** Validación
+- **Regla:** Toda contraseña establecida o presentada contiene entre 15 y 128 caracteres y se conserva exactamente como fue ingresada para su comprobación, sin eliminar espacios ni modificar mayúsculas o minúsculas.
+- **Si se incumple:** se rechaza con `ACC_CONTRASENIA_INVALIDA`.
+- **Ejemplos:**
+
+| Situación | Resultado |
+|---|---|
+| Contraseña de 15 caracteres | Se admite. |
+| Contraseña de 128 caracteres, incluidos espacios significativos | Se admite y no se transforma antes de protegerla o comprobarla. |
+| Contraseña de 14 o 129 caracteres | Se rechaza con `ACC_CONTRASENIA_INVALIDA`. |
+
+### ACC-BR-020 — Motivo de soporte válido
+
+- **Estado:** Aprobado
+- **Origen:** `ACC-Q-005`, `ACC-Q-018`
+- **Tipo:** Validación
+- **Regla:** El motivo de soporte elimina espacios exteriores, debe conservar contenido y admite hasta 1000 caracteres.
+- **Si se incumple:** se rechaza con `ACC_MOTIVO_SOPORTE_INVALIDO`.
+- **Ejemplos:**
+
+| Situación | Resultado |
+|---|---|
+| Motivo ` Recuperar acceso del Administrador ` | Se conserva sin los espacios exteriores. |
+| Motivo de 1000 caracteres | Se admite. |
+| Motivo vacío después de normalizar o de 1001 caracteres | Se rechaza con `ACC_MOTIVO_SOPORTE_INVALIDO`. |
+
 ## 2. Requerimientos funcionales
 
 ### ACC-REQ-001 — Habilitar una Cuenta de Empresa
 
-- **Estado:** Propuesto
-- **Origen:** `B-01`, `B-05`, `B-06`, `B-07`, `ACC-Q-004`, `ACC-Q-015`, `ACC-Q-016`
+- **Estado:** Aprobado
+- **Origen:** `B-01`, `B-05`, `B-06`, `B-07`, `ACC-Q-004`, `ACC-Q-015`, `ACC-Q-016`, `ACC-Q-018`
 - **Prioridad:** Must
 - **Requerimiento:** El sistema debe permitir habilitar una Cuenta de Empresa para una persona registrada, manteniendo la administración inicial y posterior del cliente según ACC-Q-015.
-- **Reglas que aplica:** `ACC-BR-001`, `ACC-BR-002`, `ACC-BR-003`, `ACC-BR-004`, `ACC-BR-006`, `ACC-BR-007`, `ACC-BR-015`, `ACC-BR-016`.
+- **Reglas que aplica:** `ACC-BR-001`, `ACC-BR-002`, `ACC-BR-003`, `ACC-BR-004`, `ACC-BR-006`, `ACC-BR-007`, `ACC-BR-015`, `ACC-BR-016`, `ACC-BR-018`, `ACC-BR-019`.
 
 ### ACC-REQ-002 — Iniciar sesión en una Empresa
 
-- **Estado:** Propuesto
-- **Origen:** `B-02`, `ACC-Q-001`, `ACC-Q-010`, `ACC-Q-012`
+- **Estado:** Aprobado
+- **Origen:** `B-02`, `ACC-Q-001`, `ACC-Q-010`, `ACC-Q-012`, `ACC-Q-018`
 - **Prioridad:** Must
 - **Requerimiento:** El sistema debe permitir iniciar sesión en una Cuenta de Empresa identificando la Empresa mediante su alias y usando las credenciales propias de esa cuenta.
-- **Reglas que aplica:** `ACC-BR-001`, `ACC-BR-005`, `ACC-BR-012`.
+- **Reglas que aplica:** `ACC-BR-001`, `ACC-BR-005`, `ACC-BR-012`, `ACC-BR-018`, `ACC-BR-019`.
 
 ### ACC-REQ-003 — Resolver el acceso vigente de una solicitud
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-02`, `B-03`
 - **Prioridad:** Must
 - **Requerimiento:** Cuando se solicita una operación autenticada, el sistema debe proporcionar el contexto de autorización vigente conforme a arquitectura.md §13.3 y §13.4.
@@ -294,23 +339,23 @@ Borrador derivado del brief y de las respuestas del Ingeniero. Los ítems requie
 
 ### ACC-REQ-004 — Cambiar la propia contraseña
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-08`, `ACC-Q-013`, `ACC-Q-018`
 - **Prioridad:** Must
 - **Requerimiento:** El sistema debe permitir que el titular cambie voluntariamente la contraseña de su Cuenta de Empresa desde un canal habilitado.
-- **Reglas que aplica:** `ACC-BR-001`, `ACC-BR-005`, `ACC-BR-012`, `ACC-BR-013`, `ACC-BR-014`.
+- **Reglas que aplica:** `ACC-BR-001`, `ACC-BR-005`, `ACC-BR-012`, `ACC-BR-013`, `ACC-BR-014`, `ACC-BR-019`.
 
 ### ACC-REQ-005 — Restablecer una contraseña de Empresa
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-15`, `ACC-Q-009`, `ACC-Q-018`
 - **Prioridad:** Must
 - **Requerimiento:** El sistema debe permitir restablecer administrativamente la contraseña de una Cuenta de Empresa sin ofrecer recuperación pública.
-- **Reglas que aplica:** `ACC-BR-001`, `ACC-BR-002`, `ACC-BR-010`, `ACC-BR-011`, `ACC-BR-012`, `ACC-BR-014`.
+- **Reglas que aplica:** `ACC-BR-001`, `ACC-BR-002`, `ACC-BR-010`, `ACC-BR-011`, `ACC-BR-012`, `ACC-BR-014`, `ACC-BR-019`, `ACC-BR-020`.
 
 ### ACC-REQ-006 — Crear un SuperAdministrador
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-05`, `B-12`, `ACC-Q-007`
 - **Prioridad:** Must
 - **Requerimiento:** El sistema debe permitir crear el primer SuperAdministrador mediante inicialización segura y los posteriores mediante administración de plataforma.
@@ -318,15 +363,15 @@ Borrador derivado del brief y de las respuestas del Ingeniero. Los ítems requie
 
 ### ACC-REQ-007 — Operar mediante soporte de plataforma
 
-- **Estado:** Propuesto
-- **Origen:** `B-05`, `B-13`, `ACC-Q-005`
+- **Estado:** Aprobado
+- **Origen:** `B-05`, `B-13`, `ACC-Q-005`, `ACC-Q-018`
 - **Prioridad:** Must
 - **Requerimiento:** El sistema debe permitir realizar una intervención de soporte sobre una Empresa mediante un contexto explícito auditable.
-- **Reglas que aplica:** `ACC-BR-002`, `ACC-BR-011`.
+- **Reglas que aplica:** `ACC-BR-002`, `ACC-BR-011`, `ACC-BR-020`.
 
 ### ACC-REQ-008 — Consultar cuentas de Empresa
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-04`, `B-05`, `ACC-Q-016`
 - **Prioridad:** Must
 - **Requerimiento:** El sistema debe permitir consultar y listar Cuentas de Empresa dentro del alcance autorizado.
@@ -334,7 +379,7 @@ Borrador derivado del brief y de las respuestas del Ingeniero. Los ítems requie
 
 ### ACC-REQ-009 — Renovar la sesión de Empresa
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-02`; arquitectura.md §13.2 y convenciones.md §7.1
 - **Prioridad:** Should
 - **Requerimiento:** El sistema debe permitir renovar una Sesión de Empresa conforme al ciclo vigente de autenticación y renovación definido en la fundación.
@@ -342,7 +387,7 @@ Borrador derivado del brief y de las respuestas del Ingeniero. Los ítems requie
 
 ### ACC-REQ-010 — Administrar habilitación de acceso
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `ACC-Q-016`, `ACC-Q-016`
 - **Prioridad:** Must
 - **Requerimiento:** El sistema debe permitir suspender y reactivar una Cuenta de Empresa y modificar sus canales y roles dentro del alcance autorizado.
@@ -350,7 +395,7 @@ Borrador derivado del brief y de las respuestas del Ingeniero. Los ítems requie
 
 ### ACC-REQ-011 — Consultar intervenciones de soporte
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-04`, `ACC-Q-008`
 - **Prioridad:** Should
 - **Requerimiento:** El sistema debe permitir consultar en el historial de Empresa las intervenciones de soporte con la presentación aprobada en ACC-Q-008.
@@ -360,16 +405,16 @@ Borrador derivado del brief y de las respuestas del Ingeniero. Los ítems requie
 
 ### ACC-DEP-001 — Empresas — Identidad, alias y estado
 
-- **Estado:** Propuesto
-- **Origen:** `B-02`, `B-03`, `ACC-Q-012`, `ACC-Q-015`
+- **Estado:** Aprobado
+- **Origen:** `B-02`, `B-03`, `ACC-Q-012`, `ACC-Q-015`, `EMP-Q-013`
 - **Módulo:** `EMP` (Empresas)
 - **Dirección:** Este módulo consume
-- **Qué:** identidad y estado de Empresa; resolución inequívoca de su alias. La ubicación del alias y su administración deben acordarse con el módulo dueño antes de planificar; no se agrega ese atributo a EMP desde esta especificación.
+- **Qué:** identidad, alias inmutable y estado vigente de Empresa. `EMP` es dueño del alias obligatorio, globalmente único y no reutilizable definido por `EMP-BR-011` a `EMP-BR-013`.
 - **Para qué:** `ACC-REQ-001`, `ACC-REQ-002`, `ACC-REQ-003`, `ACC-REQ-007`, `ACC-REQ-009`.
 
 ### ACC-DEP-002 — Suscripciones — Disponibilidad de acceso
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-01`, `B-14`, `ACC-Q-011`, `ACC-Q-015`
 - **Módulo:** `SUS` (Suscripciones)
 - **Dirección:** Este módulo consume
@@ -378,7 +423,7 @@ Borrador derivado del brief y de las respuestas del Ingeniero. Los ítems requie
 
 ### ACC-DEP-003 — Personal — Persona o Empleado de la Empresa
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-07`, `B-09`, `B-10`, `ACC-Q-002`, `ACC-Q-004`
 - **Módulo:** `PER` (Personal)
 - **Dirección:** Este módulo consume
@@ -387,7 +432,7 @@ Borrador derivado del brief y de las respuestas del Ingeniero. Los ítems requie
 
 ### ACC-DEP-004 — Módulos de negocio — Contexto autorizado
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-02`, `B-03`, `B-05`, `ACC-Q-005`
 - **Módulo:** GLOBAL (consumidores de autorización)
 - **Dirección:** Este módulo provee
