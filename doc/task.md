@@ -18,12 +18,12 @@ regenerará con `python tools/spec_lint.py doc --tareas` cuando Python esté dis
 | EPIC-002 | Propuesta | 1/4 tareas completadas |
 | EPIC-003 | Propuesta | 2/7 tareas completadas |
 | EPIC-004 | Propuesta | 1/6 tareas completadas |
-| EPIC-005 | Propuesta | 0/0 tareas completadas |
-| EPIC-006 | Propuesta | 0/0 tareas completadas |
+| EPIC-005 | Propuesta | 1/8 tareas completadas |
+| EPIC-006 | Propuesta | 1/7 tareas completadas |
 | EPIC-007 | Propuesta | 0/0 tareas completadas |
 | EPIC-008 | Propuesta | 0/0 tareas completadas |
 | EPIC-009 | Propuesta | 0/0 tareas completadas |
-| EPIC-010 | Propuesta | 0/0 tareas completadas |
+| EPIC-010 | Propuesta | 0/5 tareas completadas |
 | EPIC-011 | Propuesta | 0/0 tareas completadas |
 | EPIC-012 | Propuesta | 0/0 tareas completadas |
 | EPIC-013 | Propuesta | 0/0 tareas completadas |
@@ -132,9 +132,18 @@ regenerará con `python tools/spec_lint.py doc --tareas` cuando Python esté dis
 ### Avance
 
 <!-- generado:EPIC-005:inicio -->
-**0/0 tareas completadas**
+**1/8 tareas completadas**
 
-Sin tareas asociadas.
+| Tarea | Tipo | Estado | Plan | Archivo |
+|---|---|---|---|---|
+| PER-TASK-001 | Especificación | Completada | No aplica | `modulos\personal\personal.task.md` |
+| PER-TASK-002 | Implementación | Lista | No aplica | `modulos\personal\personal.task.md` |
+| PER-TASK-003 | Implementación | Lista | No aplica | `modulos\personal\personal.task.md` |
+| PER-TASK-004 | Implementación | Lista | No aplica | `modulos\personal\personal.task.md` |
+| PER-TASK-005 | Implementación | Lista | No aplica | `modulos\personal\personal.task.md` |
+| PER-TASK-006 | Implementación | Lista | No aplica | `modulos\personal\personal.task.md` |
+| PER-TASK-007 | Implementación | Lista | No aplica | `modulos\personal\personal.task.md` |
+| PER-TASK-008 | Implementación | Lista | No aplica | `modulos\personal\personal.task.md` |
 <!-- generado:EPIC-005:fin -->
 
 ## EPIC-006 — Labores de campo trazables
@@ -148,9 +157,17 @@ Sin tareas asociadas.
 ### Avance
 
 <!-- generado:EPIC-006:inicio -->
-**0/0 tareas completadas**
+**1/7 tareas completadas**
 
-Sin tareas asociadas.
+| Tarea | Tipo | Estado | Plan | Archivo |
+|---|---|---|---|---|
+| LAB-TASK-001 | Especificación | Completada | No aplica | `modulos\labores\labores.task.md` |
+| LAB-TASK-002 | Implementación | Lista | No aplica | `modulos\labores\labores.task.md` |
+| LAB-TASK-003 | Implementación | Lista | No aplica | `modulos\labores\labores.task.md` |
+| LAB-TASK-004 | Implementación | Lista | No aplica | `modulos\labores\labores.task.md` |
+| LAB-TASK-005 | Implementación | Lista | No aplica | `modulos\labores\labores.task.md` |
+| LAB-TASK-006 | Implementación | Lista | No aplica | `modulos\labores\labores.task.md` |
+| LAB-TASK-007 | Implementación | Lista | No aplica | `modulos\labores\labores.task.md` |
 <!-- generado:EPIC-006:fin -->
 
 ## EPIC-007 — Inventario controlado
@@ -212,9 +229,15 @@ Sin tareas asociadas.
 ### Avance
 
 <!-- generado:EPIC-010:inicio -->
-**0/0 tareas completadas**
+**0/5 tareas completadas**
 
-Sin tareas asociadas.
+| Tarea | Tipo | Estado | Plan | Archivo |
+|---|---|---|---|---|
+| OBS-TASK-001 | Especificación | En curso | No aplica | `modulos\observaciones\observaciones.task.md` |
+| OBS-TASK-002 | Implementación | Bloqueada | Pendiente | `modulos\observaciones\observaciones.task.md` |
+| OBS-TASK-003 | Implementación | Bloqueada | Pendiente | `modulos\observaciones\observaciones.task.md` |
+| OBS-TASK-004 | Implementación | Bloqueada | Pendiente | `modulos\observaciones\observaciones.task.md` |
+| OBS-TASK-005 | Implementación | Bloqueada | Pendiente | `modulos\observaciones\observaciones.task.md` |
 <!-- generado:EPIC-010:fin -->
 
 ## EPIC-011 — Cosechas y entregas trazables

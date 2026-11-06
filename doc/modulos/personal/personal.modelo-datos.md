@@ -1,7 +1,7 @@
 ---
 type: data-model
 module: "PER"
-status: Propuesto
+status: Aprobado
 owner: "Analista"
 ---
 
@@ -38,7 +38,7 @@ Todas las entidades de este modelo contienen `empresaId` conforme a `PER-BR-001`
 
 ### PER-ENT-001 — Empleado
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Descripción:** ficha personal y laboral independiente de la Cuenta de Empresa.
 - **Identidad:** Identificador generado.
 
@@ -80,7 +80,7 @@ Todas las entidades de este modelo contienen `empresaId` conforme a `PER-BR-001`
 
 ### PER-ENT-002 — Período laboral
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Descripción:** intervalo histórico durante el cual la ficha estuvo vinculada activamente con la Empresa.
 - **Identidad:** Identificador generado.
 
@@ -95,7 +95,7 @@ Todas las entidades de este modelo contienen `empresaId` conforme a `PER-BR-001`
 
 ### PER-ENT-003 — Contacto de emergencia
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Descripción:** persona de contacto asociada con una ficha laboral.
 - **Identidad:** Identificador generado.
 
@@ -110,7 +110,7 @@ Todas las entidades de este modelo contienen `empresaId` conforme a `PER-BR-001`
 
 ### PER-ENT-004 — Especialidad
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Descripción:** valor del catálogo de especialidades definido por una Empresa.
 - **Identidad:** Identificador generado.
 
@@ -124,7 +124,7 @@ Todas las entidades de este modelo contienen `empresaId` conforme a `PER-BR-001`
 
 ### PER-ENT-005 — Especialidad de Empleado
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Descripción:** vinculación histórica entre un Empleado y una especialidad de su Empresa.
 - **Identidad:** Identificador generado.
 
@@ -139,7 +139,7 @@ Todas las entidades de este modelo contienen `empresaId` conforme a `PER-BR-001`
 
 ### PER-ENT-006 — Licencia de Empleado
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Descripción:** habilitación, matrícula o licencia personal con posible vencimiento y evidencia.
 - **Identidad:** Identificador generado.
 
@@ -156,7 +156,7 @@ Todas las entidades de este modelo contienen `empresaId` conforme a `PER-BR-001`
 
 ### PER-ENT-007 — Restricción operativa
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Descripción:** indicación vigente que el Capataz necesita conocer sin acceder a información sensible.
 - **Identidad:** Identificador generado.
 
@@ -173,7 +173,7 @@ Todas las entidades de este modelo contienen `empresaId` conforme a `PER-BR-001`
 
 ### PER-ENT-008 — Indisponibilidad
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Descripción:** período justificado que impide registrar presencia.
 - **Identidad:** Identificador generado.
 
@@ -192,7 +192,7 @@ Todas las entidades de este modelo contienen `empresaId` conforme a `PER-BR-001`
 
 ### PER-ENT-009 — Cuadrilla
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Descripción:** grupo laboral sin territorio permanente y con identidad propia de la Empresa.
 - **Identidad:** Identificador generado y código legible.
 
@@ -223,7 +223,7 @@ Todas las entidades de este modelo contienen `empresaId` conforme a `PER-BR-001`
 
 ### PER-ENT-010 — Responsabilidad de Cuadrilla
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Descripción:** período durante el cual un Capataz puede administrar y operar una Cuadrilla.
 - **Identidad:** Identificador generado.
 
@@ -239,7 +239,7 @@ Todas las entidades de este modelo contienen `empresaId` conforme a `PER-BR-001`
 
 ### PER-ENT-011 — Membresía de Cuadrilla
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Descripción:** período durante el cual un Empleado integra una Cuadrilla.
 - **Identidad:** Identificador generado.
 
@@ -254,7 +254,7 @@ Todas las entidades de este modelo contienen `empresaId` conforme a `PER-BR-001`
 
 ### PER-ENT-012 — Liderazgo de Cuadrilla
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Descripción:** período opcional durante el cual un integrante actúa como líder sin recibir acceso por ese hecho.
 - **Identidad:** Identificador generado.
 
@@ -269,7 +269,7 @@ Todas las entidades de este modelo contienen `empresaId` conforme a `PER-BR-001`
 
 ### PER-ENT-013 — Asistencia
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Descripción:** registro único de un Empleado para una fecha local de su Empresa.
 - **Identidad:** Identificador generado.
 
@@ -293,7 +293,7 @@ Todas las entidades de este modelo contienen `empresaId` conforme a `PER-BR-001`
 
 ### PER-ENT-014 — Versión de Asistencia
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Descripción:** contenido confirmado o corregido de una Asistencia.
 - **Identidad:** Identificador generado.
 
@@ -311,7 +311,7 @@ Todas las entidades de este modelo contienen `empresaId` conforme a `PER-BR-001`
 
 ### PER-ENT-015 — Intervalo de Asistencia
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Descripción:** tramo horario opcional de una versión de Asistencia.
 - **Identidad:** Identificador generado.
 
@@ -327,7 +327,7 @@ Todas las entidades de este modelo contienen `empresaId` conforme a `PER-BR-001`
 
 ### PER-ENT-016 — Configuración de remuneración
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Descripción:** modalidad vigente general de Empresa o excepción para un Empleado.
 - **Identidad:** Identificador generado.
 
@@ -343,8 +343,8 @@ Todas las entidades de este modelo contienen `empresaId` conforme a `PER-BR-001`
 
 ### PER-ENT-017 — Tarifa de remuneración
 
-- **Estado:** Propuesto
-- **Descripción:** valor vigente utilizado por una configuración; su propiedad para Labor o producción permanece abierta.
+- **Estado:** Aprobado
+- **Descripción:** valor vigente de remuneración conservado por PER, que puede referenciar una Labor o una unidad productiva definida por su módulo dueño.
 - **Identidad:** Identificador generado.
 
 | Atributo | Tipo | Requerido | Restricción | Origen |
@@ -354,13 +354,13 @@ Todas las entidades de este modelo contienen `empresaId` conforme a `PER-BR-001`
 | `configuracionId` | Referencia `PER-ENT-016` | Sí | Misma Empresa | `PER-Q-017` |
 | `importe` | Dinero | Sí | Positivo | `PER-Q-017`, `PER-Q-031` |
 | `unidad` | Texto tipado | Cond. | Requerida para POR_LABOR o POR_PRODUCCION | `PER-Q-016` |
-| `tipoLaborId` | Referencia externa | No | [[Q:PER-Q-032]] | `B-04`, `PER-Q-032` |
+| `tipoLaborId` | Referencia externa | No | `PER-BR-027`, `PER-DEP-005` | `B-04`, `PER-Q-032` |
 | `inicio` | Fecha | Sí | `PER-BR-025` | `PER-Q-018` |
 | `fin` | Fecha | No | No anterior al inicio | `PER-Q-018` |
 
 ### PER-ENT-018 — Devengo bruto
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Descripción:** resultado bruto calculado para un Empleado y período antes de obligaciones y pagos.
 - **Identidad:** Identificador generado.
 
@@ -372,7 +372,7 @@ Todas las entidades de este modelo contienen `empresaId` conforme a `PER-BR-001`
 | `periodoInicio` | Fecha | Sí | No posterior a fin | `PER-Q-019`, `PER-Q-031` |
 | `periodoFin` | Fecha | Sí | — | `PER-Q-019`, `PER-Q-031` |
 | `modalidadAplicada` | Enumeración | Sí | `PER-BR-023` | `PER-Q-031` |
-| `cantidadAplicada` | Decimal | Cond. | Horas, días, Labores o producción | `PER-Q-031` |
+| `cantidadAplicada` | Decimal | Cond. | Horas, días, Labores o producción atribuidos individualmente | `PER-Q-031`, `PER-Q-040` |
 | `valorAplicado` | Dinero | Sí | Fijado por `PER-BR-025` | `PER-Q-018`, `PER-Q-031` |
 | `importeBruto` | Dinero | Sí | `PER-BR-026` | `PER-Q-019`, `PER-Q-031` |
 | `origenes` | Referencias externas | Sí | Hechos confirmados de PER/LAB/COS | `PER-Q-019` |
@@ -403,9 +403,9 @@ Todas las entidades de este modelo contienen `empresaId` conforme a `PER-BR-001`
 | Unicidad de Empresa, Empleado y fecha de Asistencia | `PER-BR-016` | Pendiente de planificación |
 | Versiones de Asistencia únicas y secuenciales | `PER-BR-020` | Pendiente de planificación |
 | Intervalos consultables por versión y sin superposición | `PER-BR-018` | Pendiente de planificación |
-| Configuraciones y tarifas por Empresa, alcance y vigencia | `PER-BR-024`, `PER-BR-025` | Pendiente de `PER-Q-032` y planificación |
+| Configuraciones y tarifas por Empresa, alcance y vigencia | `PER-BR-024`, `PER-BR-025`, `PER-BR-027` | Pendiente de planificación |
 | Devengos por Empresa, Empleado y período | `PER-UC-012` | Pendiente de planificación |
 
-## 5. Punto abierto
+## 5. Propiedad de tarifas
 
-La entidad `PER-ENT-017` y las referencias de tarifas específicas no pueden aprobarse mientras `PER-Q-032` permanezca abierta. El resto del modelo no presupone la respuesta.
+Conforme a `PER-Q-032`, `PER-ENT-017` pertenece a PER. Las referencias a tipos de Labor o unidades productivas no transfieren a PER la propiedad de los catálogos, hechos ni cantidades de LAB o COS.

@@ -1,7 +1,7 @@
 ---
 type: requirements
 module: "PER"
-status: Propuesto
+status: Aprobado
 owner: "Analista"
 ---
 
@@ -11,7 +11,7 @@ owner: "Analista"
 
 ### PER-BR-001 — Aislamiento por Empresa
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-05`, `PER-Q-002`, `PER-Q-021`
 - **Tipo:** Invariante
 - **Regla:** Toda entidad y registro de PER pertenece a una única Empresa cliente mediante `empresaId`; códigos, documentos, relaciones y consultas se validan dentro de esa Empresa.
@@ -25,7 +25,7 @@ owner: "Analista"
 
 ### PER-BR-002 — Documento único dentro de la Empresa
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-01`, `PER-Q-002`, `PER-Q-036`, `PER-Q-039`
 - **Tipo:** Invariante
 - **Regla:** La combinación de tipo y número normalizado de documento es única dentro de una Empresa; la misma persona puede tener otro registro independiente en otra Empresa.
@@ -39,7 +39,7 @@ owner: "Analista"
 
 ### PER-BR-003 — Datos mínimos del Empleado
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-01`, `PER-Q-036`, `PER-Q-039`
 - **Tipo:** Validación
 - **Regla:** Un Empleado requiere tipo y número de documento, nombre, apellido y teléfono de contacto; los textos respetan los límites aprobados y el tipo OTRO exige detalle.
@@ -53,7 +53,7 @@ owner: "Analista"
 
 ### PER-BR-004 — Datos opcionales estructurados
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `PER-Q-005`, `PER-Q-037`, `PER-Q-039`
 - **Tipo:** Validación
 - **Regla:** Los datos opcionales del Empleado se registran en su estructura aprobada; los archivos se referencian desde ARC y no se copian en PER.
@@ -67,7 +67,7 @@ owner: "Analista"
 
 ### PER-BR-005 — Ciclo laboral e historia
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `PER-Q-003`, `PER-Q-007`
 - **Tipo:** Transición
 - **Regla:** El Empleado alterna entre ACTIVO e INACTIVO sin borrado físico; cada alta, inactivación y reactivación conserva fecha, motivo y períodos laborales en la misma ficha.
@@ -81,7 +81,7 @@ owner: "Analista"
 
 ### PER-BR-006 — Cupo de Empleados activos
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-01`, `PER-Q-004`
 - **Tipo:** Validación
 - **Regla:** Crear o reactivar un Empleado requiere cupo de Empleados activos en la Suscripción de Empresa; los registros INACTIVOS no consumen cupo.
@@ -95,7 +95,7 @@ owner: "Analista"
 
 ### PER-BR-007 — Acceso separado de la ficha laboral
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-01`, `PER-Q-001`
 - **Tipo:** Invariante
 - **Regla:** La ficha de Empleado no concede acceso; Capataz y Empleado con acceso requieren una ficha activa, mientras un Administrador puede existir en ACC sin ser Empleado.
@@ -109,7 +109,7 @@ owner: "Analista"
 
 ### PER-BR-008 — Inactivación laboral revoca acceso
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `PER-Q-035`
 - **Tipo:** Transición
 - **Regla:** Al inactivar un Empleado con acceso, PER solicita a ACC suspender su Cuenta de Empresa y revocar sus Sesiones; reactivar la ficha no reactiva el acceso automáticamente.
@@ -123,7 +123,7 @@ owner: "Analista"
 
 ### PER-BR-009 — Código de Cuadrilla
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-02`, `B-07`, `PER-Q-009`, `PER-Q-039`
 - **Tipo:** Invariante
 - **Regla:** Cada Cuadrilla recibe automáticamente un código inmutable y no reutilizable entre A01 y Z99, único dentro de su Empresa.
@@ -137,7 +137,7 @@ owner: "Analista"
 
 ### PER-BR-010 — Ciclo de vida de Cuadrilla
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-02`, `PER-Q-026`, `PER-Q-039`
 - **Tipo:** Transición
 - **Regla:** Una Cuadrilla usa estados ACTIVA e INACTIVA, no se elimina físicamente, admite nombres repetidos y conserva sus cambios; solo una Cuadrilla ACTIVA puede incorporar integrantes u operar.
@@ -151,7 +151,7 @@ owner: "Analista"
 
 ### PER-BR-011 — Responsabilidad operativa de Cuadrilla
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `PER-Q-011`, `PER-Q-022`, `PER-Q-026`
 - **Tipo:** Autorización de dominio
 - **Regla:** El Capataz creador administra y opera la Cuadrilla mientras sea responsable vigente; el Administrador puede reasignar esa responsabilidad conservando al creador y las asignaciones anteriores en la historia.
@@ -165,7 +165,7 @@ owner: "Analista"
 
 ### PER-BR-012 — Cuadrilla sin territorio propio
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `PER-Q-023`
 - **Tipo:** Invariante
 - **Regla:** Una Cuadrilla no pertenece a una Chacra ni a un Lote; LAB determina la ubicación de cada trabajo efectivo.
@@ -179,7 +179,7 @@ owner: "Analista"
 
 ### PER-BR-013 — Pertenencia simultánea a Cuadrillas
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-02`, `B-06`, `PER-Q-008`
 - **Tipo:** Invariante
 - **Regla:** Un Empleado activo puede integrar simultáneamente varias Cuadrillas activas de su Empresa, sin designar una Cuadrilla principal.
@@ -193,7 +193,7 @@ owner: "Analista"
 
 ### PER-BR-014 — Vigencia de integrantes y líder
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-02`, `B-08`, `PER-Q-010`, `PER-Q-027`
 - **Tipo:** Temporal
 - **Regla:** Cada membresía conserva inicio y fin opcional sin superponerse consigo misma en la misma Cuadrilla; una reincorporación abre otro período y el líder opcional debe ser un integrante activo.
@@ -207,7 +207,7 @@ owner: "Analista"
 
 ### PER-BR-015 — Alcance del Capataz sobre asistencia
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-03`, `PER-Q-028`, `PER-Q-034`
 - **Tipo:** Autorización de dominio
 - **Regla:** Un Capataz puede iniciar asistencia de cualquier Empleado ACTIVO de su Empresa y solo ve los datos operativos aprobados para esa acción.
@@ -221,7 +221,7 @@ owner: "Analista"
 
 ### PER-BR-016 — Asistencia única por día
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `PER-Q-008`, `PER-Q-024`
 - **Tipo:** Invariante
 - **Regla:** Existe una única Asistencia por Empleado y fecha local de Empresa; el primer Capataz autorizado que la inicia queda responsable de completarla y confirmarla.
@@ -235,7 +235,7 @@ owner: "Analista"
 
 ### PER-BR-017 — Resultado diario explícito
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `PER-Q-012`, `PER-Q-033`
 - **Tipo:** Validación
 - **Regla:** La Asistencia confirmada usa PRESENTE, AUSENTE o AUSENCIA_JUSTIFICADA; la falta de registro significa pendiente y una indisponibilidad vigente impide PRESENTE e intervalos.
@@ -249,7 +249,7 @@ owner: "Analista"
 
 ### PER-BR-018 — Intervalos válidos
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-03`, `B-09`, `PER-Q-013`, `PER-Q-014`, `PER-Q-030`, `PER-Q-039`
 - **Tipo:** Validación
 - **Regla:** Los intervalos usan precisión de minuto, no se superponen, el ingreso precede al egreso, no cruzan medianoche y cada marca admite una nota opcional; una fecha futura no puede confirmarse.
@@ -263,7 +263,7 @@ owner: "Analista"
 
 ### PER-BR-019 — Horas requeridas para POR_HORA
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-03`, `PER-Q-013`, `PER-Q-030`
 - **Tipo:** Validación
 - **Regla:** Cuando el Empleado usa modalidad POR_HORA, todos los intervalos deben estar cerrados antes de confirmar PRESENTE; en otras modalidades los horarios son opcionales.
@@ -277,7 +277,7 @@ owner: "Analista"
 
 ### PER-BR-020 — Confirmación y corrección auditada
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `PER-Q-015`
 - **Tipo:** Transición
 - **Regla:** El Capataz responsable puede modificar antes de confirmar; después de confirmada, solo el Administrador corrige con motivo y conserva la versión anterior.
@@ -291,7 +291,7 @@ owner: "Analista"
 
 ### PER-BR-021 — Restricción operativa y privacidad
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-03`, `B-10`, `PER-Q-006`, `PER-Q-029`, `PER-Q-034`
 - **Tipo:** Invariante
 - **Regla:** Una restricción conserva tipo, vigencia e indicación operativa, no vuelve incompatible una Labor y expone al Capataz solo el mensaje necesario, nunca diagnóstico ni evidencia sensible.
@@ -305,7 +305,7 @@ owner: "Analista"
 
 ### PER-BR-022 — Indisponibilidad justificada
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `PER-Q-029`, `PER-Q-033`, `PER-Q-038`
 - **Tipo:** Temporal
 - **Regla:** VACACIONES, LICENCIA_MEDICA, LICENCIA_ESPECIAL, SUSPENSION y OTRA_JUSTIFICADA tienen vigencia; solo el Administrador las administra y durante su vigencia generan AUSENCIA_JUSTIFICADA e impiden PRESENTE.
@@ -319,7 +319,7 @@ owner: "Analista"
 
 ### PER-BR-023 — Modalidades de remuneración
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-04`, `B-11`, `PER-Q-016`
 - **Tipo:** Invariante
 - **Regla:** Las modalidades admitidas son MENSUAL, JORNAL, POR_HORA, POR_LABOR, POR_PRODUCCION y MIXTA; la Empresa define una configuración general y puede especializarla por Empleado.
@@ -333,7 +333,7 @@ owner: "Analista"
 
 ### PER-BR-024 — Precedencia de remuneración
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-04`, `B-11`, `PER-Q-017`
 - **Tipo:** Cálculo
 - **Regla:** La resolución aplica, de mayor a menor especificidad: Empleado más Labor o unidad, Labor o unidad de Empresa, Empleado y configuración general de Empresa.
@@ -347,7 +347,7 @@ owner: "Analista"
 
 ### PER-BR-025 — Vigencia y valor histórico aplicado
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `PER-Q-018`
 - **Tipo:** Temporal
 - **Regla:** Toda tarifa posee vigencia y el valor aplicado queda fijado al confirmar el hecho que origina el devengo; un cambio posterior no recalcula automáticamente hechos anteriores.
@@ -361,10 +361,10 @@ owner: "Analista"
 
 ### PER-BR-026 — Cálculo bruto por modalidad
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `PER-Q-019`, `PER-Q-031`
 - **Tipo:** Cálculo
-- **Regla:** MENSUAL usa importe fijo sin prorrateo automático; JORNAL multiplica días PRESENTE; POR_HORA multiplica horas válidas; POR_LABOR y POR_PRODUCCION multiplican cantidades confirmadas; MIXTA suma base y componentes variables.
+- **Regla:** MENSUAL usa importe fijo sin prorrateo automático; JORNAL multiplica días PRESENTE; POR_HORA multiplica horas válidas; POR_LABOR y POR_PRODUCCION multiplican la cantidad individual confirmada para cada Empleado; MIXTA suma base y componentes variables.
 - **Si se incumple:** se rechaza con `PER_CALCULO_REMUNERACION_INVALIDO`.
 
 | Situación | Resultado |
@@ -373,115 +373,116 @@ owner: "Analista"
 | MENSUAL tiene ausencias | No se prorratea automáticamente |
 | Falta cantidad confirmada para POR_PRODUCCION | Se rechaza con `PER_CALCULO_REMUNERACION_INVALIDO` |
 
-### PER-BR-027 — Propiedad de tarifas específicas pendiente
+### PER-BR-027 — Propiedad de tarifas de remuneración
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-04`, `PER-Q-032`
 - **Tipo:** Invariante
-- **Regla:** [[Q:PER-Q-032]] La especificación definitiva debe asignar un único módulo dueño a las tarifas específicas por Labor o producción antes de aprobar su configuración e integración.
-- **Si se incumple:** la configuración afectada permanece bloqueada.
+- **Regla:** PER es el único módulo dueño de las tarifas de remuneración, incluidas las que referencian un tipo de Labor o una unidad productiva; LAB y COS son dueños de sus catálogos, hechos y cantidades confirmadas.
+- **Si se incumple:** no se admite definir o resolver una fuente de tarifas de remuneración fuera de PER.
 
 | Situación | Resultado |
 |---|---|
-| Tarifa general o por Empleado no dependiente de LAB/COS | PER puede especificarla |
-| Tarifa específica por Labor o producción | Permanece bloqueada por `PER-Q-032` |
-| Dos módulos intentan ser dueños del mismo valor | No se aprueba la especificación |
+| Tarifa general o específica por Empleado | PER la conserva y resuelve |
+| Tarifa por hora de un tipo de Labor | PER conserva la tarifa y referencia la Labor definida por LAB |
+| Tarifa por unidad productiva | PER conserva la tarifa y COS aporta la cantidad confirmada |
+| LAB o COS intenta ser dueño de la tarifa de remuneración | No se admite; la propiedad permanece en PER |
 
 ## 2. Requerimientos funcionales
 
 ### PER-REQ-001 — Administrar Empleados
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-01`, `PER-Q-003`, `PER-Q-007`, `PER-Q-025`
 - **Prioridad:** Must
 - **Requerimiento:** El sistema debe permitir al Administrador crear, consultar, modificar, inactivar y reactivar Empleados de su Empresa conservando su historia laboral.
 - **Reglas que aplica:** `PER-BR-001` a `PER-BR-006`.
 
 ### PER-REQ-002 — Administrar datos personales y laborales
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `PER-Q-005`, `PER-Q-037`, `PER-Q-039`
 - **Prioridad:** Must
 - **Requerimiento:** El sistema debe permitir al Administrador mantener datos opcionales estructurados, contactos, especialidades, licencias y referencias de archivos del Empleado.
 - **Reglas que aplica:** `PER-BR-003`, `PER-BR-004`, `PER-BR-021`.
 
 ### PER-REQ-003 — Habilitar acceso de un Empleado
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-01`, `PER-Q-001`, `PER-Q-035`
 - **Prioridad:** Must
 - **Requerimiento:** Cuando el Administrador habilite acceso a un Empleado, el sistema debe coordinar con ACC la Cuenta de Empresa, correo, credencial, roles y permisos sin copiar esos datos en PER.
 - **Reglas que aplica:** `PER-BR-007`, `PER-BR-008`.
 
 ### PER-REQ-004 — Administrar restricciones e indisponibilidades
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-03`, `B-10`, `PER-Q-006`, `PER-Q-033`, `PER-Q-038`
 - **Prioridad:** Must
 - **Requerimiento:** El sistema debe permitir al Administrador mantener restricciones operativas e indisponibilidades con vigencia y evidencia referenciada.
 - **Reglas que aplica:** `PER-BR-021`, `PER-BR-022`.
 
 ### PER-REQ-005 — Crear y mantener Cuadrillas
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-02`, `B-07`, `PER-Q-009`, `PER-Q-011`, `PER-Q-026`
 - **Prioridad:** Must
 - **Requerimiento:** El sistema debe permitir al Capataz crear y administrar sus Cuadrillas y al Administrador supervisar su ciclo de vida y reasignar responsables.
 - **Reglas que aplica:** `PER-BR-001`, `PER-BR-009` a `PER-BR-012`.
 
 ### PER-REQ-006 — Mantener integrantes y líder
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-02`, `B-06`, `B-08`, `PER-Q-027`
 - **Prioridad:** Must
 - **Requerimiento:** El sistema debe permitir al Capataz responsable incorporar y retirar integrantes y designar o quitar un líder conservando las vigencias históricas.
 - **Reglas que aplica:** `PER-BR-013`, `PER-BR-014`.
 
 ### PER-REQ-007 — Consultar Cuadrillas e historia
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-02`, `PER-Q-011`, `PER-Q-022`, `PER-Q-026`
 - **Prioridad:** Must
 - **Requerimiento:** El sistema debe mostrar al Capataz la composición actual de sus Cuadrillas y al Administrador la composición actual, responsables e historia completa.
 - **Reglas que aplica:** `PER-BR-010`, `PER-BR-011`, `PER-BR-014`.
 
 ### PER-REQ-008 — Registrar y confirmar asistencia
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-03`, `B-09`, `PER-Q-012`, `PER-Q-013`, `PER-Q-024`, `PER-Q-028`
 - **Prioridad:** Must
 - **Requerimiento:** El sistema debe permitir al Capataz iniciar, completar y confirmar una única Asistencia diaria por Empleado activo de su Empresa con resultado, intervalos y notas opcionales.
 - **Reglas que aplica:** `PER-BR-015`, `PER-BR-016`, `PER-BR-017`, `PER-BR-018`, `PER-BR-019`, `PER-BR-022`.
 
 ### PER-REQ-009 — Corregir asistencia confirmada
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `PER-Q-015`
 - **Prioridad:** Must
 - **Requerimiento:** Cuando una Asistencia confirmada sea incorrecta, el sistema debe permitir al Administrador corregirla con motivo conservando las versiones anteriores.
 - **Reglas que aplica:** `PER-BR-020`.
 
 ### PER-REQ-010 — Consultar información propia
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `PER-Q-020`, `PER-Q-038`
 - **Prioridad:** Should
 - **Requerimiento:** El sistema debe permitir al Empleado con acceso consultar en solo lectura su ficha, asistencia e indisponibilidades propias sin datos administrativos internos.
 - **Reglas que aplica:** `PER-BR-007`, `PER-BR-017`, `PER-BR-021`, `PER-BR-022`.
 
 ### PER-REQ-011 — Configurar modalidades de remuneración
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-04`, `B-11`, `PER-Q-016`, `PER-Q-017`, `PER-Q-018`
 - **Prioridad:** Must
 - **Requerimiento:** El sistema debe permitir al Administrador configurar modalidades y valores generales y por Empleado con vigencia y precedencia verificables.
 - **Reglas que aplica:** `PER-BR-023` a `PER-BR-025`.
 
 ### PER-REQ-012 — Calcular remuneración bruta devengada
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `PER-Q-019`, `PER-Q-031`
 - **Prioridad:** Must
-- **Requerimiento:** Cuando existan hechos y valores confirmados, el sistema debe calcular el importe bruto devengado según la modalidad aplicable y conservar su composición.
+- **Requerimiento:** Cuando existan hechos y valores confirmados, el sistema debe calcular el importe bruto devengado según la modalidad aplicable y conservar su composición, usando para cada Empleado la cantidad individual que LAB o COS le haya atribuido.
 - **Reglas que aplica:** `PER-BR-024` a `PER-BR-026`.
 
 ### PER-REQ-013 — Resolver tarifas específicas
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-04`, `PER-Q-032`
 - **Prioridad:** Must
-- **Requerimiento:** [[Q:PER-Q-032]] El sistema debe resolver una única fuente autorizada para tarifas específicas por Labor o producción antes de calcular su devengo.
+- **Requerimiento:** Cuando la remuneración dependa de una Labor o de una unidad productiva, el sistema debe resolver en PER la tarifa vigente y utilizar los hechos o cantidades confirmados por LAB o COS para calcular el devengo.
 - **Reglas que aplica:** `PER-BR-024` a `PER-BR-027`.
 
 ### PER-REQ-014 — Proveer contexto de Personal
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-01`, `B-03`, `B-04`, `PER-Q-001`, `PER-Q-019`
 - **Prioridad:** Must
 - **Requerimiento:** El sistema debe proveer a los módulos autorizados identidad laboral, estado, disponibilidad, composición de Cuadrilla y contexto de remuneración sin exponer datos innecesarios.
@@ -490,7 +491,7 @@ owner: "Analista"
 ## 3. Dependencias con otros módulos
 
 ### PER-DEP-001 — Empresas — Identidad y vigencia
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-01`, `B-05`, `PER-Q-021`
 - **Módulo:** `EMP` (Empresas)
 - **Dirección:** Este módulo consume
@@ -498,7 +499,7 @@ owner: "Analista"
 - **Para qué:** `PER-BR-001`, `PER-REQ-001` a `PER-REQ-014`.
 
 ### PER-DEP-002 — Suscripciones — Cupo de Empleados
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-01`, `PER-Q-004`
 - **Módulo:** `SUS` (Suscripciones)
 - **Dirección:** Este módulo consume
@@ -506,7 +507,7 @@ owner: "Analista"
 - **Para qué:** `PER-BR-006`, `PER-REQ-001`.
 
 ### PER-DEP-003 — Identidad y acceso — Cuenta y contexto autorizado
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-01`, `PER-Q-001`, `PER-Q-035`
 - **Módulo:** `ACC` (Identidad y acceso)
 - **Dirección:** Este módulo consume y provee
@@ -514,7 +515,7 @@ owner: "Analista"
 - **Para qué:** `PER-BR-007`, `PER-BR-008`, `PER-BR-011`, `PER-BR-015`, `PER-REQ-003`, `PER-REQ-010`.
 
 ### PER-DEP-004 — Archivos — Evidencias privadas
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `PER-Q-005`, `PER-Q-037`, `PER-Q-038`
 - **Módulo:** `ARC` (Archivos)
 - **Dirección:** Este módulo consume
@@ -522,23 +523,23 @@ owner: "Analista"
 - **Para qué:** `PER-BR-004`, `PER-BR-022`, `PER-REQ-002`, `PER-REQ-004`.
 
 ### PER-DEP-005 — Labores — Trabajo, ubicación y cantidades
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `B-04`, `PER-Q-019`, `PER-Q-023`, `PER-Q-029`, `PER-Q-032`
 - **Módulo:** `LAB` (Labores)
 - **Dirección:** Este módulo consume y provee
-- **Qué:** LAB determina Chacra/Lote y hechos o cantidades confirmadas; la propiedad de tarifas específicas permanece [[Q:PER-Q-032]].
+- **Qué:** LAB define las Labores y determina Chacra/Lote, unidad, hechos y cantidades de trabajo confirmados; PER conserva las tarifas de remuneración que las referencian.
 - **Para qué:** `PER-BR-012`, `PER-BR-025` a `PER-BR-027`, `PER-REQ-012` a `PER-REQ-014`.
 
 ### PER-DEP-006 — Cosechas — Cantidad productiva
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `PER-Q-019`, `PER-Q-032`
 - **Módulo:** `COS` (Cosechas)
 - **Dirección:** Este módulo consume
-- **Qué:** cantidades de producción confirmadas para POR_PRODUCCION; la propiedad de sus tarifas permanece [[Q:PER-Q-032]].
+- **Qué:** COS aporta las cantidades de producción confirmadas para POR_PRODUCCION; PER conserva y resuelve sus tarifas de remuneración.
 - **Para qué:** `PER-BR-025` a `PER-BR-027`, `PER-REQ-012`, `PER-REQ-013`.
 
 ### PER-DEP-007 — Economía — Obligación y pago
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Origen:** `PER-Q-019`, `PER-Q-031`
 - **Módulo:** `ECO` (Economía)
 - **Dirección:** Este módulo provee

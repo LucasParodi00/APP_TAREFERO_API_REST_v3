@@ -136,6 +136,15 @@ El brief no se reescribe: la normalización ocurre al derivar la especificación
 - **Módulo dueño:** `EMP`
 - **Ejemplo:** una Empresa cliente puede administrar varias Chacras bajo los límites de su Suscripción de Empresa.
 
+### Estado fenológico
+
+- **Definición:** etapa configurable por una Empresa cliente para un Cultivo que expresa un momento reconocible de la evolución de sus plantas. Su orden organiza el catálogo, pero no obliga por sí mismo a una progresión automática.
+- **Sinónimos aceptados:** etapa fenológica
+- **No usar:** Historial fenológico; estado de Implantación
+- **Nombre en código:** `EstadoFenologico`
+- **Módulo dueño:** `CUL`
+- **Ejemplo:** una Empresa cliente define estados diferentes para Yerba mate y Citrus.
+
 ### Existencia
 
 - **Definición:** cantidad disponible de un Artículo en un Almacén y contexto de partida determinados, explicada por movimientos confirmados.
@@ -144,6 +153,15 @@ El brief no se reescribe: la normalización ocurre al derivar la especificación
 - **Nombre en código:** `Existencia`
 - **Módulo dueño:** `INV`
 - **Ejemplo:** 300 kilogramos de fertilizante disponibles en el depósito central.
+
+### Historial fenológico
+
+- **Definición:** secuencia cronológica de períodos durante los cuales una Implantación completa estuvo registrada en distintos Estados fenológicos, conservando sus transiciones y correcciones.
+- **Sinónimos aceptados:** historial de estados fenológicos
+- **No usar:** Estado fenológico; historial del Lote
+- **Nombre en código:** `HistorialFenologico`
+- **Módulo dueño:** `OBS`
+- **Ejemplo:** el historial muestra cuándo una Implantación pasó de un Estado fenológico a otro.
 
 ### Insumo
 
@@ -171,6 +189,24 @@ El brief no se reescribe: la normalización ocurre al derivar la especificación
 - **Nombre en código:** `Lote`
 - **Módulo dueño:** `TER`
 - **Ejemplo:** lote norte de una Chacra, cuya Implantación puede cambiar con el tiempo.
+
+### Observación
+
+- **Definición:** hallazgo puntual general, operativo o sanitario registrado en un momento determinado dentro de una Empresa cliente, con el contexto, la ubicación y las evidencias disponibles.
+- **Sinónimos aceptados:** hallazgo de campo
+- **No usar:** Reporte; Labor; nota informal
+- **Nombre en código:** `Observacion`
+- **Módulo dueño:** `OBS`
+- **Ejemplo:** una rama rota, un caño dañado o un signo anormal detectado en las plantas.
+
+### Observación sanitaria
+
+- **Definición:** Observación sobre un signo, daño o condición anormal detectada en las plantas de una Implantación, cuya causa puede ser desconocida, sospechada o confirmada.
+- **Sinónimos aceptados:** hallazgo sanitario
+- **No usar:** diagnóstico confirmado cuando solo existe una sospecha; tratamiento
+- **Nombre en código:** `ObservacionSanitaria`
+- **Módulo dueño:** `OBS`
+- **Ejemplo:** manchas en hojas registradas como hallazgo con una posible causa todavía no confirmada.
 
 ### Plan de suscripción
 

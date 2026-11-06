@@ -471,7 +471,7 @@ No borrar preguntas respondidas: cambian de estado. -->
 
 ## PER-Q-032 — Módulo dueño de las tarifas
 
-- **Estado:** Abierta
+- **Estado:** Respondida
 - **Bloqueante:** Sí
 - **Origen:** `B-04`, `B-11`, `PER-Q-017`, `PER-Q-019`
 - **Afecta:** límites entre `PER`, `LAB` y `COS`
@@ -481,8 +481,8 @@ No borrar preguntas respondidas: cambian de estado. -->
   - b) LAB y COS son dueños de sus tarifas; PER solo conserva la modalidad general o por Empleado.
   - c) Cada ejecución guarda una tarifa manual sin configuración reutilizable.
 - **Recomendación del agente:** opción a), porque mantiene un único dueño para la remuneración y evita reglas duplicadas; las referencias externas no transfieren la propiedad de la Labor o la Cosecha a PER.
-- **Respuesta:** Decisión postergada expresamente para tratarla más adelante; la pregunta permanece abierta y bloquea la propiedad definitiva de tarifas específicas por Labor o producción.
-- **Respondida por / fecha:** Parodi Lucas / 2026-11-05 (postergada)
+- **Respuesta:** Opción a). PER es dueño de todas las modalidades y tarifas de remuneración, incluidas las que referencian un tipo de Labor o una unidad productiva. LAB define las Labores y aporta los hechos y cantidades de trabajo confirmados; COS aporta las cantidades productivas confirmadas. PER resuelve la tarifa vigente y calcula el importe bruto devengado.
+- **Respondida por / fecha:** Parodi Lucas / 2026-11-06
 
 ## PER-Q-033 — Catálogo de indisponibilidades para asistencia
 
@@ -588,3 +588,18 @@ No borrar preguntas respondidas: cambian de estado. -->
 - **Recomendación del agente:** opción a), porque completa validaciones verificables sin imponer unicidad al teléfono ni perder documentos extranjeros o historia de códigos.
 - **Respuesta:** Opción a). Se aprueba íntegramente el paquete convencional propuesto.
 - **Respondida por / fecha:** Parodi Lucas / 2026-11-05
+
+## PER-Q-040 — Remuneración de trabajo colectivo
+
+- **Estado:** Respondida
+- **Bloqueante:** Sí
+- **Origen:** `B-04`, `PER-Q-031`; ejemplo planteado por el Ingeniero sobre pago por Labor o hectárea
+- **Afecta:** cálculo POR_LABOR y POR_PRODUCCION; cantidades provistas por `LAB` y `COS`
+- **Pregunta:** Cuando varios Empleados participan en una misma Labor o producción, ¿cómo se aplica una tarifa como “30.000 por hectárea”?
+- **Interpretaciones posibles:**
+  - a) La tarifa siempre se aplica a la cantidad individual confirmada para cada Empleado; LAB o COS debe atribuir a cada participante sus horas, hectáreas o unidades y PER calcula cada remuneración por separado.
+  - b) La tarifa representa un importe total de la Cuadrilla y PER lo divide en partes iguales entre sus integrantes confirmados.
+  - c) La tarifa puede configurarse como individual o colectiva; cuando es colectiva, la cantidad o el importe se distribuye entre los participantes mediante porcentajes o unidades confirmadas.
+- **Recomendación del agente:** opción a) para la primera versión, porque produce un cálculo individual verificable, evita repartos implícitos y permite que LAB o COS reflejen participaciones diferentes. Una modalidad colectiva configurable puede incorporarse después si el negocio la necesita.
+- **Respuesta:** Opción a). La tarifa se aplica a la cantidad individual confirmada para cada Empleado. LAB o COS atribuye a cada participante sus horas, hectáreas o unidades y PER calcula cada remuneración por separado; no se realizan repartos implícitos de un importe colectivo.
+- **Respondida por / fecha:** Parodi Lucas / 2026-11-06

@@ -64,9 +64,9 @@ Todos los registros están aislados por Empresa mediante `empresaId`. Los códig
 
 ## Estado
 
-La especificación está propuesta y aún no fue aprobada. Contiene 27 reglas de negocio, 14 requerimientos, 7 dependencias, 13 casos de uso y 18 entidades. No hay casos de uso implementados.
+La especificación fue aprobada por el Ingeniero el 06/11/2026. Contiene 27 reglas de negocio, 14 requerimientos, 7 dependencias, 13 casos de uso y 18 entidades. No hay casos de uso implementados.
 
-Permanece abierta `PER-Q-032`: debe decidirse qué módulo es dueño de las tarifas específicas por Labor o producción. Los ítems afectados conservan el marcador de pregunta y no pueden aprobarse hasta resolverla.
+No quedan preguntas abiertas. `PER-Q-032` confirmó que PER es dueño de las tarifas de remuneración; `PER-Q-040` confirmó que LAB o COS atribuyen cantidades individuales a cada Empleado para que PER calcule su remuneración sin repartos implícitos.
 
 ## Archivos
 

@@ -1,7 +1,7 @@
 ---
 type: use-cases
 module: "PER"
-status: Propuesto
+status: Aprobado
 owner: "Analista"
 ---
 
@@ -41,7 +41,7 @@ owner: "Analista"
 
 ### PER-UC-001 — Administrar un Empleado
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Actor:** Administrador.
 - **Objetivo:** Crear, consultar, modificar, inactivar o reactivar una ficha laboral conservando su historia.
 - **Requerimientos:** `PER-REQ-001`, `PER-REQ-002`.
@@ -110,7 +110,7 @@ Escenario: Denegar administración al Capataz
 
 ### PER-UC-002 — Habilitar o revocar acceso de un Empleado
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Actor:** Administrador; ACC como sistema participante.
 - **Objetivo:** Vincular una ficha activa con acceso o revocarlo al finalizar el vínculo laboral.
 - **Requerimientos:** `PER-REQ-003`.
@@ -169,7 +169,7 @@ Escenario: Denegar habilitación sobre una ficha inactiva
 
 ### PER-UC-003 — Administrar restricciones e indisponibilidades
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Actor:** Administrador.
 - **Objetivo:** Mantener información operativa y períodos justificados que afectan la disponibilidad del Empleado.
 - **Requerimientos:** `PER-REQ-004`.
@@ -228,7 +228,7 @@ Escenario: Denegar creación al Capataz
 
 ### PER-UC-004 — Crear una Cuadrilla
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Actor:** Capataz.
 - **Objetivo:** Crear un grupo de trabajo dentro de su Empresa y quedar como responsable inicial.
 - **Requerimientos:** `PER-REQ-005`.
@@ -282,7 +282,7 @@ Escenario: Denegar creación al Empleado
 
 ### PER-UC-005 — Administrar una Cuadrilla
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Actor:** Capataz responsable; Administrador para supervisión.
 - **Objetivo:** Mantener nombre, estado, integrantes y líder conservando su historia.
 - **Requerimientos:** `PER-REQ-005`, `PER-REQ-006`.
@@ -342,7 +342,7 @@ Escenario: Denegar modificación a otro Capataz
 
 ### PER-UC-006 — Reasignar y auditar una Cuadrilla
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Actor:** Administrador.
 - **Objetivo:** Consultar toda la historia y transferir la responsabilidad operativa.
 - **Requerimientos:** `PER-REQ-007`.
@@ -395,7 +395,7 @@ Escenario: Denegar historial al Empleado
 
 ### PER-UC-007 — Consultar la composición actual
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Actor:** Capataz responsable; Administrador.
 - **Objetivo:** Conocer integrantes y líder vigentes sin exponer períodos históricos al Capataz.
 - **Requerimientos:** `PER-REQ-007`.
@@ -443,7 +443,7 @@ Escenario: Denegar otra Cuadrilla al Capataz
 
 ### PER-UC-008 — Registrar y confirmar asistencia
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Actor:** Capataz.
 - **Objetivo:** Registrar el resultado diario y, cuando corresponda, los intervalos de cualquier Empleado activo de su Empresa.
 - **Requerimientos:** `PER-REQ-008`.
@@ -512,7 +512,7 @@ Escenario: Evitar duplicado entre Capataces
 
 ### PER-UC-009 — Corregir una asistencia confirmada
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Actor:** Administrador.
 - **Objetivo:** Corregir un registro confirmado sin perder el valor anterior.
 - **Requerimientos:** `PER-REQ-009`.
@@ -561,7 +561,7 @@ Escenario: Denegar corrección al Capataz
 
 ### PER-UC-010 — Consultar información laboral propia
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Actor:** Empleado o Capataz con Cuenta de Empresa; Administrador solo cuando tenga ficha propia.
 - **Objetivo:** Consultar su ficha, asistencias e indisponibilidades en modo de solo lectura.
 - **Requerimientos:** `PER-REQ-010`.
@@ -609,7 +609,7 @@ Escenario: Denegar consulta ajena
 
 ### PER-UC-011 — Configurar remuneración
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Actor:** Administrador.
 - **Objetivo:** Definir modalidad y valores generales o específicos por Empleado con vigencia.
 - **Requerimientos:** `PER-REQ-011`, `PER-REQ-013`.
@@ -634,7 +634,6 @@ Escenario: Denegar consulta ajena
 | Sin permiso | 1 | Se rechaza | `PER_ACCESO_DENEGADO` |
 | Modalidad inválida | 3 | Se rechaza | `PER_MODALIDAD_REMUNERACION_INVALIDA` |
 | Vigencia o valor inválidos | 3 | Se rechaza | `PER_CONFIGURACION_REMUNERACION_INVALIDA` |
-| Propiedad pendiente | 4 | Permanece bloqueada | `PER-Q-032` |
 
 **Escenarios de aceptación**
 
@@ -652,17 +651,17 @@ Escenario: Configurar excepción por Empleado
   Entonces la excepción tiene precedencia para ese Empleado
 
 @PER-UC-011 @AC-03
-Escenario: Mantener bloqueada una tarifa específica
-  Dado que PER-Q-032 permanece abierta
-  Cuando se intenta definir una tarifa por tipo de Labor
-  Entonces la operación permanece bloqueada
+Escenario: Configurar una tarifa por tipo de Labor
+  Dado un tipo de Labor definido por LAB
+  Cuando el Administrador configura en PER su tarifa por hora
+  Entonces PER conserva la tarifa y la referencia al tipo de Labor
 ```
 
 ### PER-UC-012 — Calcular remuneración bruta
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Actor:** Administrador; LAB o COS como proveedores; ECO como consumidor.
-- **Objetivo:** Obtener y conservar el bruto devengado a partir de hechos confirmados.
+- **Objetivo:** Obtener y conservar el bruto devengado a partir de hechos y cantidades individuales confirmados.
 - **Requerimientos:** `PER-REQ-012`, `PER-REQ-013`.
 - **Reglas:** `PER-BR-024` a `PER-BR-027`.
 
@@ -684,7 +683,6 @@ Escenario: Mantener bloqueada una tarifa específica
 | Condición | Paso | Resultado | Código |
 |---|---:|---|---|
 | Sin configuración | 2 | Se rechaza | `PER_CONFIGURACION_REMUNERACION_INEXISTENTE` |
-| Tarifa específica bloqueada | 2 | No se calcula | `PER-Q-032` |
 | Hecho no confirmado o cantidad ausente | 3 | Se rechaza | `PER_CALCULO_REMUNERACION_INVALIDO` |
 | Intento de cambiar historia | 4 | Se rechaza | `PER_TARIFA_HISTORICA_INMUTABLE` |
 
@@ -704,15 +702,15 @@ Escenario: No prorratear automáticamente un mensual
   Entonces se usa el importe fijo sin descuento automático
 
 @PER-UC-012 @AC-03
-Escenario: Bloquear producción mientras la propiedad está pendiente
-  Dado una tarifa POR_PRODUCCION dependiente de PER-Q-032
-  Cuando se solicita calcularla
-  Entonces el cálculo permanece bloqueado
+Escenario: Calcular remuneración por producción
+  Dado una tarifa POR_PRODUCCION vigente en PER y una cantidad confirmada por COS
+  Cuando se calcula el período
+  Entonces el bruto conserva la cantidad, la tarifa y el resultado
 ```
 
 ### PER-UC-013 — Resolver contexto de Personal
 
-- **Estado:** Propuesto
+- **Estado:** Aprobado
 - **Actor:** Administrador, Capataz o Empleado; ACC, LAB, COS o ECO como sistemas autorizados.
 - **Objetivo:** Entregar únicamente los datos de Personal necesarios para una operación autorizada.
 - **Requerimientos:** `PER-REQ-014`.
@@ -735,7 +733,6 @@ Escenario: Bloquear producción mientras la propiedad está pendiente
 |---|---:|---|---|
 | Tenant o propósito inválidos | 2 | Se rechaza | `PER_TENANT_INVALIDO` |
 | Actor sin alcance | 3 | Se rechaza | `PER_ACCESO_DENEGADO` |
-| Solicita tarifa bloqueada | 3 | No se resuelve | `PER-Q-032` |
 
 **Escenarios de aceptación**
 
