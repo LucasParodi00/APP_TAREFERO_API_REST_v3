@@ -31,12 +31,12 @@ Completada exige: tarea de especificación con sus ítems Aprobado; o plan Cerra
 
 - **Épica:** `EPIC-005`
 - **Tipo:** Implementación
-- **Estado:** Lista
+- **Estado:** Bloqueada
 - **Prioridad:** Alta
 - **Alcance:** `PER-UC-001`, `PER-UC-003`
 - **Depende de:** `PER-TASK-001`; contratos de `PER-DEP-001`, `PER-DEP-002`, `PER-DEP-004`
-- **Plan:** No aplica
-- **Bloqueo:** Ninguno. Los contratos técnicos se concretarán durante la planificación.
+- **Plan:** `PLAN-PER-0001`
+- **Bloqueo:** Acordar cupo, contexto, revocación y archivos, resolver `ADR-0011` y aprobar las precisiones de alcance. Véase `PLAN-PER-0001` §2 y §7.
 
 ## PER-TASK-003 — Integrar el acceso de Empleados
 

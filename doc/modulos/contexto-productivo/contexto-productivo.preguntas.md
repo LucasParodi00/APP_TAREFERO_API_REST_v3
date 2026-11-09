@@ -336,3 +336,46 @@ module: "CUL"
 - **Recomendación del agente:** opción a), porque completa el modelo con límites verificables, permite preparar Perfiles antes de usarlos y conserva toda la historia.
 - **Respuesta:** Aprueba la opción a) y aprueba explícitamente la especificación completa de `CUL`.
 - **Respondida por / fecha:** Parodi Lucas / 2026-11-03
+
+## CUL-Q-023 — Variedades disponibles al habilitar un Cultivo
+
+- **Estado:** Respondida
+- **Bloqueante:** Sí
+- **Origen:** `CUL-Q-015`, `CUL-BR-002`, `CUL-BR-003`; propuesta IA para concretar la habilitación.
+- **Afecta:** futura especificación de habilitación; `CUL-UC-002`, `CUL-UC-003`, `CUL-TASK-002`.
+- **Pregunta:** Cuando el Administrador habilita un Cultivo del catálogo global para su Empresa, ¿puede usar cualquiera de sus Variedades activas o debe seleccionar cuáles habilitar?
+- **Interpretaciones posibles:**
+  - a) Todas las Variedades activas del Cultivo habilitado quedan disponibles. La elección de Variedad sigue ocurriendo al registrar la Implantación.
+  - b) El Administrador habilita individualmente las Variedades que usará su Empresa. Solo se pueden elegir Variedades activas del Cultivo que la Empresa haya habilitado.
+- **Recomendación del agente:** a). Mantiene una sola habilitación por Empresa y Cultivo y evita exigir una configuración adicional para cada Variedad.
+- **Respuesta:** «1a». Aprueba la opción a).
+- **Respondida por / fecha:** Parodi Lucas / 2026-11-09
+
+## CUL-Q-024 — Retiro de la habilitación de un Cultivo
+
+- **Estado:** Respondida
+- **Bloqueante:** Sí
+- **Origen:** `CUL-Q-015`, `CUL-BR-003`, `CUL-BR-022`; propuesta IA para completar el ciclo de la habilitación.
+- **Afecta:** futura especificación de habilitación; `CUL-UC-002`, `CUL-UC-003`, `CUL-TASK-002`.
+- **Pregunta:** ¿Qué puede hacer el Administrador cuando su Empresa deja de usar un Cultivo habilitado?
+- **Interpretaciones posibles:**
+  - a) Puede deshabilitarlo y volver a habilitarlo. El retiro impide crear nuevos Perfiles e Implantaciones para ese Cultivo. Conserva la operación vigente y el historial sin cambiar estados de los registros que ya existen.
+  - b) Puede deshabilitarlo solo cuando no tenga Implantaciones ni Ciclos activos. Puede volver a habilitarlo más adelante.
+  - c) En la primera entrega solo se puede habilitar. El retiro queda para una entrega posterior.
+- **Recomendación del agente:** a). Permite corregir una selección o dejar de incorporar un Cultivo, conservando la continuidad de lo ya registrado. Esta propuesta se limita a los usos definidos en `CUL-BR-003`; cualquier restricción adicional para Ciclos nuevos requiere una decisión propia.
+- **Respuesta:** «2a». Aprueba la opción a).
+- **Respondida por / fecha:** Parodi Lucas / 2026-11-09
+
+## CUL-Q-025 — Inactivación de Perfiles y excepciones de mantenimiento
+
+- **Estado:** Respondida
+- **Bloqueante:** Sí
+- **Origen:** `CUL-REQ-002`, `CUL-UC-002`, `CUL-BR-004` a `CUL-BR-006`, `CUL-BR-022`, `PLAN-CUL-0001` §7; propuesta IA.
+- **Afecta:** cambio controlado de `CUL-UC-002` y su contrato.
+- **Pregunta:** ¿Aprobás completar el caso de mantenimiento de Perfiles con la consulta de una versión para editar, la inactivación de una versión publicada y el código de error propio de cada regla?
+- **Interpretaciones posibles:**
+  - a) Incluir la consulta de una versión con los mismos permisos de mantenimiento y permitir que una versión publicada pase a inactiva para usos nuevos. Conservar su contenido y las referencias existentes. Usar `CUL_PERFIL_INCOMPATIBLE` para incompatibilidad de herencia o precedencia y `CUL_CAMPO_PERFIL_INVALIDO` para definiciones inválidas de campos.
+  - b) Ajustar el alcance de la consulta o inactivación, o indicar cómo debe quedar la distinción entre los errores.
+- **Recomendación del agente:** a). Completa el recorrido de mantenimiento y vincula cada rechazo a la regla que lo origina.
+- **Respuesta:** «3a». Aprueba la opción a).
+- **Respondida por / fecha:** Parodi Lucas / 2026-11-09

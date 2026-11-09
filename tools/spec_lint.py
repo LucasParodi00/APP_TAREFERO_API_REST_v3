@@ -277,10 +277,12 @@ def main() -> int:
             if not tasks:
                 rows = ["Sin tareas asociadas."]
             body = "\n".join([f"**{done}/{activas} tareas completadas**", ""] + rows)
+            replacement = GEN_START.format(e) + "\n" + body + "\n" + GEN_END.format(e)
             text = re.sub(re.escape(GEN_START.format(e)) + r".*?" + re.escape(GEN_END.format(e)),
-                          GEN_START.format(e) + "\n" + body + "\n" + GEN_END.format(e), text, flags=re.S)
+                          lambda _, r=replacement: r, text, flags=re.S)
+        resumen_repl = GEN_START.format("resumen") + "\n" + "\n".join(resumen) + "\n" + GEN_END.format("resumen")
         text = re.sub(re.escape(GEN_START.format("resumen")) + r".*?" + re.escape(GEN_END.format("resumen")),
-                      GEN_START.format("resumen") + "\n" + "\n".join(resumen) + "\n" + GEN_END.format("resumen"), text, flags=re.S)
+                      lambda _, r=resumen_repl: r, text, flags=re.S)
         epics_file.write_text(text, encoding="utf-8")
         print(f"Avance regenerado en {epics_file}")
 

@@ -32,6 +32,7 @@ owner: "Analista"
 | `CUL-UC-009` | No | Sí | No | No | Campaña de su Empresa |
 | `CUL-UC-010` | No | Sí | Sí | No | Capataz: solo consulta autorizada |
 | `CUL-UC-011` | No | No | No | No | Invocación del módulo dueño |
+| `CUL-UC-012` | No | Cond. | No | No | Propuesto. Empresa de la Cuenta autorizada mediante `CUL-DEP-003` |
 
 ## 3. Casos de uso
 
@@ -84,6 +85,7 @@ Escenario: Rechazar actor sin permiso
 
 ### CUL-UC-002 — Configurar un Perfil de cultivo
 - **Estado:** Aprobado
+- **Cambio controlado:** `PLAN-CUL-0001` §7, aprobado en `CUL-Q-025`.
 - **Actor:** SuperAdministrador o Administrador.
 - **Objetivo:** Mantener una versión de Perfil en el alcance autorizado.
 - **Requerimientos:** `CUL-REQ-002`.
@@ -93,10 +95,15 @@ Escenario: Rechazar actor sin permiso
 
 **Flujo principal**
 1. El actor selecciona Cultivo, alcance y versión base.
-2. El sistema verifica el permiso y `CUL-BR-003`.
+2. El sistema verifica el permiso y aplica `CUL-BR-003` al configurar un Perfil de Empresa o Lote para un uso nuevo.
 3. El actor define campos tipados.
 4. El sistema valida `CUL-BR-004` a `CUL-BR-006`.
 5. El sistema guarda el BORRADOR o publica una versión nueva.
+
+**Flujos alternativos**
+
+- **A1 — Consultar una versión.** En lugar de editar, el actor selecciona la versión. El sistema aplica el mismo permiso y alcance de mantenimiento y devuelve su definición y estado.
+- **A2 — Inactivar una versión publicada.** El actor solicita la inactivación dentro del mismo alcance autorizado. El sistema aplica `CUL-BR-006` y `CUL-BR-022`, registra la transición y devuelve el estado resultante.
 
 **Excepciones**
 
@@ -104,7 +111,8 @@ Escenario: Rechazar actor sin permiso
 |---|---:|---|---|
 | Sin permiso para el alcance | 2 | Se rechaza | `CUL_ACCESO_DENEGADO` |
 | Cultivo no habilitado | 2 | Se rechaza | `CUL_CULTIVO_NO_HABILITADO` |
-| Campo o precedencia inválidos | 4 | Se rechaza | `CUL_CAMPO_PERFIL_INVALIDO` |
+| No se cumple `CUL-BR-004` | 4 | Se rechaza | `CUL_PERFIL_INCOMPATIBLE` |
+| No se cumple `CUL-BR-005` | 4 | Se rechaza | `CUL_CAMPO_PERFIL_INVALIDO` |
 | Modificar versión publicada | 4 | Se rechaza | `CUL_VERSION_PERFIL_INMUTABLE` |
 
 **Postcondiciones:** versión conservada sin alterar las anteriores.
@@ -127,6 +135,30 @@ Escenario: Rechazar cambio histórico
   Dado una versión PUBLICADA
   Cuando intenta modificarla
   Entonces se rechaza con CUL_VERSION_PERFIL_INMUTABLE
+
+@CUL-UC-002 @AC-04
+Escenario: Distinguir incompatibilidad de herencia
+  Dado un campo obligatorio del Perfil base
+  Cuando el Administrador intenta desactivarlo en una especialización
+  Entonces se rechaza con CUL_PERFIL_INCOMPATIBLE
+
+@CUL-UC-002 @AC-05
+Escenario: Consultar una versión para su mantenimiento
+  Dado un Administrador con permiso de mantenimiento para el Perfil de su Empresa
+  Cuando consulta una versión del Perfil
+  Entonces obtiene su definición y estado
+
+@CUL-UC-002 @AC-06
+Escenario: Inactivar una versión publicada que ya tiene referencias
+  Dado un Administrador autorizado y una versión PUBLICADA referenciada por un Ciclo
+  Cuando inactiva la versión
+  Entonces queda INACTIVA y el Ciclo conserva su referencia y la definición original
+
+@CUL-UC-002 @AC-07
+Escenario: Rechazar la consulta de mantenimiento fuera del alcance
+  Dado un Administrador de otra Empresa
+  Cuando solicita consultar la versión para mantenimiento
+  Entonces se rechaza con CUL_ACCESO_DENEGADO
 ```
 
 ### CUL-UC-003 — Registrar una Implantación
@@ -473,4 +505,76 @@ Escenario: No copiar el hecho externo
   Dado una Cosecha válida
   Cuando COS la registra con el contexto resuelto
   Entonces CUL conserva solo sus referencias y COS conserva la Cosecha
+```
+
+### CUL-UC-012 — Mantener la disponibilidad de un Cultivo en la Empresa
+
+- **Estado:** Propuesto
+- **Actor:** Administrador. Origen: `CUL-Q-015`, `CUL-Q-024`.
+- **Objetivo:** Elegir si un Cultivo global queda disponible para nuevos usos en su Empresa.
+- **Requerimientos:** `CUL-REQ-013`.
+- **Reglas:** `CUL-BR-003`, `CUL-BR-023` a `CUL-BR-025`.
+
+**Precondiciones:** el Administrador actúa en el contexto de su Empresa según `CUL-DEP-001` y `CUL-DEP-003`.
+
+**Flujo principal**
+
+1. El Administrador solicita consultar el estado de un Cultivo global o mantener su habilitación.
+2. El sistema verifica permiso y Empresa. Si la acción es una consulta, informa la disponibilidad y termina. La ausencia del vínculo se informa como Cultivo sin habilitar.
+3. El sistema aplica `CUL-BR-023` y `CUL-BR-024` al estado solicitado. Solicitar deshabilitar sin un vínculo previo conserva la disponibilidad actual sin crear un vínculo.
+4. El sistema conserva el resultado y su auditoría.
+5. El sistema informa el estado vigente.
+
+**Excepciones**
+
+| Condición | Paso | Resultado | Código |
+|---|---|---|---|
+| Actor sin permiso o Empresa fuera del alcance | 2 | Se rechaza sin cambios | `CUL_ACCESO_DENEGADO` |
+| No se cumple `CUL-BR-023` | 3 | Se rechaza el vínculo duplicado | `CUL_HABILITACION_DUPLICADA` |
+| No se cumple `CUL-BR-024` | 3 | Se rechaza la habilitación | `CUL_HABILITACION_INVALIDA` |
+
+**Postcondiciones:** la disponibilidad para nuevos usos se resuelve por `CUL-BR-003` y `CUL-BR-025`.
+
+```gherkin
+@CUL-UC-012 @AC-01
+Escenario: Habilitar un Cultivo con Variedades activas
+  Dado un Administrador autorizado y un Cultivo global activo con dos Variedades activas
+  Cuando habilita el Cultivo para su Empresa
+  Entonces el Cultivo y ambas Variedades están disponibles según las reglas de nuevos usos
+
+@CUL-UC-012 @AC-02
+Escenario: Repetir una habilitación
+  Dado un Cultivo habilitado para la Empresa
+  Cuando el Administrador vuelve a habilitarlo
+  Entonces se conserva el mismo vínculo de habilitación
+
+@CUL-UC-012 @AC-03
+Escenario: Deshabilitar un Cultivo con operación vigente
+  Dado un Cultivo habilitado con una Implantación y un Ciclo activos
+  Cuando el Administrador lo deshabilita
+  Entonces se impiden los nuevos usos de CUL-BR-003 y se conservan los estados y las referencias existentes
+
+@CUL-UC-012 @AC-04
+Escenario: Volver a habilitar un Cultivo
+  Dado un Cultivo global activo deshabilitado por la Empresa
+  Cuando el Administrador vuelve a habilitarlo
+  Entonces se restablece su disponibilidad en el mismo vínculo
+
+@CUL-UC-012 @AC-05
+Escenario: Rechazar habilitación de un Cultivo global inactivo
+  Dado un Cultivo global inactivo
+  Cuando el Administrador intenta habilitarlo
+  Entonces se rechaza con CUL_HABILITACION_INVALIDA
+
+@CUL-UC-012 @AC-06
+Escenario: Rechazar administración ajena
+  Dado un Administrador de otra Empresa
+  Cuando intenta cambiar la habilitación
+  Entonces se rechaza con CUL_ACCESO_DENEGADO y no se modifica la habilitación
+
+@CUL-UC-012 @AC-07
+Escenario: Consultar el estado sin cambiar la habilitación
+  Dado un Administrador autorizado y un Cultivo de catálogo
+  Cuando consulta su disponibilidad para su Empresa
+  Entonces obtiene el estado sin alterar el vínculo
 ```

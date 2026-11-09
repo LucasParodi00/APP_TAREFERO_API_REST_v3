@@ -31,12 +31,12 @@ Completada exige: tarea de especificación con sus ítems Aprobado; o plan Cerra
 
 - **Épica:** `EPIC-003`
 - **Tipo:** Implementación
-- **Estado:** Lista
+- **Estado:** En curso
 - **Prioridad:** Alta
 - **Alcance:** `TER-UC-001`, `TER-UC-004`, `TER-UC-005`; cambios controlados aprobados en `TER-Q-018` y `TER-Q-022` sobre `TER-ENT-001` y la inactivación de Chacra.
 - **Depende de:** `TER-TASK-001`; contratos acordados de `TER-DEP-001` y `TER-DEP-002`.
-- **Plan:** No aplica
-- **Bloqueo:** Ninguno. Los contratos de `TER-DEP-001` y `TER-DEP-002` se concretarán durante la planificación; el plan debe declarar los cambios de especificación exigidos por reglas-documentacion.md §10 para incorporar `TER-Q-018` y aplicar `TER-BR-023` a `TER-UC-005`.
+- **Plan:** `PLAN-TER-0001`
+- **Bloqueo:** Ninguno. Plan PLAN-TER-0001 aprobado por el Ingeniero.
 
 ## TER-TASK-003 — Consultar Chacras dentro del alcance autorizado
 

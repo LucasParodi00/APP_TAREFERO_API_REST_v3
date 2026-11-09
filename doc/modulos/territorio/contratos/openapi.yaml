@@ -1,0 +1,421 @@
+openapi: 3.1.0
+info:
+  title: Tarefero API REST — Territorio
+  version: 0.1.0
+  description: Propuesta para PLAN-TER-0001. Los cambios TER-Q-018 y TER-Q-022 se revisan en la sección 7 del plan.
+  contact:
+    name: Tarefero
+servers:
+  - url: /api/v1
+tags:
+  - name: Chacras
+    description: Administración de Chacras dentro de una Empresa.
+security:
+  - Autenticacion: []
+paths:
+  /empresas/{empresaId}/chacras:
+    parameters:
+      - $ref: '#/components/parameters/EmpresaDestino'
+    post:
+      tags: [Chacras]
+      summary: Registrar Chacra
+      description: Registra una Chacra en la Empresa autorizada y devuelve su versión inicial.
+      operationId: registrarChacra
+      x-use-case: TER-UC-001
+      x-business-rules: [TER-BR-001, TER-BR-002, TER-BR-003, TER-BR-005, TER-BR-007]
+      x-cambios-pendientes: [TER-Q-018]
+      parameters:
+        - $ref: '#/components/parameters/MotivoSoporte'
+        - $ref: '#/components/parameters/ClaveIdempotencia'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SolicitudRegistrarChacra'
+      responses:
+        '201':
+          description: Chacra registrada.
+          headers:
+            ETag:
+              $ref: '#/components/headers/VersionChacra'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaChacra'
+        '400':
+          $ref: '#/components/responses/FormatoInvalido'
+        '401':
+          $ref: '#/components/responses/AutenticacionInvalida'
+        '403':
+          description: Operación fuera del contexto autorizado.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Problema'
+                  - properties:
+                      code:
+                        enum: [TER_ACCESO_DENEGADO, ACC_CONTEXTO_SOPORTE_REQUERIDO, ACC_EMPRESA_FUERA_DE_ALCANCE]
+        '404':
+          description: Empresa destino ausente al resolver soporte.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Problema'
+                  - properties:
+                      code:
+                        enum: [ACC_EMPRESA_NO_ENCONTRADA]
+        '409':
+          description: Conflicto de nombre corto o de idempotencia.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Problema'
+                  - properties:
+                      code:
+                        enum: [TER_NOMBRE_CORTO_DUPLICADO, TER_IDEMPOTENCIA_CONFLICTO]
+        '422':
+          description: Datos o contexto de registro inválidos.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Problema'
+                  - properties:
+                      code:
+                        enum: [TER_NOMBRE_OBLIGATORIO, TER_NOMBRE_CORTO_OBLIGATORIO, TER_TEXTO_INVALIDO, TER_UBICACION_GEOGRAFICA_INVALIDA, ACC_MOTIVO_SOPORTE_INVALIDO, TER_EMPRESA_REQUERIDA]
+        '500':
+          $ref: '#/components/responses/ErrorInterno'
+  /empresas/{empresaId}/chacras/{id}:
+    parameters:
+      - $ref: '#/components/parameters/EmpresaDestino'
+      - $ref: '#/components/parameters/IdentificadorChacra'
+    patch:
+      tags: [Chacras]
+      summary: Modificar Chacra
+      description: Actualiza los datos descriptivos indicados y devuelve la versión resultante.
+      operationId: modificarChacra
+      x-use-case: TER-UC-004
+      x-business-rules: [TER-BR-001, TER-BR-002, TER-BR-007, TER-BR-008]
+      x-cambios-pendientes: [TER-Q-018]
+      parameters:
+        - $ref: '#/components/parameters/MotivoSoporte'
+        - $ref: '#/components/parameters/ClaveIdempotencia'
+        - $ref: '#/components/parameters/SiCoincideVersion'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SolicitudModificarChacra'
+      responses:
+        '200':
+          $ref: '#/components/responses/ChacraActualizada'
+        '400':
+          $ref: '#/components/responses/FormatoInvalido'
+        '401':
+          $ref: '#/components/responses/AutenticacionInvalida'
+        '403':
+          description: Operación fuera del contexto autorizado.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Problema'
+                  - properties:
+                      code:
+                        enum: [TER_ACCESO_DENEGADO, ACC_CONTEXTO_SOPORTE_REQUERIDO, ACC_EMPRESA_FUERA_DE_ALCANCE]
+        '404':
+          $ref: '#/components/responses/DestinoAusente'
+        '409':
+          description: Conflicto de nombre corto, versión o idempotencia.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Problema'
+                  - properties:
+                      code:
+                        enum: [TER_NOMBRE_CORTO_DUPLICADO, TER_VERSION_CONFLICTO, TER_IDEMPOTENCIA_CONFLICTO]
+        '422':
+          description: Datos o modificación incompatibles.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Problema'
+                  - properties:
+                      code:
+                        enum: [TER_NOMBRE_OBLIGATORIO, TER_NOMBRE_CORTO_OBLIGATORIO, TER_TEXTO_INVALIDO, TER_UBICACION_GEOGRAFICA_INVALIDA, ACC_MOTIVO_SOPORTE_INVALIDO, TER_OPERACION_INACTIVA_INVALIDA]
+        '500':
+          $ref: '#/components/responses/ErrorInterno'
+  /empresas/{empresaId}/chacras/{id}/inactivaciones:
+    parameters:
+      - $ref: '#/components/parameters/EmpresaDestino'
+      - $ref: '#/components/parameters/IdentificadorChacra'
+    post:
+      tags: [Chacras]
+      summary: Inactivar Chacra
+      description: Registra la transición de inactivación y devuelve la versión resultante.
+      operationId: inactivarChacra
+      x-use-case: TER-UC-005
+      x-business-rules: [TER-BR-005, TER-BR-006, TER-BR-023]
+      x-cambios-pendientes: [TER-Q-022]
+      parameters:
+        - $ref: '#/components/parameters/MotivoSoporte'
+        - $ref: '#/components/parameters/ClaveIdempotencia'
+        - $ref: '#/components/parameters/SiCoincideVersion'
+      responses:
+        '200':
+          $ref: '#/components/responses/ChacraActualizada'
+        '400':
+          $ref: '#/components/responses/FormatoInvalido'
+        '401':
+          $ref: '#/components/responses/AutenticacionInvalida'
+        '403':
+          description: Operación fuera del contexto autorizado.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Problema'
+                  - properties:
+                      code:
+                        enum: [TER_ACCESO_DENEGADO, ACC_CONTEXTO_SOPORTE_REQUERIDO, ACC_EMPRESA_FUERA_DE_ALCANCE]
+        '404':
+          $ref: '#/components/responses/DestinoAusente'
+        '409':
+          description: Conflicto de versión o idempotencia.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Problema'
+                  - properties:
+                      code:
+                        enum: [TER_VERSION_CONFLICTO, TER_IDEMPOTENCIA_CONFLICTO]
+        '422':
+          description: Transición o contexto de soporte incompatible.
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Problema'
+                  - properties:
+                      code:
+                        enum: [TER_TRANSICION_ESTADO_INVALIDA, TER_ESTADO_CHACRA_LOTES_INCOMPATIBLE, ACC_MOTIVO_SOPORTE_INVALIDO]
+        '500':
+          $ref: '#/components/responses/ErrorInterno'
+components:
+  securitySchemes:
+    Autenticacion:
+      type: http
+      scheme: bearer
+      description: Credencial verificada por Identidad y Acceso.
+  parameters:
+    EmpresaDestino:
+      name: empresaId
+      in: path
+      required: true
+      description: Empresa destino de la operación.
+      schema:
+        $ref: '#/components/schemas/Identificador'
+    IdentificadorChacra:
+      name: id
+      in: path
+      required: true
+      description: Identificador de la Chacra.
+      schema:
+        $ref: '#/components/schemas/Identificador'
+    MotivoSoporte:
+      $ref: '../../identidad-acceso/contratos/openapi.yaml#/components/parameters/MotivoSoporte'
+      description: Motivo requerido al realizar la operación como soporte de plataforma.
+    ClaveIdempotencia:
+      name: Idempotency-Key
+      in: header
+      description: Clave de reintento de la operación.
+      schema:
+        type: string
+        minLength: 1
+    SiCoincideVersion:
+      name: If-Match
+      in: header
+      required: true
+      description: ETag de la versión conocida de la Chacra.
+      schema:
+        $ref: '#/components/schemas/EtiquetaChacra'
+  headers:
+    VersionChacra:
+      required: true
+      description: Versión de la representación de Chacra.
+      schema:
+        $ref: '#/components/schemas/EtiquetaChacra'
+  responses:
+    ChacraActualizada:
+      description: Chacra actualizada.
+      headers:
+        ETag:
+          $ref: '#/components/headers/VersionChacra'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RespuestaChacra'
+    FormatoInvalido:
+      description: Solicitud con formato inválido.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problema'
+    AutenticacionInvalida:
+      description: Autenticación ausente o inválida.
+      headers:
+        WWW-Authenticate:
+          required: true
+          schema:
+            type: string
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problema'
+    DestinoAusente:
+      description: Chacra ausente en el alcance autorizado o Empresa de soporte inexistente.
+      content:
+        application/problem+json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/Problema'
+              - properties:
+                  code:
+                    enum: [TER_CHACRA_NO_ENCONTRADA, ACC_EMPRESA_NO_ENCONTRADA]
+    ErrorInterno:
+      description: Error interno con información segura.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problema'
+  schemas:
+    Identificador:
+      type: string
+      format: uuid
+    EtiquetaChacra:
+      type: string
+      pattern: '^"chacra-[1-9][0-9]*"$'
+    PuntoReferencia:
+      type: object
+      additionalProperties: false
+      required: [latitud, longitud]
+      properties:
+        latitud:
+          $ref: '#/components/schemas/Coordenada'
+        longitud:
+          $ref: '#/components/schemas/Coordenada'
+    Coordenada:
+      type: string
+      description: Coordenada en grados decimales.
+      pattern: '^-?[0-9]+(\.[0-9]+)?$'
+    SolicitudRegistrarChacra:
+      type: object
+      additionalProperties: false
+      required: [nombre, nombreCorto]
+      properties:
+        nombre:
+          type: string
+          maxLength: 150
+        nombreCorto:
+          type: string
+          maxLength: 50
+        responsableNombre:
+          type: string
+          maxLength: 150
+        direccionTexto:
+          type: string
+          maxLength: 500
+        ubicacionGeografica:
+          $ref: '#/components/schemas/PuntoReferencia'
+    SolicitudModificarChacra:
+      type: object
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        nombre:
+          type: string
+          maxLength: 150
+        nombreCorto:
+          type: string
+          maxLength: 50
+        responsableNombre:
+          type: [string, 'null']
+          maxLength: 150
+        direccionTexto:
+          type: [string, 'null']
+          maxLength: 500
+        ubicacionGeografica:
+          oneOf:
+            - $ref: '#/components/schemas/PuntoReferencia'
+            - type: 'null'
+    RespuestaChacra:
+      type: object
+      additionalProperties: false
+      required: [id, empresaId, nombre, nombreCorto, estado, version]
+      properties:
+        id:
+          $ref: '#/components/schemas/Identificador'
+        empresaId:
+          $ref: '#/components/schemas/Identificador'
+        nombre:
+          type: string
+          maxLength: 150
+        nombreCorto:
+          type: string
+          maxLength: 50
+        responsableNombre:
+          type: string
+          maxLength: 150
+        direccionTexto:
+          type: string
+          maxLength: 500
+        ubicacionGeografica:
+          $ref: '#/components/schemas/PuntoReferencia'
+        estado:
+          type: string
+          enum: [ACTIVA, INACTIVA]
+        version:
+          type: integer
+          minimum: 1
+    Problema:
+      type: object
+      required: [type, title, status, code, detail, instance, solicitudId]
+      properties:
+        type:
+          type: string
+          format: uri-reference
+        title:
+          type: string
+        status:
+          type: integer
+          minimum: 400
+          maximum: 599
+        code:
+          type: string
+        detail:
+          type: string
+        instance:
+          type: string
+          format: uri-reference
+        solicitudId:
+          $ref: '#/components/schemas/Identificador'
+        errores:
+          type: array
+          items:
+            type: object
+            required: [campo, code, mensaje]
+            properties:
+              campo:
+                type: string
+              code:
+                type: string
+              mensaje:
+                type: string

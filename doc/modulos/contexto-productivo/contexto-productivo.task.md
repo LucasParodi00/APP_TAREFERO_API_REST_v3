@@ -20,12 +20,12 @@ module: "CUL"
 
 - **Épica:** `EPIC-004`
 - **Tipo:** Implementación
-- **Estado:** Lista
+- **Estado:** En curso
 - **Prioridad:** Alta
 - **Alcance:** `CUL-UC-001`, `CUL-UC-002`
 - **Depende de:** `CUL-TASK-001`; contratos de `CUL-DEP-001`, `CUL-DEP-002`, `CUL-DEP-008`
-- **Plan:** No aplica
-- **Bloqueo:** Ninguno. Los contratos técnicos se concretarán durante la planificación.
+- **Plan:** `PLAN-CUL-0001`
+- **Bloqueo:** Ninguno. Plan y decisiones aprobadas para ejecución.
 
 ## CUL-TASK-003 — Administrar Implantaciones
 
@@ -70,3 +70,14 @@ module: "CUL"
 - **Depende de:** `CUL-TASK-003`, `CUL-TASK-004`; contratos de `CUL-DEP-004` a `CUL-DEP-007`
 - **Plan:** No aplica
 - **Bloqueo:** Ninguno. Los contratos con módulos operativos se concretarán durante la planificación.
+
+## CUL-TASK-007 — Administrar la habilitación de Cultivos por Empresa
+
+- **Épica:** `EPIC-004`
+- **Tipo:** Implementación
+- **Estado:** Bloqueada
+- **Prioridad:** Alta
+- **Alcance:** `CUL-UC-012`, `CUL-REQ-013`, `CUL-BR-023` a `CUL-BR-025` y `CUL-ENT-009`.
+- **Depende de:** catálogo global de `CUL-UC-001` disponible y contratos de `CUL-DEP-001` y `CUL-DEP-003`.
+- **Plan:** Pendiente
+- **Bloqueo:** Aprobación de la especificación derivada de `CUL-Q-023` y `CUL-Q-024`. La planificación debe coordinar la habilitación con los nuevos usos de `CUL-BR-003`.

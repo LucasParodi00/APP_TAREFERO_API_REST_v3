@@ -17,7 +17,7 @@ regenerará con `python tools/spec_lint.py doc --tareas` cuando Python esté dis
 | EPIC-001 | Propuesta | 1/3 tareas completadas |
 | EPIC-002 | Propuesta | 1/4 tareas completadas |
 | EPIC-003 | Propuesta | 2/7 tareas completadas |
-| EPIC-004 | Propuesta | 1/6 tareas completadas |
+| EPIC-004 | Propuesta | 1/7 tareas completadas |
 | EPIC-005 | Propuesta | 1/8 tareas completadas |
 | EPIC-006 | Propuesta | 1/7 tareas completadas |
 | EPIC-007 | Propuesta | 0/0 tareas completadas |
@@ -49,7 +49,7 @@ regenerará con `python tools/spec_lint.py doc --tareas` cuando Python esté dis
 | Tarea | Tipo | Estado | Plan | Archivo |
 |---|---|---|---|---|
 | EMP-TASK-001 | Especificación | Completada | No aplica | `modulos\empresas\empresas.task.md` |
-| EMP-TASK-002 | Implementación | Lista | No aplica | `modulos\empresas\empresas.task.md` |
+| EMP-TASK-002 | Implementación | En curso | `PLAN-EMP-0001` | `modulos\empresas\empresas.task.md` |
 | EMP-TASK-003 | Implementación | Lista | No aplica | `modulos\empresas\empresas.task.md` |
 <!-- generado:EPIC-001:fin -->
 
@@ -71,7 +71,7 @@ regenerará con `python tools/spec_lint.py doc --tareas` cuando Python esté dis
 | ACC-TASK-001 | Especificación | Completada | No aplica | `modulos\identidad-acceso\identidad-acceso.task.md` |
 | ACC-TASK-002 | Implementación | Lista | No aplica | `modulos\identidad-acceso\identidad-acceso.task.md` |
 | ACC-TASK-003 | Implementación | Lista | No aplica | `modulos\identidad-acceso\identidad-acceso.task.md` |
-| ACC-TASK-004 | Implementación | Lista | No aplica | `modulos\identidad-acceso\identidad-acceso.task.md` |
+| ACC-TASK-004 | Implementación | En curso | `PLAN-ACC-0001` | `modulos\identidad-acceso\identidad-acceso.task.md` |
 <!-- generado:EPIC-002:fin -->
 
 ## EPIC-003 — Territorio productivo organizado
@@ -90,7 +90,7 @@ regenerará con `python tools/spec_lint.py doc --tareas` cuando Python esté dis
 | Tarea | Tipo | Estado | Plan | Archivo |
 |---|---|---|---|---|
 | TER-TASK-001 | Especificación | Completada | No aplica | `modulos\territorio\territorio.task.md` |
-| TER-TASK-002 | Implementación | Lista | No aplica | `modulos\territorio\territorio.task.md` |
+| TER-TASK-002 | Implementación | En curso | `PLAN-TER-0001` | `modulos\territorio\territorio.task.md` |
 | TER-TASK-003 | Implementación | Lista | No aplica | `modulos\territorio\territorio.task.md` |
 | TER-TASK-004 | Especificación | Completada | No aplica | `modulos\territorio\territorio.task.md` |
 | TER-TASK-005 | Implementación | Lista | No aplica | `modulos\territorio\territorio.task.md` |
@@ -109,16 +109,17 @@ regenerará con `python tools/spec_lint.py doc --tareas` cuando Python esté dis
 ### Avance
 
 <!-- generado:EPIC-004:inicio -->
-**1/6 tareas completadas**
+**1/7 tareas completadas**
 
 | Tarea | Tipo | Estado | Plan | Archivo |
 |---|---|---|---|---|
 | CUL-TASK-001 | Especificación | Completada | No aplica | `modulos\contexto-productivo\contexto-productivo.task.md` |
-| CUL-TASK-002 | Implementación | Lista | No aplica | `modulos\contexto-productivo\contexto-productivo.task.md` |
+| CUL-TASK-002 | Implementación | En curso | `PLAN-CUL-0001` | `modulos\contexto-productivo\contexto-productivo.task.md` |
 | CUL-TASK-003 | Implementación | Lista | No aplica | `modulos\contexto-productivo\contexto-productivo.task.md` |
 | CUL-TASK-004 | Implementación | Lista | No aplica | `modulos\contexto-productivo\contexto-productivo.task.md` |
 | CUL-TASK-005 | Implementación | Lista | No aplica | `modulos\contexto-productivo\contexto-productivo.task.md` |
 | CUL-TASK-006 | Implementación | Lista | No aplica | `modulos\contexto-productivo\contexto-productivo.task.md` |
+| CUL-TASK-007 | Implementación | Bloqueada | Pendiente | `modulos\contexto-productivo\contexto-productivo.task.md` |
 <!-- generado:EPIC-004:fin -->
 
 ## EPIC-005 — Personal y asistencia gestionados

@@ -16,6 +16,7 @@ owner: "Ingeniero"
 - Se usa el instalador `node-modules` de Yarn para priorizar compatibilidad con NestJS y sus herramientas.
 - En CI se instala con lockfile inmutable; una actualización de dependencias es un cambio explícito y revisable.
 - TypeScript se configura en modo estricto. No se admiten errores de tipos ignorados sin justificación local.
+- **Entorno local de desarrollo:** Se omite el uso de Docker para el desarrollo local por decisión explícita del Ingeniero. La base de datos PostgreSQL con PostGIS se ejecuta de forma nativa en el host local (`localhost:5432`), configurada mediante variables de entorno (`.env`). Queda prohibido volver a plantear el uso de Docker para el entorno de desarrollo local.
 
 Decisiones relacionadas: `ADR-0001`, `ADR-0003` y `ADR-0005`.
 

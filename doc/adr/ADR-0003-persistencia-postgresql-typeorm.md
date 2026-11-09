@@ -42,7 +42,7 @@ Tarefero necesita persistencia relacional, transacciones, aislamiento multiempre
 
 ## Consecuencias
 
-- **Qué cambia:** las entidades TypeORM, mapeadores y repositorios concretos viven exclusivamente en Infraestructura; las migraciones son la fuente del esquema físico.
+- **Qué cambia:** las entidades TypeORM, mapeadores y repositorios concretos viven exclusivamente en Infraestructura; las migraciones son la fuente del esquema físico. El entorno local de persistencia se ejecuta directamente en el host nativo (sin Docker por decisión explícita del Ingeniero).
 - **Riesgos:** carga diferida accidental, consultas entre módulos, filtrado incompleto por empresa y diferencias entre Dominio y persistencia.
 - **Revisar si:** TypeORM impide una restricción o consulta crítica; una excepción local puede usar SQL sin cambiar el contrato del repositorio.
 

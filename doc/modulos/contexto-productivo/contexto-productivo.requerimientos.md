@@ -317,6 +317,48 @@ owner: "Analista"
 | Consultar una Campaña que lo usó | Se permite |
 | Borrarlo con referencias | Se rechaza |
 
+### CUL-BR-023 — Habilitación única por Empresa y Cultivo
+
+- **Estado:** Propuesto
+- **Origen:** `CUL-Q-015`, `CUL-Q-023`, `CUL-Q-024`; IA para identidad y tratamiento de repeticiones.
+- **Tipo:** Invariante
+- **Regla:** Cada par Empresa cliente y Cultivo global tiene como máximo una habilitación. Repetir el mismo estado conserva la habilitación existente.
+- **Si se incumple:** un segundo vínculo para el mismo par se rechaza con `CUL_HABILITACION_DUPLICADA`.
+
+| Situación | Resultado |
+|---|---|
+| Dos Empresas habilitan el mismo Cultivo | Cada una conserva su propio vínculo |
+| La Empresa vuelve a solicitar el estado que ya tiene | Se conserva el vínculo sin duplicarlo |
+| Una escritura intenta insertar otro vínculo para el mismo par | Se rechaza |
+
+### CUL-BR-024 — Vigencia de la habilitación
+
+- **Estado:** Propuesto
+- **Origen:** `CUL-Q-015`, `CUL-Q-024`; IA para precisar la validación del catálogo al habilitar.
+- **Tipo:** Transición
+- **Regla:** La habilitación se puede retirar y restablecer en el mismo vínculo. Para habilitar o rehabilitar, el Cultivo global debe estar activo. Retirar la habilitación aplica `CUL-BR-003` a usos nuevos y conserva los estados y referencias de los registros existentes.
+- **Si se incumple:** habilitar un Cultivo inexistente o inactivo se rechaza con `CUL_HABILITACION_INVALIDA`. Los nuevos usos sin habilitación siguen `CUL-BR-003`.
+
+| Situación | Resultado |
+|---|---|
+| Rehabilitar un Cultivo global activo | Se restablece el vínculo previo |
+| Deshabilitar con Implantaciones y Ciclos activos | Se retira la habilitación y se conserva lo existente |
+| Habilitar un Cultivo global inactivo | Se rechaza |
+
+### CUL-BR-025 — Disponibilidad de Variedades
+
+- **Estado:** Propuesto
+- **Origen:** `CUL-Q-023`, `CUL-BR-002`, `CUL-BR-022`.
+- **Tipo:** Validación
+- **Regla:** Para una nueva Implantación de un Cultivo habilitado quedan disponibles todas sus Variedades activas. La disponibilidad deriva del Cultivo y del catálogo global.
+- **Si se incumple:** se aplican las validaciones de pertenencia de `CUL-BR-002` y de nuevos usos de `CUL-BR-022`.
+
+| Situación | Resultado |
+|---|---|
+| El Cultivo habilitado tiene dos Variedades activas | Ambas están disponibles |
+| El Cultivo habilitado no tiene Variedades activas | No se ofrecen Variedades y se conserva la selección opcional de `CUL-BR-008` |
+| Se intenta usar una Variedad inactiva o de otro Cultivo | Se rechaza según la regla incumplida |
+
 ## 2. Requerimientos funcionales
 
 ### CUL-REQ-001 — Administrar catálogo productivo
@@ -402,6 +444,14 @@ owner: "Analista"
 - **Prioridad:** Must
 - **Requerimiento:** Cuando se registra actividad productiva, el sistema debe validar la vigencia territorial y debe informar a Territorio si existen Implantaciones activas.
 - **Reglas que aplica:** `CUL-BR-008`, `CUL-BR-009`, `CUL-BR-010`.
+
+### CUL-REQ-013 — Mantener la habilitación de Cultivos por Empresa
+
+- **Estado:** Propuesto
+- **Origen:** `CUL-Q-015`, `CUL-Q-023`, `CUL-Q-024`; IA para la consulta del estado.
+- **Prioridad:** Must
+- **Requerimiento:** El sistema debe permitir consultar la disponibilidad de los Cultivos del catálogo para una Empresa cliente, habilitarlos, deshabilitarlos y volver a habilitarlos dentro del alcance autorizado.
+- **Reglas que aplica:** `CUL-BR-003`, `CUL-BR-023` a `CUL-BR-025`.
 
 ## 3. Dependencias con otros módulos
 

@@ -12,6 +12,7 @@ owner: "Analista"
 ```mermaid
 erDiagram
     CULTIVO ||--o{ VARIEDAD : contiene
+    CULTIVO ||--o{ HABILITACION_CULTIVO_EMPRESA : "tiene (propuesto)"
     CULTIVO ||--o{ PERFIL_CULTIVO : configura
     PERFIL_CULTIVO ||--o{ CAMPO_PERFIL : define
     CULTIVO ||--o{ IMPLANTACION : identifica
@@ -72,6 +73,12 @@ erDiagram
 | `estado` | Enumeración | Sí | `BORRADOR`, `PUBLICADO`, `INACTIVO`; `CUL-BR-006` | IA, `CUL-Q-022` |
 
 Una versión PUBLICADA es inmutable y puede ser referenciada por muchos Ciclos. La resolución sigue `CUL-BR-004`.
+
+**Transición de disponibilidad**
+
+| Desde | Hacia | Por | Regla |
+|---|---|---|---|
+| `PUBLICADO` | `INACTIVO` | `CUL-UC-002` | `CUL-BR-006`, `CUL-BR-022`, `CUL-Q-025` |
 
 ### CUL-ENT-004 — Campo de Perfil
 - **Estado:** Aprobado
@@ -170,7 +177,7 @@ No se elimina de una Campaña ACTIVA: `CUL-BR-013`.
 | `id` | Identificador | Sí | Convenciones §2 | Convenciones |
 | `campaniaId` | Referencia `CUL-ENT-006` | Sí | `CUL-BR-015` | `CUL-Q-002` |
 | `implantacionId` | Referencia `CUL-ENT-005` | Sí | Única por Campaña; `CUL-BR-015` | `CUL-Q-001`, `CUL-Q-011` |
-| `perfilId` | Referencia `CUL-ENT-003` | Sí | Versión PUBLICADA y bloqueada; `CUL-BR-007` | `CUL-Q-013` |
+| `perfilId` | Referencia `CUL-ENT-003` | Sí | Selección y bloqueo según `CUL-BR-007`; conservación tras inactivación según `CUL-BR-006` y `CUL-BR-022` | `CUL-Q-013`, `CUL-Q-025` |
 | `estado` | Enumeración | Sí | `BORRADOR`, `ACTIVO`, `FINALIZADO` | IA, `CUL-Q-022` |
 
 **Estados**
@@ -180,6 +187,30 @@ No se elimina de una Campaña ACTIVA: `CUL-BR-013`.
 | No existe | `BORRADOR` | `CUL-UC-005` | `CUL-BR-007` |
 | `BORRADOR` | `ACTIVO` | `CUL-UC-006`, `CUL-UC-007` | `CUL-BR-021` |
 | `ACTIVO` | `FINALIZADO` | `CUL-UC-008` | `CUL-BR-021` |
+
+### CUL-ENT-009 — Habilitación de Cultivo por Empresa
+
+- **Estado:** Propuesto
+- **Descripción:** vínculo entre una Empresa cliente y un Cultivo global que permite resolver `CUL-BR-003`.
+- **Identidad:** identificador según convenciones.md §2, con unicidad de negocio según `CUL-BR-023`.
+
+| Atributo | Tipo | Requerido | Restricción | Origen |
+|---|---|:---:|---|---|
+| `id` | Identificador | Sí | Convenciones §2 | Convenciones |
+| `empresaId` | Referencia externa | Sí | `CUL-DEP-001`, `CUL-DEP-003`, `CUL-BR-023` | `CUL-Q-015`, `CUL-Q-024` |
+| `cultivoId` | Referencia `CUL-ENT-001` | Sí | `CUL-BR-023`, `CUL-BR-024` | `CUL-Q-015`, `CUL-Q-024` |
+| `estado` | Enumeración | Sí | `HABILITADO`, `DESHABILITADO` | `CUL-Q-024`; IA para nombres de estados |
+| `version` | Entero | Sí | Convenciones §3.5 | Convenciones |
+
+**Estados**
+
+| Desde | Hacia | Por | Regla |
+|---|---|---|---|
+| No existe | `HABILITADO` | `CUL-UC-012` | `CUL-BR-023`, `CUL-BR-024` |
+| `HABILITADO` | `DESHABILITADO` | `CUL-UC-012` | `CUL-BR-024` |
+| `DESHABILITADO` | `HABILITADO` | `CUL-UC-012` | `CUL-BR-024` |
+
+La disponibilidad de Variedades se deriva según `CUL-BR-025`.
 
 ## 3. Datos de otros módulos
 
@@ -200,6 +231,7 @@ No se elimina de una Campaña ACTIVA: `CUL-BR-013`.
 |---|---|---|
 | Código y nombre normalizados únicos de Cultivo | `CUL-BR-001` | Pendiente de planificación |
 | Código y nombre de Variedad únicos por Cultivo | `CUL-BR-002` | Pendiente de planificación |
+| Habilitación única por Empresa cliente y Cultivo | `CUL-BR-023` | Pendiente de aprobación y planificación |
 | Versión única por línea de Perfil | `CUL-BR-006` | Pendiente de planificación |
 | Ciclo único por Campaña e Implantación | `CUL-BR-015` | Pendiente de planificación |
 | Lote único dentro del alcance de Campaña | `CUL-BR-011` | Pendiente de planificación |
@@ -208,4 +240,4 @@ No se elimina de una Campaña ACTIVA: `CUL-BR-013`.
 
 ## 5. Aprobación
 
-Los atributos y estados propuestos con origen IA fueron aprobados mediante `CUL-Q-022`.
+Los atributos y estados del alcance original fueron aprobados mediante `CUL-Q-022`. El cambio de disponibilidad de Perfiles se confirmó mediante `CUL-Q-025`. La redacción de `CUL-ENT-009` queda propuesta para revisión.

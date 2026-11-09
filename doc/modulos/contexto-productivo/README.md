@@ -42,7 +42,7 @@ Los Perfiles de cultivo definen campos tipados y versionados con precedencia Lot
 
 ## Estado
 
-Las veintidós preguntas fueron respondidas y la especificación completa fue aprobada por el Ingeniero el 03/11/2026. No se declara implementada ni se dan por ejecutadas pruebas de código.
+La especificación inicial fue aprobada el 03/11/2026. El 09/11/2026 quedaron respondidas las aclaraciones sobre la disponibilidad de Cultivos y Variedades y el mantenimiento de Perfiles. La habilitación por Empresa está descrita en el caso de uso propuesto `CUL-UC-012` y su tarea `CUL-TASK-007`. El cambio de mantenimiento de Perfiles está incorporado en `CUL-UC-002`.
 
 ## Archivos
 

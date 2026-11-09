@@ -32,7 +32,8 @@ Este repositorio contiene la API y sus procesos de apoyo. La aplicación web y l
 | Pruebas | Jest, Supertest y Testcontainers | Aceptado | `ADR-0005` |
 | Pruebas de arquitectura | Dependency Cruiser | Aceptado; configuración pendiente de la inicialización | `ADR-0005` |
 | Archivos | Directorio privado persistente del servidor detrás de un puerto | Aceptado | `ADR-0007` |
-| Despliegue | Docker en infraestructura propia; topología pendiente | Dirección confirmada en la visión | ADR pendiente |
+| Entorno local de persistencia | PostgreSQL y PostGIS nativos en el host de desarrollo (Docker omitido por decisión explícita) | Aceptado | `ADR-0003`, `convenciones.md` §1 |
+| Despliegue productivo | Infraestructura propia; topología y contenedorización pendientes de definición | Dirección confirmada en la visión | ADR pendiente |
 
 No se fijan versiones por memoria. Antes de crear el proyecto se verifican versiones compatibles y mantenidas de Node.js, NestJS, TypeORM, `pg`, PostgreSQL y PostGIS.
 

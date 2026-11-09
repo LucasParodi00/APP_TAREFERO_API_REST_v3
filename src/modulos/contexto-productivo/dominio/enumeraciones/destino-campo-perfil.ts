@@ -1,0 +1,7 @@
+export enum DestinoCampoPerfil {
+  IMPLANTACION = 'IMPLANTACION',
+  CICLO = 'CICLO',
+  LABOR = 'LABOR',
+  OBSERVACION = 'OBSERVACION',
+  COSECHA = 'COSECHA',
+}
