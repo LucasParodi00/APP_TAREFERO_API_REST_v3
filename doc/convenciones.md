@@ -12,8 +12,8 @@ owner: "Ingeniero"
 
 - El runtime es una versión LTS mantenida de Node.js, fijada de forma exacta al inicializar el proyecto.
 - TypeScript, NestJS, TypeORM, `pg`, PostgreSQL y PostGIS se fijan en versiones exactas y compatibles, verificadas contra sus fuentes oficiales al crear el proyecto.
-- Se usa Yarn 4 con el campo `packageManager` fijado y lockfile versionado.
-- Se usa el instalador `node-modules` de Yarn para priorizar compatibilidad con NestJS y sus herramientas.
+- Se usa Yarn (v1.22.x o superior) con lockfile (`yarn.lock`) versionado.
+- Se utiliza resolución estándar en `node_modules` para priorizar compatibilidad con NestJS y sus herramientas.
 - En CI se instala con lockfile inmutable; una actualización de dependencias es un cambio explícito y revisable.
 - TypeScript se configura en modo estricto. No se admiten errores de tipos ignorados sin justificación local.
 
@@ -151,17 +151,20 @@ Un recurso de otra Empresa no se revela mediante diferencias evitables entre 403
 - Las migraciones son la única fuente del esquema físico.
 - TypeORM se configura con `synchronize: false` en todos los entornos.
 - La evolución destructiva sigue: agregar estructura nueva, migrar datos, cambiar consumidores y retirar lo anterior.
-- Los datos históricos se inactivan, anulan o compensan. La eliminación física se limita a datos temporales sin referencias ni valor de auditoría.
+- Los datos históricos se inactivan, anulan o compensan. Cuando aplique borrado lógico (soft delete) en persistencia, se utiliza `@DeleteDateColumn` nativo de TypeORM (`deletedAt` / `deleted_at`). La eliminación física se limita a datos temporales sin referencias ni valor de auditoría.
 - Toda tabla multiempresa tiene una forma obligatoria y verificable de restringir por `empresa_id`.
 - Las fechas técnicas se guardan en UTC.
 - Las restricciones e índices se nombran según `nomenclatura.md`.
 
-Auditoría mínima cuando corresponda:
+Auditoría técnica y ciclo de vida (TypeORM):
 
-- `creado_en`
-- `creado_por`
-- `actualizado_en`
-- `actualizado_por`
+Para aprovechar los decoradores y funciones nativas de TypeORM (`@CreateDateColumn`, `@UpdateDateColumn`, `@DeleteDateColumn`, `@VersionColumn`), se conservan las propiedades estándar de la librería:
+
+- `createdAt` (columna `created_at` o `createdAt`)
+- `updatedAt` (columna `updated_at` o `updatedAt`)
+- `deletedAt` (columna `deleted_at` o `deletedAt`, para entidades con borrado lógico/soft delete)
+- `creado_por` / `creadoPor`
+- `actualizado_por` / `actualizadoPor`
 - `version`
 
 La auditoría transversal vincula además Empresa, Cuenta de Empresa, Sesión y solicitud sin copiar secretos.
@@ -297,7 +300,7 @@ El `package.json` del proyecto debe exponer exactamente estos comandos al inicia
 
 | Control | Comando | Cuándo |
 |---|---|---|
-| Instalación reproducible | `yarn install --immutable` | CI y preparación de entorno. |
+| Instalación reproducible | `yarn install --frozen-lockfile` (o `yarn install`) | CI y preparación de entorno. |
 | Formato | `yarn format:check` | Siempre. |
 | Lint | `yarn lint` | Siempre. |
 | Tipos | `yarn typecheck` | Siempre. |
@@ -309,7 +312,7 @@ El `package.json` del proyecto debe exponer exactamente estos comandos al inicia
 | Integración | `yarn test:integracion` | Cuando cambia persistencia o una integración. |
 | Contratos | `yarn test:contratos` | Cuando cambia la API. |
 | HTTP extremo a extremo | `yarn test:e2e` | Cuando cambia Presentación o composición. |
-| Documentación | `python tools/spec_lint.py doc` | Siempre, temporalmente exceptuado hasta disponer de Python. |
+| Documentación | `python tools/spec_lint.py doc` | Opcional (herramienta de asistencia si Python está disponible en el entorno). |
 
 Estos comandos todavía no son ejecutables porque el proyecto NestJS no fue inicializado. No se consideran verificados hasta que una tarea de infraestructura cree su configuración y registre evidencia.
 

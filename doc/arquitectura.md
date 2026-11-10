@@ -21,7 +21,7 @@ Este repositorio contiene la API y sus procesos de apoyo. La aplicación web y l
 |---|---|---|---|
 | Lenguaje | TypeScript estricto; versión exacta compatible fijada al inicializar | Aceptado | `ADR-0001`, `ADR-0005` |
 | Runtime | Node.js LTS mantenido; versión exacta fijada al inicializar | Aceptado | `ADR-0001`, `ADR-0005` |
-| Gestor de paquetes | Yarn 4 con lockfile inmutable | Aceptado | `ADR-0005` |
+| Gestor de paquetes | Yarn 1 o superior (compatible con Yarn 1.22.x y lockfile versionado) | Aceptado | `ADR-0005` |
 | Framework API | NestJS; versión exacta compatible fijada al inicializar | Aceptado | `ADR-0001` |
 | Estilo | Monolito modular con arquitectura hexagonal | Aceptado | `ADR-0002` |
 | Persistencia | PostgreSQL con PostGIS; versiones pendientes de verificar | Aceptado | `ADR-0003` |

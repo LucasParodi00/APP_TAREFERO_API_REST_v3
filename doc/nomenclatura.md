@@ -20,7 +20,7 @@ Un agente no inventa una convención que no esté aquí: si falta, pregunta. -->
 | Mensajes al usuario | Español | Con tildes y ñ. |
 | Logs técnicos | Español | Sin secretos ni datos personales innecesarios. |
 | Commits, ramas y solicitudes de cambio | Español | Se conservan IDs y nombres técnicos oficiales. |
-| Palabras reservadas y APIs de librerías | Idioma original | No se traducen NestJS, TypeORM, PostgreSQL ni nombres de sus APIs. |
+| Palabras reservadas y APIs de librerías | Idioma original | No se traducen NestJS, TypeORM, PostgreSQL ni nombres de sus APIs (incluye decoradores y propiedades estándar de TypeORM como `createdAt`, `updatedAt`, `deletedAt`). |
 
 ## 2. Escritura de identificadores en español
 
@@ -68,7 +68,7 @@ Un agente no inventa una convención que no esté aquí: si falta, pregunta. -->
 | Constante | MAYUSCULAS_CON_GUION_BAJO | `MAXIMO_USUARIOS_ACTIVOS` |
 | Archivo de código | minúsculas, kebab-case y sufijo funcional cuando aporte contexto | `crear-usuario.caso-de-uso.ts` |
 | Tabla | snake_case, plural | `usuarios`, `cuentas_empresa` |
-| Columna | snake_case | `empresa_id`, `creado_en` |
+| Columna | snake_case | `empresa_id`, `creado_en` (o `created_at`, `updated_at`, `deleted_at` para decoradores nativos de TypeORM) |
 | Clave foránea | `<entidad>_id` | `empresa_id` |
 | Índice | `ix_<tabla>_<columnas>` | `ix_cuentas_empresa_empresa_id` |
 | Restricción única | `uq_<tabla>_<columnas>` | `uq_empresas_cuit` |

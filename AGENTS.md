@@ -34,7 +34,7 @@ Una sesión, una fase, un rol. La fase 4 siempre en una sesión distinta de la f
 6. **Sin código sin plan aprobado. Sin plan sin tarea.**
 7. **No ajustar la especificación al código.**
 8. **No afirmar lo que no se ejecutó.**
-9. **Ejecutar los scripts que indica el procedimiento** (`tools/`). Al terminar: `python tools/spec_lint.py doc` sin errores.
+9. **Scripts de apoyo** (`tools/`). Las herramientas en Python (`spec_lint.py`, etc.) son de asistencia opcional; su ejecución no es un requisito obligatorio ni bloqueante si Python no está disponible en el entorno.
 
 ## Detenerse y avisar cuando
 

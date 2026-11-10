@@ -20,32 +20,32 @@ module: "ACC"
 
 - **Épica:** `EPIC-002`
 - **Tipo:** Implementación
-- **Estado:** Lista
+- **Estado:** Planificada
 - **Prioridad:** Alta
 - **Alcance:** `ACC-UC-001`, `ACC-UC-008`, `ACC-UC-010`
 - **Depende de:** `ACC-TASK-001`; contratos acordados de `ACC-DEP-001`, `ACC-DEP-002`, `ACC-DEP-003`.
-- **Plan:** No aplica
-- **Bloqueo:** Ninguno. Los contratos técnicos de las dependencias se concretarán durante la planificación sin alterar el alcance aprobado.
+- **Plan:** `planes/PLAN-ACC-0001-modulo-identidad-acceso.md`
+- **Bloqueo:** Ninguno. Contratos formalizados en `contratos/openapi.yaml`. Plan aprobado el 2026-11-10.
 
 ## ACC-TASK-003 — Autenticar y autorizar cuentas de Empresa
 
 - **Épica:** `EPIC-002`
 - **Tipo:** Implementación
-- **Estado:** Lista
+- **Estado:** Planificada
 - **Prioridad:** Alta
 - **Alcance:** `ACC-UC-002`, `ACC-UC-003`, `ACC-UC-004`, `ACC-UC-005`, `ACC-UC-009`
 - **Depende de:** `ACC-TASK-001`, `ACC-TASK-002`; contratos de `ACC-DEP-001`, `ACC-DEP-002`.
-- **Plan:** No aplica
-- **Bloqueo:** Ninguno. El alias se resuelve mediante `EMP-BR-011` a `EMP-BR-013`; los detalles de credenciales y la política de sesiones están definidos por `ACC-BR-014`, `ACC-BR-018` y `ACC-BR-019`.
+- **Plan:** `planes/PLAN-ACC-0001-modulo-identidad-acceso.md`
+- **Bloqueo:** Ninguno. Hashing con Argon2id, ciclo rotativo de refresh token y sesiones persistentes formalizados en `contratos/openapi.yaml` y el plan maestro. Plan aprobado el 2026-11-10.
 
 ## ACC-TASK-004 — Administrar acceso de plataforma y soporte
 
 - **Épica:** `EPIC-002`
 - **Tipo:** Implementación
-- **Estado:** Lista
+- **Estado:** Planificada
 - **Prioridad:** Alta
 - **Alcance:** `ACC-UC-006`, `ACC-UC-007`, `ACC-UC-011`, dentro de la delimitación de `ACC-Q-017`.
 - **Depende de:** `ACC-TASK-001`; contrato de Empresa en `ACC-DEP-001` y contexto de `ACC-DEP-004`.
-- **Plan:** No aplica
-- **Bloqueo:** Ninguno. El mecanismo operativo de plataforma permanece a cargo del Ingeniero según `ACC-Q-017`; su concreción técnica durante la planificación no debe introducir una dependencia circular.
+- **Plan:** `planes/PLAN-ACC-0001-modulo-identidad-acceso.md`
+- **Bloqueo:** Ninguno. Mecanismo de inicialización y soporte formalizados en `contratos/openapi.yaml`. Plan aprobado el 2026-11-10.
 

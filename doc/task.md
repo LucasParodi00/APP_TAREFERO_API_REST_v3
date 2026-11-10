@@ -49,8 +49,8 @@ regenerará con `python tools/spec_lint.py doc --tareas` cuando Python esté dis
 | Tarea | Tipo | Estado | Plan | Archivo |
 |---|---|---|---|---|
 | EMP-TASK-001 | Especificación | Completada | No aplica | `modulos\empresas\empresas.task.md` |
-| EMP-TASK-002 | Implementación | Lista | No aplica | `modulos\empresas\empresas.task.md` |
-| EMP-TASK-003 | Implementación | Lista | No aplica | `modulos\empresas\empresas.task.md` |
+| EMP-TASK-002 | Implementación | Planificada | `PLAN-EMP-0001` | `modulos\empresas\empresas.task.md` |
+| EMP-TASK-003 | Implementación | Planificada | `PLAN-EMP-0001` | `modulos\empresas\empresas.task.md` |
 <!-- generado:EPIC-001:fin -->
 
 ## EPIC-002 — Acceso seguro multiempresa
@@ -69,9 +69,9 @@ regenerará con `python tools/spec_lint.py doc --tareas` cuando Python esté dis
 | Tarea | Tipo | Estado | Plan | Archivo |
 |---|---|---|---|---|
 | ACC-TASK-001 | Especificación | Completada | No aplica | `modulos\identidad-acceso\identidad-acceso.task.md` |
-| ACC-TASK-002 | Implementación | Lista | No aplica | `modulos\identidad-acceso\identidad-acceso.task.md` |
-| ACC-TASK-003 | Implementación | Lista | No aplica | `modulos\identidad-acceso\identidad-acceso.task.md` |
-| ACC-TASK-004 | Implementación | Lista | No aplica | `modulos\identidad-acceso\identidad-acceso.task.md` |
+| ACC-TASK-002 | Implementación | Planificada | `PLAN-ACC-0001` | `modulos\identidad-acceso\identidad-acceso.task.md` |
+| ACC-TASK-003 | Implementación | Planificada | `PLAN-ACC-0001` | `modulos\identidad-acceso\identidad-acceso.task.md` |
+| ACC-TASK-004 | Implementación | Planificada | `PLAN-ACC-0001` | `modulos\identidad-acceso\identidad-acceso.task.md` |
 <!-- generado:EPIC-002:fin -->
 
 ## EPIC-003 — Territorio productivo organizado

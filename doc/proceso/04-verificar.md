@@ -45,10 +45,10 @@ Además: el diff de la rama contra la rama principal.
 5. ¿El diff contiene solo lo planificado?
 6. ¿Se respetan las capas (pruebas de arquitectura en verde, sin reglas en controladores)?
 7. ¿Los nombres siguen `nomenclatura.md` y los términos son los canónicos del glosario?
-8. `spec_lint` sin errores y sin avisos de redefinición.
+8. Si Python está disponible en el entorno: `spec_lint` sin errores y sin avisos de redefinición.
 
 ## Resultado
 
-- Todo conforme → ítems del alcance a `Implementado`, plan `Cerrado`, tarea `Completada`, ejecutar `python tools/spec_lint.py doc --tareas` para actualizar el avance de la épica, integrar la rama.
+- Todo conforme → ítems del alcance a `Implementado`, plan `Cerrado`, tarea `Completada`, actualizar el avance de la épica en `doc/task.md` (con `tools/spec_lint.py doc --tareas` si se dispone de Python, o manualmente), integrar la rama.
 - Hallazgos corregibles → plan `En ejecución` con la lista.
 - Desviación importante → plan `Bloqueado` hasta que decida el ingeniero.

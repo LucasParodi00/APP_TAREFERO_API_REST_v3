@@ -1,0 +1,987 @@
+openapi: 3.1.0
+info:
+  title: API Módulo Identidad y Acceso - Tarefero
+  description: Contrato HTTP para autenticación, gestión de Cuentas de Empresa, sesiones y soporte de plataforma.
+  version: 1.0.0
+  contact:
+    name: Tarefero Core Team
+    url: https://tarefero.com
+servers:
+  - url: /api/v1
+    description: Servidor principal API v1
+tags:
+  - name: Autenticación
+    description: Inicio de sesión, renovación de tokens y consulta de contexto de seguridad
+  - name: Cuentas
+    description: Administración de Cuentas de Empresa, credenciales y estados
+  - name: Plataforma
+    description: Funciones exclusivas de SuperAdministrador, soporte técnico y bootstrapping
+
+paths:
+  /auth/login:
+    post:
+      tags:
+        - Autenticación
+      summary: Iniciar sesión en una Empresa
+      description: Autentica credenciales en el contexto de una Empresa identificada por su alias y emite tokens JWT.
+      operationId: iniciarSesion
+      x-use-case: ACC-UC-002
+      x-business-rules:
+        - ACC-BR-001
+        - ACC-BR-005
+        - ACC-BR-012
+        - ACC-BR-018
+        - ACC-BR-019
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SolicitudLogin'
+      responses:
+        '200':
+          description: Autenticación exitosa
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaLogin'
+        '400':
+          $ref: '#/components/responses/ErrorSolicitudInvalida'
+        '401':
+          $ref: '#/components/responses/ErrorCredencialesInvalidas'
+        '403':
+          $ref: '#/components/responses/ErrorAccesoDenegado'
+
+  /auth/yo:
+    get:
+      tags:
+        - Autenticación
+      summary: Consultar autorización vigente
+      description: Obtiene el contexto de autorización de la sesión activa del actor.
+      operationId: consultarAutorizacionVigente
+      x-use-case: ACC-UC-003
+      x-business-rules:
+        - ACC-BR-002
+        - ACC-BR-007
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Contexto de autorización vigente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaAutorizacionVigente'
+        '401':
+          $ref: '#/components/responses/ErrorAutenticacionRequerida'
+        '403':
+          $ref: '#/components/responses/ErrorAccesoDenegado'
+
+  /auth/renovar:
+    post:
+      tags:
+        - Autenticación
+      summary: Renovar sesión de Empresa
+      description: Emite un nuevo token de acceso y un nuevo token de renovación rotativo. Detecta reutilización.
+      operationId: renovarSesion
+      x-use-case: ACC-UC-009
+      x-business-rules:
+        - ACC-BR-001
+        - ACC-BR-005
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SolicitudRenovarSesion'
+      responses:
+        '200':
+          description: Sesión renovada con éxito
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaLogin'
+        '400':
+          $ref: '#/components/responses/ErrorSolicitudInvalida'
+        '401':
+          $ref: '#/components/responses/ErrorAutenticacionRequerida'
+        '403':
+          $ref: '#/components/responses/ErrorAccesoDenegado'
+
+  /auth/cambiar-contrasenia:
+    post:
+      tags:
+        - Autenticación
+      summary: Cambiar contraseña por el propio titular
+      description: Permite al usuario autenticado cambiar su contraseña actual por una nueva.
+      operationId: cambiarContrasenia
+      x-use-case: ACC-UC-004
+      x-business-rules:
+        - ACC-BR-013
+        - ACC-BR-014
+        - ACC-BR-019
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SolicitudCambiarContrasenia'
+      responses:
+        '200':
+          description: Contraseña modificada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaMensaje'
+        '400':
+          $ref: '#/components/responses/ErrorSolicitudInvalida'
+        '401':
+          $ref: '#/components/responses/ErrorCredencialesInvalidas'
+        '403':
+          $ref: '#/components/responses/ErrorAccesoDenegado'
+
+  /empresas/{empresaId}/cuentas:
+    parameters:
+      - name: empresaId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Identificador de la Empresa
+    post:
+      tags:
+        - Cuentas
+      summary: Habilitar Cuenta de Empresa
+      description: Habilita el acceso al sistema para una persona en la Empresa con credenciales y roles.
+      operationId: habilitarCuentaEmpresa
+      x-use-case: ACC-UC-001
+      x-business-rules:
+        - ACC-BR-001
+        - ACC-BR-002
+        - ACC-BR-003
+        - ACC-BR-004
+        - ACC-BR-006
+        - ACC-BR-007
+        - ACC-BR-015
+        - ACC-BR-016
+        - ACC-BR-018
+        - ACC-BR-019
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SolicitudHabilitarCuenta'
+      responses:
+        '201':
+          description: Cuenta de Empresa habilitada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaCuentaEmpresa'
+          headers:
+            ETag:
+              schema:
+                type: string
+              description: Versión de la Cuenta de Empresa
+        '400':
+          $ref: '#/components/responses/ErrorSolicitudInvalida'
+        '403':
+          $ref: '#/components/responses/ErrorAccesoDenegado'
+        '404':
+          $ref: '#/components/responses/ErrorRecursoNoEncontrado'
+        '409':
+          $ref: '#/components/responses/ErrorConflicto'
+        '422':
+          $ref: '#/components/responses/ErrorReglaNegocio'
+    get:
+      tags:
+        - Cuentas
+      summary: Consultar cuentas de acceso de una Empresa
+      description: Lista paginada de Cuentas de Empresa autorizadas.
+      operationId: consultarCuentasEmpresa
+      x-use-case: ACC-UC-008
+      x-business-rules:
+        - ACC-BR-002
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: limite
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 25
+        - name: desplazamiento
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - name: estado
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/EstadoCuenta'
+        - name: rol
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/RolCodigo'
+      responses:
+        '200':
+          description: Listado de cuentas obtenido con éxito
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaListadoCuentas'
+        '400':
+          $ref: '#/components/responses/ErrorSolicitudInvalida'
+        '403':
+          $ref: '#/components/responses/ErrorAccesoDenegado'
+
+  /empresas/{empresaId}/cuentas/{cuentaId}/restablecer-contrasenia:
+    parameters:
+      - name: empresaId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: cuentaId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    post:
+      tags:
+        - Cuentas
+      summary: Restablecer contraseña administrativamente
+      description: Restablece la contraseña de una Cuenta de Empresa por un Administrador o soporte autorizado.
+      operationId: restablecerContrasenia
+      x-use-case: ACC-UC-005
+      x-business-rules:
+        - ACC-BR-002
+        - ACC-BR-010
+        - ACC-BR-011
+        - ACC-BR-014
+        - ACC-BR-019
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SolicitudRestablecerContrasenia'
+      responses:
+        '200':
+          description: Contraseña restablecida con éxito
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaMensaje'
+        '400':
+          $ref: '#/components/responses/ErrorSolicitudInvalida'
+        '403':
+          $ref: '#/components/responses/ErrorAccesoDenegado'
+        '404':
+          $ref: '#/components/responses/ErrorRecursoNoEncontrado'
+
+  /empresas/{empresaId}/cuentas/{cuentaId}/estado:
+    parameters:
+      - name: empresaId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: cuentaId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: If-Match
+        in: header
+        required: true
+        schema:
+          type: string
+        description: Versión vigente de la Cuenta de Empresa
+    put:
+      tags:
+        - Cuentas
+      summary: Cambiar estado de una Cuenta de Empresa
+      description: Suspende o reactiva una cuenta de acceso verificando cupos comerciales y concurrencia.
+      operationId: cambiarEstadoCuenta
+      x-use-case: ACC-UC-010
+      x-business-rules:
+        - ACC-BR-002
+        - ACC-BR-005
+        - ACC-BR-006
+        - ACC-BR-016
+        - ACC-BR-017
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SolicitudCambiarEstadoCuenta'
+      responses:
+        '200':
+          description: Estado actualizado con éxito
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaCuentaEmpresa'
+          headers:
+            ETag:
+              schema:
+                type: string
+        '400':
+          $ref: '#/components/responses/ErrorSolicitudInvalida'
+        '403':
+          $ref: '#/components/responses/ErrorAccesoDenegado'
+        '404':
+          $ref: '#/components/responses/ErrorRecursoNoEncontrado'
+        '409':
+          $ref: '#/components/responses/ErrorConflicto'
+        '422':
+          $ref: '#/components/responses/ErrorReglaNegocio'
+
+  /empresas/{empresaId}/cuentas/{cuentaId}/roles-canales:
+    parameters:
+      - name: empresaId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: cuentaId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: If-Match
+        in: header
+        required: true
+        schema:
+          type: string
+        description: Versión vigente de la Cuenta de Empresa
+    put:
+      tags:
+        - Cuentas
+      summary: Actualizar roles y canales de acceso de una cuenta
+      description: Modifica los canales habilitados y roles asignados a una Cuenta de Empresa.
+      operationId: actualizarRolesCanalesCuenta
+      x-use-case: ACC-UC-010
+      x-business-rules:
+        - ACC-BR-002
+        - ACC-BR-005
+        - ACC-BR-007
+        - ACC-BR-016
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SolicitudActualizarRolesCanales'
+      responses:
+        '200':
+          description: Canales y roles actualizados con éxito
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaCuentaEmpresa'
+          headers:
+            ETag:
+              schema:
+                type: string
+        '400':
+          $ref: '#/components/responses/ErrorSolicitudInvalida'
+        '403':
+          $ref: '#/components/responses/ErrorAccesoDenegado'
+        '404':
+          $ref: '#/components/responses/ErrorRecursoNoEncontrado'
+        '409':
+          $ref: '#/components/responses/ErrorConflicto'
+        '422':
+          $ref: '#/components/responses/ErrorReglaNegocio'
+
+  /plataforma/inicializar:
+    post:
+      tags:
+        - Plataforma
+      summary: Inicializar SuperAdministrador de plataforma
+      description: Proceso inicial de arranque de plataforma para generar el primer SuperAdministrador auditable.
+      operationId: inicializarSuperAdministrador
+      x-use-case: ACC-UC-006
+      x-business-rules:
+        - ACC-BR-007
+        - ACC-BR-008
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SolicitudInicializarPlataforma'
+      responses:
+        '201':
+          description: Plataforma inicializada con éxito
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaMensaje'
+        '400':
+          $ref: '#/components/responses/ErrorSolicitudInvalida'
+        '409':
+          $ref: '#/components/responses/ErrorConflicto'
+
+  /plataforma/empresas/{empresaId}/intervenciones:
+    parameters:
+      - name: empresaId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    post:
+      tags:
+        - Plataforma
+      summary: Registrar intervención de soporte técnico
+      description: Registra una intervención de plataforma auditada con motivo obligatorio de hasta 1000 caracteres.
+      operationId: registrarIntervencionSoporte
+      x-use-case: ACC-UC-007
+      x-business-rules:
+        - ACC-BR-009
+        - ACC-BR-011
+        - ACC-BR-020
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SolicitudIntervencionSoporte'
+      responses:
+        '201':
+          description: Intervención de soporte registrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaIntervencionSoporte'
+        '400':
+          $ref: '#/components/responses/ErrorSolicitudInvalida'
+        '403':
+          $ref: '#/components/responses/ErrorAccesoDenegado'
+        '404':
+          $ref: '#/components/responses/ErrorRecursoNoEncontrado'
+
+  /empresas/{empresaId}/intervenciones-soporte:
+    parameters:
+      - name: empresaId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      tags:
+        - Plataforma
+      summary: Consultar intervenciones de soporte técnico
+      description: Consulta el historial de intervenciones realizadas en la Empresa por personal de plataforma.
+      operationId: consultarIntervencionesSoporte
+      x-use-case: ACC-UC-011
+      x-business-rules:
+        - ACC-BR-002
+        - ACC-BR-009
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: limite
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 25
+        - name: desplazamiento
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        '200':
+          description: Historial de intervenciones obtenido con éxito
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaListadoIntervenciones'
+        '400':
+          $ref: '#/components/responses/ErrorSolicitudInvalida'
+        '403':
+          $ref: '#/components/responses/ErrorAccesoDenegado'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    EstadoCuenta:
+      type: string
+      enum:
+        - ACTIVA
+        - SUSPENDIDA
+
+    RolCodigo:
+      type: string
+      enum:
+        - ADMINISTRADOR
+        - CAPATAZ
+        - EMPLEADO
+        - SUPER_ADMINISTRADOR
+
+    CanalAcceso:
+      type: string
+      enum:
+        - WEB
+        - MOVIL
+
+    SolicitudLogin:
+      type: object
+      required:
+        - aliasEmpresa
+        - correoAcceso
+        - contrasenia
+        - canal
+      properties:
+        aliasEmpresa:
+          type: string
+          example: 'yerba-norte'
+        correoAcceso:
+          type: string
+          format: email
+          maxLength: 254
+          example: 'juan@yerbanorte.com'
+        contrasenia:
+          type: string
+          minLength: 15
+          maxLength: 128
+        canal:
+          $ref: '#/components/schemas/CanalAcceso'
+        dispositivoId:
+          type: string
+          nullable: true
+
+    RespuestaLogin:
+      type: object
+      required:
+        - tokenAcceso
+        - tokenRenovacion
+        - tipoToken
+        - expiraEn
+        - cuentaEmpresaId
+        - empresaId
+        - sesionId
+        - roles
+      properties:
+        tokenAcceso:
+          type: string
+        tokenRenovacion:
+          type: string
+        tipoToken:
+          type: string
+          example: 'Bearer'
+        expiraEn:
+          type: integer
+          example: 900
+        cuentaEmpresaId:
+          type: string
+          format: uuid
+        empresaId:
+          type: string
+          format: uuid
+        sesionId:
+          type: string
+          format: uuid
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/RolCodigo'
+
+    RespuestaAutorizacionVigente:
+      type: object
+      required:
+        - cuentaEmpresaId
+        - empresaId
+        - sesionId
+        - canal
+        - roles
+        - permisos
+      properties:
+        cuentaEmpresaId:
+          type: string
+          format: uuid
+        empresaId:
+          type: string
+          format: uuid
+        sesionId:
+          type: string
+          format: uuid
+        canal:
+          $ref: '#/components/schemas/CanalAcceso'
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/RolCodigo'
+        permisos:
+          type: array
+          items:
+            type: string
+
+    SolicitudRenovarSesion:
+      type: object
+      required:
+        - tokenRenovacion
+      properties:
+        tokenRenovacion:
+          type: string
+
+    SolicitudCambiarContrasenia:
+      type: object
+      required:
+        - contraseniaActual
+        - nuevaContrasenia
+      properties:
+        contraseniaActual:
+          type: string
+          minLength: 15
+          maxLength: 128
+        nuevaContrasenia:
+          type: string
+          minLength: 15
+          maxLength: 128
+
+    SolicitudRestablecerContrasenia:
+      type: object
+      required:
+        - nuevaContrasenia
+      properties:
+        nuevaContrasenia:
+          type: string
+          minLength: 15
+          maxLength: 128
+
+    SolicitudHabilitarCuenta:
+      type: object
+      required:
+        - personaId
+        - correoAcceso
+        - contrasenia
+        - accesoWeb
+        - accesoMovil
+        - roles
+      properties:
+        personaId:
+          type: string
+          format: uuid
+        correoAcceso:
+          type: string
+          format: email
+          maxLength: 254
+        contrasenia:
+          type: string
+          minLength: 15
+          maxLength: 128
+        accesoWeb:
+          type: boolean
+        accesoMovil:
+          type: boolean
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/RolCodigo'
+          minItems: 1
+
+    SolicitudCambiarEstadoCuenta:
+      type: object
+      required:
+        - estado
+      properties:
+        estado:
+          $ref: '#/components/schemas/EstadoCuenta'
+
+    SolicitudActualizarRolesCanales:
+      type: object
+      required:
+        - accesoWeb
+        - accesoMovil
+        - roles
+      properties:
+        accesoWeb:
+          type: boolean
+        accesoMovil:
+          type: boolean
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/RolCodigo'
+          minItems: 1
+
+    SolicitudInicializarPlataforma:
+      type: object
+      required:
+        - claveSecretaBootstrapping
+        - correoSuperAdmin
+        - contraseniaSuperAdmin
+      properties:
+        claveSecretaBootstrapping:
+          type: string
+        correoSuperAdmin:
+          type: string
+          format: email
+        contraseniaSuperAdmin:
+          type: string
+          minLength: 15
+          maxLength: 128
+
+    SolicitudIntervencionSoporte:
+      type: object
+      required:
+        - motivo
+      properties:
+        motivo:
+          type: string
+          maxLength: 1000
+          description: Justificación técnica obligatoria de la intervención
+
+    RespuestaCuentaEmpresa:
+      type: object
+      required:
+        - id
+        - empresaId
+        - personaId
+        - correoAcceso
+        - accesoWeb
+        - accesoMovil
+        - roles
+        - estado
+        - version
+        - creadoEn
+        - actualizadoEn
+      properties:
+        id:
+          type: string
+          format: uuid
+        empresaId:
+          type: string
+          format: uuid
+        personaId:
+          type: string
+          format: uuid
+        correoAcceso:
+          type: string
+        accesoWeb:
+          type: boolean
+        accesoMovil:
+          type: boolean
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/RolCodigo'
+        estado:
+          $ref: '#/components/schemas/EstadoCuenta'
+        version:
+          type: integer
+        creadoEn:
+          type: string
+          format: date-time
+        actualizadoEn:
+          type: string
+          format: date-time
+
+    RespuestaIntervencionSoporte:
+      type: object
+      required:
+        - id
+        - usuarioPlataformaId
+        - empresaId
+        - motivo
+        - ocurridaEn
+      properties:
+        id:
+          type: string
+          format: uuid
+        usuarioPlataformaId:
+          type: string
+          format: uuid
+        empresaId:
+          type: string
+          format: uuid
+        motivo:
+          type: string
+        ocurridaEn:
+          type: string
+          format: date-time
+
+    MetadatosPaginacion:
+      type: object
+      required:
+        - limite
+        - desplazamiento
+        - total
+      properties:
+        limite:
+          type: integer
+        desplazamiento:
+          type: integer
+        total:
+          type: integer
+
+    RespuestaListadoCuentas:
+      type: object
+      required:
+        - datos
+        - paginacion
+      properties:
+        datos:
+          type: array
+          items:
+            $ref: '#/components/schemas/RespuestaCuentaEmpresa'
+        paginacion:
+          $ref: '#/components/schemas/MetadatosPaginacion'
+
+    RespuestaListadoIntervenciones:
+      type: object
+      required:
+        - datos
+        - paginacion
+      properties:
+        datos:
+          type: array
+          items:
+            $ref: '#/components/schemas/RespuestaIntervencionSoporte'
+        paginacion:
+          $ref: '#/components/schemas/MetadatosPaginacion'
+
+    RespuestaMensaje:
+      type: object
+      required:
+        - mensaje
+      properties:
+        mensaje:
+          type: string
+
+    ProblemaDetalle:
+      type: object
+      required:
+        - type
+        - title
+        - status
+        - code
+        - detail
+        - instance
+        - solicitudId
+      properties:
+        type:
+          type: string
+          example: 'about:blank'
+        title:
+          type: string
+        status:
+          type: integer
+        code:
+          type: string
+        detail:
+          type: string
+        instance:
+          type: string
+        solicitudId:
+          type: string
+          format: uuid
+        errores:
+          type: array
+          items:
+            type: object
+            required:
+              - campo
+              - code
+              - mensaje
+            properties:
+              campo:
+                type: string
+              code:
+                type: string
+              mensaje:
+                type: string
+
+  responses:
+    ErrorSolicitudInvalida:
+      description: Solicitud con formato o datos inválidos (400)
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemaDetalle'
+
+    ErrorCredencialesInvalidas:
+      description: Credenciales incorrectas o contraseña errónea (ACC_CREDENCIALES_INVALIDAS - 401)
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemaDetalle'
+
+    ErrorAutenticacionRequerida:
+      description: Autenticación requerida o token expirado/revocado (401)
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemaDetalle'
+
+    ErrorAccesoDenegado:
+      description: Actor sin permisos o empresa fuera de alcance (ACC_ACCESO_DENEGADO / ACC_EMPRESA_FUERA_DE_ALCANCE - 403)
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemaDetalle'
+
+    ErrorRecursoNoEncontrado:
+      description: Cuenta, persona o empresa no encontrada (404)
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemaDetalle'
+
+    ErrorConflicto:
+      description: Correo duplicado, conflicto de versión optimista o plataforma ya inicializada (409)
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemaDetalle'
+
+    ErrorReglaNegocio:
+      description: Cupos alcanzados, rol no admitido o regla de negocio incumplida (422)
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemaDetalle'
