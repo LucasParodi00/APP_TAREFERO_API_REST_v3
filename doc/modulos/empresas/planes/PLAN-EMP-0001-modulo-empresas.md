@@ -131,7 +131,7 @@ No copia reglas ni escenarios: referencia IDs y tags. -->
 | T02 | `PLAN-EMP-0001 T02` | Completada | Entidad ConfiguracionGeneralEmpresa y agregado Empresa con ciclo de vida, concurrencia y validaciones de estado. 30 pruebas unitarias pasando. |
 | T03 | `PLAN-EMP-0001 T03` | Completada | Puertos de Aplicación (RepositorioEmpresas, VerificadorAsignacionComercial), modelos de lectura y errores definidos. |
 | T04 | `PLAN-EMP-0001 T04` | Completada | Casos de uso de gestión de datos (Registrar, Consultar, Listar, Modificar datos y Modificar configuración) con 13 pruebas unitarias pasando. |
-| T05 | | Pendiente | |
+| T05 | `PLAN-EMP-0001 T05` | Completada | Casos de uso de ciclo de vida (Suspender, Reactivar, Cerrar) con 8 pruebas unitarias pasando. |
 | T06 | | Pendiente | |
 | T07 | | Pendiente | |
 | T08 | | Pendiente | |
