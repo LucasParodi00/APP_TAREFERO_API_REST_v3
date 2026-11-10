@@ -128,7 +128,7 @@ No copia reglas ni escenarios: referencia IDs y tags. -->
 | Tarea | Commit | Estado | Notas o desviaciones |
 |---|---|---|---|
 | T01 | `PLAN-EMP-0001 T01` | Completada | Objetos de valor, enumeraciones y errores implementados con 19 pruebas unitarias pasando. |
-| T02 | | Pendiente | |
+| T02 | `PLAN-EMP-0001 T02` | Completada | Entidad ConfiguracionGeneralEmpresa y agregado Empresa con ciclo de vida, concurrencia y validaciones de estado. 30 pruebas unitarias pasando. |
 | T03 | | Pendiente | |
 | T04 | | Pendiente | |
 | T05 | | Pendiente | |
