@@ -10,32 +10,32 @@ import {
   Res,
   HttpCode,
   HttpStatus,
-} from '@nestjs/common';
-import type { Response } from 'express';
-import { randomUUID } from 'crypto';
-import { RegistrarEmpresa } from '../../../aplicacion/comandos/registrar-empresa.caso-de-uso';
-import { ConsultarEmpresa } from '../../../aplicacion/consultas/consultar-empresa.caso-de-uso';
-import { ListarEmpresas } from '../../../aplicacion/consultas/listar-empresas.caso-de-uso';
-import { ModificarEmpresa } from '../../../aplicacion/comandos/modificar-empresa.caso-de-uso';
-import { ModificarConfiguracionGeneral } from '../../../aplicacion/comandos/modificar-configuracion-general.caso-de-uso';
-import { SuspenderEmpresa } from '../../../aplicacion/comandos/suspender-empresa.caso-de-uso';
-import { ReactivarEmpresa } from '../../../aplicacion/comandos/reactivar-empresa.caso-de-uso';
-import { CerrarEmpresa } from '../../../aplicacion/comandos/cerrar-empresa.caso-de-uso';
-import type { ContextoSolicitud } from '../../../aplicacion/puertos/comunes/contexto-solicitud';
-import { ContextoUsuario } from '../decoradores/contexto-usuario.decorador';
-import { VersionIfMatch } from '../decoradores/version-if-match.decorador';
+} from "@nestjs/common";
+import type { Response } from "express";
+import { randomUUID } from "crypto";
+import { RegistrarEmpresa } from "../../../aplicacion/comandos/registrar-empresa.caso-de-uso";
+import { ConsultarEmpresa } from "../../../aplicacion/consultas/consultar-empresa.caso-de-uso";
+import { ListarEmpresas } from "../../../aplicacion/consultas/listar-empresas.caso-de-uso";
+import { ModificarEmpresa } from "../../../aplicacion/comandos/modificar-empresa.caso-de-uso";
+import { ModificarConfiguracionGeneral } from "../../../aplicacion/comandos/modificar-configuracion-general.caso-de-uso";
+import { SuspenderEmpresa } from "../../../aplicacion/comandos/suspender-empresa.caso-de-uso";
+import { ReactivarEmpresa } from "../../../aplicacion/comandos/reactivar-empresa.caso-de-uso";
+import { CerrarEmpresa } from "../../../aplicacion/comandos/cerrar-empresa.caso-de-uso";
+import type { ContextoSolicitud } from "../../../aplicacion/puertos/comunes/contexto-solicitud";
+import { ContextoUsuario } from "../decoradores/contexto-usuario.decorador";
+import { VersionIfMatch } from "../decoradores/version-if-match.decorador";
 import {
   SolicitudRegistrarEmpresaDto,
   SolicitudModificarEmpresaDto,
   SolicitudModificarConfiguracionGeneralDto,
   ConsultaListarEmpresasDto,
-} from '../solicitudes';
+} from "../solicitudes";
 import {
   EmpresaLectura,
   ResultadoListadoEmpresas,
-} from '../../../aplicacion/modelos-lectura';
+} from "../../../aplicacion/modelos-lectura";
 
-@Controller('empresas')
+@Controller("empresas")
 export class ControladorEmpresas {
   constructor(
     private readonly registrarEmpresa: RegistrarEmpresa,
@@ -71,7 +71,7 @@ export class ControladorEmpresas {
       contexto,
     );
 
-    res.setHeader('ETag', `"${resultado.version}"`);
+    res.setHeader("ETag", `"${resultado.version}"`);
     return resultado;
   }
 
@@ -96,9 +96,9 @@ export class ControladorEmpresas {
     );
   }
 
-  @Get(':idOAlias')
+  @Get(":idOAlias")
   async consultar(
-    @Param('idOAlias') idOAlias: string,
+    @Param("idOAlias") idOAlias: string,
     @ContextoUsuario() contexto: ContextoSolicitud,
     @Res({ passthrough: true }) res: Response,
   ): Promise<EmpresaLectura> {
@@ -106,13 +106,13 @@ export class ControladorEmpresas {
       { idOAlias },
       contexto,
     );
-    res.setHeader('ETag', `"${resultado.version}"`);
+    res.setHeader("ETag", `"${resultado.version}"`);
     return resultado;
   }
 
-  @Patch(':id')
+  @Patch(":id")
   async modificar(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @VersionIfMatch() versionEsperada: number,
     @Body() dto: SolicitudModificarEmpresaDto,
     @ContextoUsuario() contexto: ContextoSolicitud,
@@ -132,14 +132,14 @@ export class ControladorEmpresas {
       contexto,
     );
 
-    res.setHeader('ETag', `"${resultado.version}"`);
+    res.setHeader("ETag", `"${resultado.version}"`);
     return resultado;
   }
 
-  @Post(':id/suspender')
+  @Post(":id/suspender")
   @HttpCode(HttpStatus.OK)
   async suspender(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @VersionIfMatch() versionEsperada: number,
     @ContextoUsuario() contexto: ContextoSolicitud,
     @Res({ passthrough: true }) res: Response,
@@ -148,14 +148,14 @@ export class ControladorEmpresas {
       { id, versionEsperada },
       contexto,
     );
-    res.setHeader('ETag', `"${resultado.version}"`);
+    res.setHeader("ETag", `"${resultado.version}"`);
     return resultado;
   }
 
-  @Post(':id/reactivar')
+  @Post(":id/reactivar")
   @HttpCode(HttpStatus.OK)
   async reactivar(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @VersionIfMatch() versionEsperada: number,
     @ContextoUsuario() contexto: ContextoSolicitud,
     @Res({ passthrough: true }) res: Response,
@@ -164,14 +164,14 @@ export class ControladorEmpresas {
       { id, versionEsperada },
       contexto,
     );
-    res.setHeader('ETag', `"${resultado.version}"`);
+    res.setHeader("ETag", `"${resultado.version}"`);
     return resultado;
   }
 
-  @Post(':id/cerrar')
+  @Post(":id/cerrar")
   @HttpCode(HttpStatus.OK)
   async cerrar(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @VersionIfMatch() versionEsperada: number,
     @ContextoUsuario() contexto: ContextoSolicitud,
     @Res({ passthrough: true }) res: Response,
@@ -180,13 +180,13 @@ export class ControladorEmpresas {
       { id, versionEsperada },
       contexto,
     );
-    res.setHeader('ETag', `"${resultado.version}"`);
+    res.setHeader("ETag", `"${resultado.version}"`);
     return resultado;
   }
 
-  @Put(':id/configuracion-general')
+  @Put(":id/configuracion-general")
   async modificarConfiguracion(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @VersionIfMatch() versionEsperada: number,
     @Body() dto: SolicitudModificarConfiguracionGeneralDto,
     @ContextoUsuario() contexto: ContextoSolicitud,
@@ -203,7 +203,7 @@ export class ControladorEmpresas {
       contexto,
     );
 
-    res.setHeader('ETag', `"${resultado.version}"`);
+    res.setHeader("ETag", `"${resultado.version}"`);
     return resultado;
   }
 }

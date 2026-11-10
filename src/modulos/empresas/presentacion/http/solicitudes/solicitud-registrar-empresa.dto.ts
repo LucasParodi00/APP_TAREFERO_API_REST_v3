@@ -8,8 +8,8 @@ import {
   IsNumber,
   Min,
   Max,
-} from 'class-validator';
-import { Type } from 'class-transformer';
+} from "class-validator";
+import { Type } from "class-transformer";
 
 export class PuntoGeograficoDto {
   @IsNumber()
@@ -33,14 +33,14 @@ export class SolicitudRegistrarEmpresaDto {
   @IsNotEmpty()
   @Matches(/^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$/, {
     message:
-      'El alias debe contener entre 3 y 63 caracteres en minúscula, dígitos o guiones, y comenzar y terminar con letra o dígito.',
+      "El alias debe contener entre 3 y 63 caracteres en minúscula, dígitos o guiones, y comenzar y terminar con letra o dígito.",
   })
   alias!: string;
 
   @IsOptional()
   @IsString()
   @Matches(/^\d{11}$/, {
-    message: 'El CUIT debe tener exactamente 11 dígitos numéricos.',
+    message: "El CUIT debe tener exactamente 11 dígitos numéricos.",
   })
   cuit?: string | null;
 
