@@ -134,7 +134,7 @@ No copia reglas ni escenarios: referencia IDs y tags. -->
 | T05 | `PLAN-EMP-0001 T05` | Completada | Casos de uso de ciclo de vida (Suspender, Reactivar, Cerrar) con 8 pruebas unitarias pasando. |
 | T06 | `PLAN-EMP-0001 T06` | Completada | Entidades TypeORM, migración DDL inicial para PostgreSQL y mapeador round-trip verificado. |
 | T07 | `PLAN-EMP-0001 T07` | Completada | RepositorioEmpresasTypeOrm con paginación y filtros en BD, y adaptador provisional de asignación comercial implementados. 58 pruebas pasando. |
-| T08 | | Pendiente | |
+| T08 | `PLAN-EMP-0001 T08` | Completada | Controlador NestJS, DTOs con class-validator, filtro RFC 9457 y cabeceras ETag / If-Match con 9 pruebas HTTP pasando. |
 | T09 | | Pendiente | |
 
 ## 9. Evidencia
