@@ -133,7 +133,7 @@ No copia reglas ni escenarios: referencia IDs y tags. -->
 | T04 | `PLAN-EMP-0001 T04` | Completada | Casos de uso de gestión de datos (Registrar, Consultar, Listar, Modificar datos y Modificar configuración) con 13 pruebas unitarias pasando. |
 | T05 | `PLAN-EMP-0001 T05` | Completada | Casos de uso de ciclo de vida (Suspender, Reactivar, Cerrar) con 8 pruebas unitarias pasando. |
 | T06 | `PLAN-EMP-0001 T06` | Completada | Entidades TypeORM, migración DDL inicial para PostgreSQL y mapeador round-trip verificado. |
-| T07 | | Pendiente | |
+| T07 | `PLAN-EMP-0001 T07` | Completada | RepositorioEmpresasTypeOrm con paginación y filtros en BD, y adaptador provisional de asignación comercial implementados. 58 pruebas pasando. |
 | T08 | | Pendiente | |
 | T09 | | Pendiente | |
 
