@@ -20,7 +20,7 @@ export class RepositorioEmpresasTypeOrm implements RepositorioEmpresas {
   async obtenerPorId(id: string): Promise<Empresa | null> {
     const entidad = await this.repository.findOne({
       where: { id },
-      relations: ['configuracionGeneral'],
+      relations: { configuracionGeneral: true },
     });
 
     if (!entidad) {
@@ -33,7 +33,7 @@ export class RepositorioEmpresasTypeOrm implements RepositorioEmpresas {
   async obtenerPorAlias(alias: string): Promise<Empresa | null> {
     const entidad = await this.repository.findOne({
       where: { alias },
-      relations: ['configuracionGeneral'],
+      relations: { configuracionGeneral: true },
     });
 
     if (!entidad) {
@@ -65,7 +65,7 @@ export class RepositorioEmpresasTypeOrm implements RepositorioEmpresas {
 
     const [entidades, total] = await this.repository.findAndCount({
       where,
-      relations: ['configuracionGeneral'],
+      relations: { configuracionGeneral: true },
       skip: (criterios.pagina - 1) * criterios.limite,
       take: criterios.limite,
       order: {

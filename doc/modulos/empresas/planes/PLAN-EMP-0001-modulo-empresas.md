@@ -6,7 +6,7 @@ module: "EMP"
 task:
   - EMP-TASK-002
   - EMP-TASK-003
-status: En ejecución
+status: En verificación
 mode: estandar
 created: 2026-11-10
 approved_by: "Ingeniero"
@@ -135,13 +135,20 @@ No copia reglas ni escenarios: referencia IDs y tags. -->
 | T06 | `PLAN-EMP-0001 T06` | Completada | Entidades TypeORM, migración DDL inicial para PostgreSQL y mapeador round-trip verificado. |
 | T07 | `PLAN-EMP-0001 T07` | Completada | RepositorioEmpresasTypeOrm con paginación y filtros en BD, y adaptador provisional de asignación comercial implementados. 58 pruebas pasando. |
 | T08 | `PLAN-EMP-0001 T08` | Completada | Controlador NestJS, DTOs con class-validator, filtro RFC 9457 y cabeceras ETag / If-Match con 9 pruebas HTTP pasando. |
-| T09 | | Pendiente | |
+| T09 | `PLAN-EMP-0001 T09` | Completada | Verificación de 41 escenarios de aceptación Gherkin (@EMP-UC-001 a @EMP-UC-008) y validación OpenAPI con Spectral (0 errors). |
 
 ## 9. Evidencia
 
 | Control | Resultado | Comando ejecutado | Observado |
 |---|---|---|---|
 | Spectral Lint | PASS | `yarn spectral lint doc/modulos/empresas/contratos/openapi.yaml` | 0 errors |
+| Pruebas Unitarias Dominio | PASS | `yarn test src/modulos/empresas/pruebas/dominio/` | 30 passed, 30 total |
+| Pruebas Unitarias Aplicación | PASS | `yarn test src/modulos/empresas/pruebas/aplicacion/` | 21 passed, 21 total |
+| Pruebas Integración | PASS | `yarn test src/modulos/empresas/pruebas/integracion/` | 7 passed, 7 total |
+| Pruebas HTTP Presentación | PASS | `yarn test src/modulos/empresas/pruebas/presentacion/` | 9 passed, 9 total |
+| Pruebas Aceptación Gherkin | PASS | `yarn test src/modulos/empresas/pruebas/aceptacion/` | 41 passed, 41 total |
+| Suite completa de pruebas | PASS | `yarn test` | 109 passed, 109 total |
+| Compilación TypeScript | PASS | `yarn build` | Build exit code 0 |
 
 ## 10. Cierre
 

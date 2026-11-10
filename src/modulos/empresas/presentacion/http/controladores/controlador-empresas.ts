@@ -11,7 +11,7 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { Response } from 'express';
+import type { Response } from 'express';
 import { randomUUID } from 'crypto';
 import { RegistrarEmpresa } from '../../../aplicacion/comandos/registrar-empresa.caso-de-uso';
 import { ConsultarEmpresa } from '../../../aplicacion/consultas/consultar-empresa.caso-de-uso';
@@ -21,7 +21,7 @@ import { ModificarConfiguracionGeneral } from '../../../aplicacion/comandos/modi
 import { SuspenderEmpresa } from '../../../aplicacion/comandos/suspender-empresa.caso-de-uso';
 import { ReactivarEmpresa } from '../../../aplicacion/comandos/reactivar-empresa.caso-de-uso';
 import { CerrarEmpresa } from '../../../aplicacion/comandos/cerrar-empresa.caso-de-uso';
-import { ContextoSolicitud } from '../../../aplicacion/puertos/comunes/contexto-solicitud';
+import type { ContextoSolicitud } from '../../../aplicacion/puertos/comunes/contexto-solicitud';
 import { ContextoUsuario } from '../decoradores/contexto-usuario.decorador';
 import { VersionIfMatch } from '../decoradores/version-if-match.decorador';
 import {
