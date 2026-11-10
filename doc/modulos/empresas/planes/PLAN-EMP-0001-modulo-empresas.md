@@ -6,7 +6,7 @@ module: "EMP"
 task:
   - EMP-TASK-002
   - EMP-TASK-003
-status: Aprobado
+status: En ejecución
 mode: estandar
 created: 2026-11-10
 approved_by: "Ingeniero"
@@ -127,7 +127,7 @@ No copia reglas ni escenarios: referencia IDs y tags. -->
 
 | Tarea | Commit | Estado | Notas o desviaciones |
 |---|---|---|---|
-| T01 | | Pendiente | |
+| T01 | `PLAN-EMP-0001 T01` | Completada | Objetos de valor, enumeraciones y errores implementados con 19 pruebas unitarias pasando. |
 | T02 | | Pendiente | |
 | T03 | | Pendiente | |
 | T04 | | Pendiente | |

@@ -20,7 +20,7 @@ module: "EMP"
 
 - **Épica:** `EPIC-001`
 - **Tipo:** Implementación
-- **Estado:** Planificada
+- **Estado:** En curso
 - **Prioridad:** Alta
 - **Alcance:** `EMP-UC-001`, `EMP-UC-002`, `EMP-UC-003`, `EMP-UC-004`, `EMP-UC-008`
 - **Depende de:** `EMP-TASK-001`
