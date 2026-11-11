@@ -15,6 +15,8 @@ import {
     VerificadorAsignacionComercial,
 } from './aplicacion/puertos/verificador-asignacion-comercial.puerto';
 import { AdaptadorAsignacionComercialProvisional } from './infraestructura/adaptadores/asignacion-comercial-provisional.adaptador';
+import { RESOLVEDOR_EMPRESA_PUBLICO } from './aplicacion/puertos/resolvedor-empresa-publico.puerto';
+import { AdaptadorResolvedorEmpresaPublico } from './infraestructura/adaptadores/resolvedor-empresa-publico.adaptador';
 
 @Module({
     controllers: [ControladorEmpresas],
@@ -64,6 +66,11 @@ import { AdaptadorAsignacionComercialProvisional } from './infraestructura/adapt
             useFactory: (repo: RepositorioEmpresas) => new CerrarEmpresa(repo),
             inject: [REPOSITORIO_EMPRESAS],
         },
+        {
+            provide: RESOLVEDOR_EMPRESA_PUBLICO,
+            useFactory: (consulta: ConsultaEmpresas) => new AdaptadorResolvedorEmpresaPublico(consulta),
+            inject: [CONSULTA_EMPRESAS],
+        },
     ],
     exports: [
         RegistrarEmpresa,
@@ -74,6 +81,7 @@ import { AdaptadorAsignacionComercialProvisional } from './infraestructura/adapt
         SuspenderEmpresa,
         ReactivarEmpresa,
         CerrarEmpresa,
+        RESOLVEDOR_EMPRESA_PUBLICO,
     ],
 })
 export class EmpresasModule {}

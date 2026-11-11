@@ -273,7 +273,7 @@ Estos cambios no se aplican a los archivos dueños durante esta revisión. La ap
 | T08   | 9ebed33| Completada| Hashing Argon2id (D-01), JWT asimétrico EdDSA/jose (D-02), refresh SHA-256 (D-03) y reloj |
 | T09   | 8acfd94| Completada| Entidades TypeORM, mapeadores, repositorios y consultas de persistencia |
 | T10   | 8b1ecc0| Completada| Migración inicial SQL con índices parciales y script de rollback |
-| T11   |        | Pendiente |                      |
+| T11   | 1cac656| Completada| Puerto estrecho ResolvedorEmpresaPublico (EMP) y adaptador consumidor (ACC) |
 | T12   |        | Pendiente |                      |
 | T13   |        | Pendiente |                      |
 | T14   |        | Pendiente |                      |
