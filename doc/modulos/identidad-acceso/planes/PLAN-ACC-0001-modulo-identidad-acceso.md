@@ -278,7 +278,7 @@ Estos cambios no se aplican a los archivos dueños durante esta revisión. La ap
 | T13   | c7ea9c2| Completada| Controladores HTTP, DTOs validados y filtro de excepciones RFC 9457 |
 | T14   | 2ebcf79| Completada| AutenticacionGuard, @RequierePermiso, @Publico, ContextoSolicitud e hidratación req.contexto |
 | T15   | d2e0ef4| Completada| Módulo NestJS compuesto, fábricas de casos de uso y adaptadores con DI |
-| T16   |        | Pendiente |                      |
+| T16   | c33d755| Completada| Pruebas de aceptación Gherkin de casos de uso (ACC-UC-001 a ACC-UC-012) |
 | T17   |        | Pendiente |                      |
 
 ## 9. Evidencia
