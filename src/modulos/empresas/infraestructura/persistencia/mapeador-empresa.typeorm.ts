@@ -1,6 +1,6 @@
-import { Empresa } from '../../../../dominio/agregados/empresa';
-import { ConfiguracionGeneralEmpresa } from '../../../../dominio/entidades/configuracion-general-empresa';
-import { EstadoEmpresa } from '../../../../dominio/enumeraciones';
+import { Empresa } from '../../dominio/agregados/empresa';
+import { ConfiguracionGeneralEmpresa } from '../../dominio/entidades/configuracion-general-empresa';
+import { EstadoEmpresa } from '../../dominio/enumeraciones';
 import {
     NombreEmpresa,
     AliasEmpresa,
@@ -12,9 +12,9 @@ import {
     PaisReferencia,
     ZonaHoraria,
     MonedaPrincipal,
-} from '../../../../dominio/objetos-valor';
-import { EmpresaTypeOrmEntity } from '../entidades/empresa.typeorm-entity';
-import { ConfiguracionGeneralEmpresaTypeOrmEntity } from '../entidades/configuracion-general-empresa.typeorm-entity';
+} from '../../dominio/objetos-valor';
+import { EmpresaTypeOrmEntity } from './empresa.typeorm-entity';
+import { ConfiguracionGeneralEmpresaTypeOrmEntity } from './configuracion-general-empresa.typeorm-entity';
 
 export class MapeadorEmpresaTypeOrm {
     static aDominio(entity: EmpresaTypeOrmEntity): Empresa {

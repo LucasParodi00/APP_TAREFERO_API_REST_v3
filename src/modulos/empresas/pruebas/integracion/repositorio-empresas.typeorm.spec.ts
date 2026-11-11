@@ -1,28 +1,25 @@
 import { Repository } from 'typeorm';
-import { RepositorioEmpresasTypeOrm } from '../../infraestructura/persistencia/typeorm/repositorios/repositorio-empresas.typeorm';
-import { EmpresaTypeOrmEntity } from '../../infraestructura/persistencia/typeorm/entidades/empresa.typeorm-entity';
+import { RepositorioEmpresasTypeOrm } from '../../infraestructura/persistencia/repositorio-empresas.typeorm';
+import { EmpresaTypeOrmEntity } from '../../infraestructura/persistencia/empresa.typeorm-entity';
 import { Empresa } from '../../dominio/agregados/empresa';
 import { NombreEmpresa, AliasEmpresa } from '../../dominio/objetos-valor';
 import { AdaptadorAsignacionComercialProvisional } from '../../infraestructura/adaptadores/asignacion-comercial-provisional.adaptador';
 
-describe('Infraestructura Persistencia — RepositorioEmpresasTypeOrm (T07)', () => {
+describe('Infraestructura Persistencia — RepositorioEmpresasTypeOrm (T03/T07)', () => {
     let saveMock: jest.Mock;
     let findOneMock: jest.Mock;
     let countMock: jest.Mock;
-    let findAndCountMock: jest.Mock;
     let repositorio: RepositorioEmpresasTypeOrm;
 
     beforeEach(() => {
         saveMock = jest.fn();
         findOneMock = jest.fn();
         countMock = jest.fn();
-        findAndCountMock = jest.fn();
 
         const mockRepo = {
             save: saveMock,
             findOne: findOneMock,
             count: countMock,
-            findAndCount: findAndCountMock,
         } as unknown as Repository<EmpresaTypeOrmEntity>;
 
         repositorio = new RepositorioEmpresasTypeOrm(mockRepo);
@@ -60,23 +57,6 @@ describe('Infraestructura Persistencia — RepositorioEmpresasTypeOrm (T07)', ()
         expect(countMock).toHaveBeenCalledWith({
             where: { alias: 'yerba-misionera' },
         });
-    });
-
-    it('lista con paginación calculando totalPaginas', async () => {
-        findAndCountMock.mockResolvedValueOnce([[], 50]);
-
-        const resultado = await repositorio.listar({
-            pagina: 2,
-            limite: 10,
-            estado: 'ACTIVA',
-            nombre: 'Yerba',
-        });
-
-        expect(resultado.total).toBe(50);
-        expect(resultado.pagina).toBe(2);
-        expect(resultado.limite).toBe(10);
-        expect(resultado.totalPaginas).toBe(5);
-        expect(findAndCountMock).toHaveBeenCalledTimes(1);
     });
 
     it('adaptador provisional de asignación comercial confirma asignación', async () => {

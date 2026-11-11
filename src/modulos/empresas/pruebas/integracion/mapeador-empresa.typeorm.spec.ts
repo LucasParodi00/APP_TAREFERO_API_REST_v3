@@ -12,7 +12,7 @@ import {
     ZonaHoraria,
     MonedaPrincipal,
 } from '../../dominio/objetos-valor';
-import { MapeadorEmpresaTypeOrm } from '../../infraestructura/persistencia/typeorm/mapeadores/mapeador-empresa.typeorm';
+import { MapeadorEmpresaTypeOrm } from '../../infraestructura/persistencia/mapeador-empresa.typeorm';
 
 describe('Mapeador TypeORM Empresa (T06)', () => {
     it('realiza round-trip completo entre dominio y entidad TypeORM con datos completos', () => {
