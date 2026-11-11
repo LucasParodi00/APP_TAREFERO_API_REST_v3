@@ -263,8 +263,8 @@ Estos cambios no se aplican a los archivos dueños durante esta revisión. La ap
 | Tarea | Commit | Estado    | Notas o desviaciones |
 | ----- | ------ | --------- | -------------------- |
 | T00   | 8653f81| Completada| Contrato OpenAPI alineado con UC-001..UC-012, códigos de excepción y validado con Spectral |
-| T01   |        | Completada| Estructura hexagonal, módulo NestJS, comandos de calidad y prueba de arquitectura depcruise |
-| T02   |        | Pendiente |                      |
+| T01   | 5338f93| Completada| Estructura hexagonal, módulo NestJS, comandos de calidad y prueba de arquitectura depcruise |
+| T02   |        | Completada| Enumeraciones, objetos de valor y errores tipados de dominio (ACC-BR-003, ACC-BR-018..022) |
 | T03   |        | Pendiente |                      |
 | T04   |        | Pendiente |                      |
 | T05   |        | Pendiente |                      |
