@@ -1,7 +1,7 @@
 import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus } from '@nestjs/common';
 import { Response, Request } from 'express';
-import { ErrorDominioEmpresa } from '../../../dominio/errores';
-import { ErrorAplicacionEmpresa } from '../../../aplicacion/errores';
+import { ErrorDominioEmpresa } from '../../dominio/errores';
+import { ErrorAplicacionEmpresa } from '../../aplicacion/errores';
 
 @Catch()
 export class FiltroExcepcionesRfc9457 implements ExceptionFilter {

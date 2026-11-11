@@ -1,15 +1,15 @@
 import { Controller, Get, Post, Patch, Put, Param, Query, Body, Res, HttpCode, HttpStatus } from '@nestjs/common';
 import type { Response } from 'express';
 import { randomUUID } from 'crypto';
-import { RegistrarEmpresa } from '../../../aplicacion/comandos/registrar-empresa.caso-de-uso';
-import { ConsultarEmpresa } from '../../../aplicacion/consultas/consultar-empresa.caso-de-uso';
-import { ListarEmpresas } from '../../../aplicacion/consultas/listar-empresas.caso-de-uso';
-import { ModificarEmpresa } from '../../../aplicacion/comandos/modificar-empresa.caso-de-uso';
-import { ModificarConfiguracionGeneral } from '../../../aplicacion/comandos/modificar-configuracion-general.caso-de-uso';
-import { SuspenderEmpresa } from '../../../aplicacion/comandos/suspender-empresa.caso-de-uso';
-import { ReactivarEmpresa } from '../../../aplicacion/comandos/reactivar-empresa.caso-de-uso';
-import { CerrarEmpresa } from '../../../aplicacion/comandos/cerrar-empresa.caso-de-uso';
-import type { ContextoSolicitud } from '../../../aplicacion/puertos/contexto-solicitud';
+import { RegistrarEmpresa } from '../../aplicacion/comandos/registrar-empresa.caso-de-uso';
+import { ConsultarEmpresa } from '../../aplicacion/consultas/consultar-empresa.caso-de-uso';
+import { ListarEmpresas } from '../../aplicacion/consultas/listar-empresas.caso-de-uso';
+import { ModificarEmpresa } from '../../aplicacion/comandos/modificar-empresa.caso-de-uso';
+import { ModificarConfiguracionGeneral } from '../../aplicacion/comandos/modificar-configuracion-general.caso-de-uso';
+import { SuspenderEmpresa } from '../../aplicacion/comandos/suspender-empresa.caso-de-uso';
+import { ReactivarEmpresa } from '../../aplicacion/comandos/reactivar-empresa.caso-de-uso';
+import { CerrarEmpresa } from '../../aplicacion/comandos/cerrar-empresa.caso-de-uso';
+import type { ContextoSolicitud } from '../../aplicacion/puertos/contexto-solicitud';
 import { ContextoUsuario } from '../decoradores/contexto-usuario.decorador';
 import { VersionIfMatch } from '../decoradores/version-if-match.decorador';
 import {
@@ -17,8 +17,8 @@ import {
     SolicitudModificarEmpresaDto,
     SolicitudModificarConfiguracionGeneralDto,
     ConsultaListarEmpresasDto,
-} from '../solicitudes';
-import { EmpresaLectura, ResultadoListadoEmpresas } from '../../../aplicacion/modelos-lectura';
+} from '../dtos';
+import { EmpresaLectura, ResultadoListadoEmpresas } from '../../aplicacion/modelos-lectura';
 
 @Controller('empresas')
 export class ControladorEmpresas {

@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import supertest from 'supertest';
 import { App } from 'supertest/types';
-import { ControladorEmpresas } from '../../presentacion/http/controladores/controlador-empresas';
+import { ControladorEmpresas } from '../../presentacion/controladores/controlador-empresas';
 import { RegistrarEmpresa } from '../../aplicacion/comandos/registrar-empresa.caso-de-uso';
 import { ConsultarEmpresa } from '../../aplicacion/consultas/consultar-empresa.caso-de-uso';
 import { ListarEmpresas } from '../../aplicacion/consultas/listar-empresas.caso-de-uso';
@@ -11,7 +11,7 @@ import { ModificarConfiguracionGeneral } from '../../aplicacion/comandos/modific
 import { SuspenderEmpresa } from '../../aplicacion/comandos/suspender-empresa.caso-de-uso';
 import { ReactivarEmpresa } from '../../aplicacion/comandos/reactivar-empresa.caso-de-uso';
 import { CerrarEmpresa } from '../../aplicacion/comandos/cerrar-empresa.caso-de-uso';
-import { FiltroExcepcionesRfc9457 } from '../../presentacion/http/filtros/filtro-excepciones-rfc9457';
+import { FiltroExcepcionesRfc9457 } from '../../presentacion/filtros/filtro-excepciones-rfc9457';
 import { EmpresaLectura, ResultadoListadoEmpresas } from '../../aplicacion/modelos-lectura';
 
 describe('ControladorEmpresas HTTP (T08)', () => {

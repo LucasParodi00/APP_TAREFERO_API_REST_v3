@@ -1,6 +1,6 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { Request } from 'express';
-import { ContextoSolicitud } from '../../../aplicacion/puertos/contexto-solicitud';
+import { ContextoSolicitud } from '../../aplicacion/puertos/contexto-solicitud';
 
 interface RequestConUsuario extends Request {
     user?: {

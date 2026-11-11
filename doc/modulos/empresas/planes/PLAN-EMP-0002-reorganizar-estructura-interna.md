@@ -132,7 +132,7 @@ No copia reglas ni escenarios: referencia IDs y tags. -->
 | T01 | `PLAN-EMP-0002 T01` | Completada | Contrato RepositorioEmpresas movido a Dominio sin modelos de lectura; comandos y pruebas actualizados. |
 | T02 | `PLAN-EMP-0002 T02` | Completada | Puertos aplanados en aplicacion/puertos/; definido ConsultaEmpresas; casos de uso de consulta y dobles de prueba actualizados; carpetas comunes y salida eliminadas. |
 | T03 | `PLAN-EMP-0002 T03` | Completada | Persistencia TypeORM aplanada en infraestructura/persistencia/; separados RepositorioEmpresasTypeOrm y ConsultaEmpresasTypeOrm con proyeccion directa y pruebas integradas. |
-| T04 | | Pendiente | |
+| T04 | `PLAN-EMP-0002 T04` | Completada | Capa Presentacion aplanada eliminando presentacion/http/; renombrada carpeta solicitudes a dtos; controladores, decoradores, filtros y pruebas actualizados. |
 | T05 | | Pendiente | |
 | T06 | | Pendiente | |
 

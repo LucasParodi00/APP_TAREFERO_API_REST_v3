@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ControladorEmpresas } from './presentacion/http/controladores/controlador-empresas';
+import { ControladorEmpresas } from './presentacion/controladores/controlador-empresas';
 import { RegistrarEmpresa } from './aplicacion/comandos/registrar-empresa.caso-de-uso';
 import { ConsultarEmpresa } from './aplicacion/consultas/consultar-empresa.caso-de-uso';
 import { ListarEmpresas } from './aplicacion/consultas/listar-empresas.caso-de-uso';
