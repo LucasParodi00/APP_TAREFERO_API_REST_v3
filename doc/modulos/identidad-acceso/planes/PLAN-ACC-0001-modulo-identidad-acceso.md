@@ -274,7 +274,7 @@ Estos cambios no se aplican a los archivos dueños durante esta revisión. La ap
 | T09   | 8acfd94| Completada| Entidades TypeORM, mapeadores, repositorios y consultas de persistencia |
 | T10   | 8b1ecc0| Completada| Migración inicial SQL con índices parciales y script de rollback |
 | T11   | 1cac656| Completada| Puerto estrecho ResolvedorEmpresaPublico (EMP) y adaptador consumidor (ACC) |
-| T12   |        | Pendiente |                      |
+| T12   | 4c79190| Completada| Adaptadores de Personal (PER) y cupo de Suscripciones (SUS) fail-closed |
 | T13   |        | Pendiente |                      |
 | T14   |        | Pendiente |                      |
 | T15   |        | Pendiente |                      |
