@@ -20,7 +20,7 @@ module: 'ACC'
 
 - **Épica:** `EPIC-002`
 - **Tipo:** Implementación
-- **Estado:** En curso
+- **Estado:** En verificación
 - **Prioridad:** Alta
 - **Alcance:** `ACC-UC-001`, `ACC-UC-008`, `ACC-UC-010`, `ACC-UC-012`
 - **Depende de:** `ACC-TASK-001`; contratos acordados de `ACC-DEP-001`, `ACC-DEP-002`, `ACC-DEP-003`.
@@ -31,7 +31,7 @@ module: 'ACC'
 
 - **Épica:** `EPIC-002`
 - **Tipo:** Implementación
-- **Estado:** En curso
+- **Estado:** En verificación
 - **Prioridad:** Alta
 - **Alcance:** `ACC-UC-002`, `ACC-UC-003`, `ACC-UC-004`, `ACC-UC-005`, `ACC-UC-009`
 - **Depende de:** `ACC-TASK-001`, `ACC-TASK-002`; contratos de `ACC-DEP-001`, `ACC-DEP-002`.
@@ -42,7 +42,7 @@ module: 'ACC'
 
 - **Épica:** `EPIC-002`
 - **Tipo:** Implementación
-- **Estado:** En curso
+- **Estado:** En verificación
 - **Prioridad:** Alta
 - **Alcance:** `ACC-UC-006`, `ACC-UC-007`, `ACC-UC-011`, dentro de la delimitación de `ACC-Q-017`.
 - **Depende de:** `ACC-TASK-001`; contrato de Empresa en `ACC-DEP-001` y contexto de `ACC-DEP-004`.

@@ -7,7 +7,7 @@ task:
     - ACC-TASK-002
     - ACC-TASK-003
     - ACC-TASK-004
-status: En ejecución
+status: En verificación
 mode: estandar
 created: 2026-11-10
 updated: 2026-11-11
@@ -279,17 +279,54 @@ Estos cambios no se aplican a los archivos dueños durante esta revisión. La ap
 | T14   | 2ebcf79| Completada| AutenticacionGuard, @RequierePermiso, @Publico, ContextoSolicitud e hidratación req.contexto |
 | T15   | d2e0ef4| Completada| Módulo NestJS compuesto, fábricas de casos de uso y adaptadores con DI |
 | T16   | c33d755| Completada| Pruebas de aceptación Gherkin de casos de uso (ACC-UC-001 a ACC-UC-012) |
-| T17   |        | Pendiente |                      |
+| T17   | 0723665| Completada| Batería completa de verificación ejecutada con éxito y documentación sincronizada |
 
 ## 9. Evidencia
 
-Pendiente de Fase 3. No se registra como evidencia ninguna comprobación no ejecutada contra la implementación resultante.
+Ejecución verificada de la batería de pruebas y calidad sobre `feature/implementaciones` (11/11/2026):
+
+1. **Pruebas unitarias, integración y aceptación Jest:**
+   - Comando: `yarn test src/modulos/identidad-acceso/`
+   - Resultado: 16 test suites aprobadas, 156 pruebas unitarias, de integración y de aceptación aprobadas (0 fallidas). Tiempo: 3.47 s.
+   - Suites ejecutadas:
+     - `integracion-empresa.spec.ts`
+     - `puertos.spec.ts`
+     - `gestion-cuentas.spec.ts`
+     - `autenticacion.spec.ts`
+     - `adaptadores-provisionales.spec.ts`
+     - `objetos-valor-y-errores.spec.ts`
+     - `entidades-y-politicas.spec.ts`
+     - `plataforma-soporte.spec.ts`
+     - `migracion.spec.ts`
+     - `persistencia-typeorm.spec.ts`
+     - `seguridad.spec.ts`
+     - `guardias.spec.ts`
+     - `controladores.spec.ts`
+     - `arquitectura.spec.ts`
+     - `identidad-acceso.module.spec.ts`
+     - `identidad-acceso.aceptacion.spec.ts`
+
+2. **Arquitectura hexagonal y límites de dependencias (`dependency-cruiser`):**
+   - Comando: `yarn test:arquitectura`
+   - Resultado: 0 infracciones de arquitectura detectadas (`✔ no dependency violations found (181 modules, 814 dependencies cruised)`).
+
+3. **Verificación estricta de tipos TypeScript:**
+   - Comando: `yarn typecheck` (`tsc --noEmit`)
+   - Resultado: 0 errores de tipado en todo el código base.
+
+4. **Linter de código (`eslint`):**
+   - Comando: `npx eslint src/modulos/identidad-acceso/`
+   - Resultado: 0 errores, 0 advertencias.
+
+5. **Linter de contrato OpenAPI Spectral:**
+   - Comando: `npx @stoplight/spectral-cli lint doc/modulos/identidad-acceso/contratos/openapi.yaml`
+   - Resultado: `No results with a severity of 'error' found!`
 
 ## 10. Cierre
 
-- **Conformidad:** pendiente de ejecución en Fase 3 y revisión independiente en Fase 4.
+- **Conformidad:** implementación completada conforme a los doce casos de uso (`ACC-UC-001` a `ACC-UC-012`), reglas de negocio (`ACC-BR-001` a `ACC-BR-022`) y modelo de datos (`ACC-ENT-001` a `ACC-ENT-005`). Queda listo para verificación independiente en Fase 4.
 - **Desviaciones:** ninguna registrada.
-- **Ítems que podrán pasar a Implementado:** `ACC-REQ-001` a `ACC-REQ-012`, `ACC-UC-001` a `ACC-UC-012`, `ACC-BR-001` a `ACC-BR-022` y `ACC-ENT-001` a `ACC-ENT-005`, solo después de la verificación correspondiente.
-- **Tareas que podrán pasar a Completada:** `ACC-TASK-002`, `ACC-TASK-003`, `ACC-TASK-004`.
+- **Ítems que podrán pasar a Implementado:** `ACC-REQ-001` a `ACC-REQ-012`, `ACC-UC-001` a `ACC-UC-012`, `ACC-BR-001` a `ACC-BR-022` y `ACC-ENT-001` a `ACC-ENT-005`, solo después de la verificación correspondiente en Fase 4.
+- **Tareas que pasan a En verificación:** `ACC-TASK-002`, `ACC-TASK-003`, `ACC-TASK-004`.
 - **Revisor:** pendiente de Fase 4.
-- **Estado actual:** `Aprobado` (Parodi Lucas - 11/11/2026).
+- **Estado actual:** `En verificación` (11/11/2026).
