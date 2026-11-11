@@ -87,8 +87,8 @@ export class CredencialesInvalidas extends ErrorDominioIdentidadAcceso {
 
 export class CuentaSuspendida extends ErrorDominioIdentidadAcceso {
     readonly codigo = 'ACC_CUENTA_SUSPENDIDA';
-    constructor() {
-        super('La cuenta de acceso se encuentra suspendida.');
+    constructor(mensaje = 'La cuenta de acceso se encuentra suspendida.') {
+        super(mensaje);
     }
 }
 

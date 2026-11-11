@@ -267,8 +267,8 @@ Estos cambios no se aplican a los archivos dueños durante esta revisión. La ap
 | T02   | 86d137c| Completada| Enumeraciones, objetos de valor y errores tipados de dominio (ACC-BR-003, ACC-BR-018..022) |
 | T03   | 41235e1| Completada| Agregados Cuenta, Sesión, UsuarioPlataforma, IntervencionSoporte y contratos de repositorios |
 | T04   | dcf7a93| Completada| Puertos de aplicación (ResolvedorEmpresa, Cupo, Empleado, Hash, Tokens, Reloj, Consultas) |
-| T05   |        | Completada| Casos de uso de gestión de cuentas (ACC-UC-001, ACC-UC-008, ACC-UC-010, ACC-UC-012) |
-| T06   |        | Pendiente |                      |
+| T05   | d8722ae| Completada| Casos de uso de gestión de cuentas (ACC-UC-001, ACC-UC-008, ACC-UC-010, ACC-UC-012) |
+| T06   |        | Completada| Autenticación tenant, autorización, renovación con rotación y cambio/restablecimiento de credenciales |
 | T07   |        | Pendiente |                      |
 | T08   |        | Pendiente |                      |
 | T09   |        | Pendiente |                      |
