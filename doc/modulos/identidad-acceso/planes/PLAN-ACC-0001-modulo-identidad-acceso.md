@@ -275,7 +275,7 @@ Estos cambios no se aplican a los archivos dueños durante esta revisión. La ap
 | T10   | 8b1ecc0| Completada| Migración inicial SQL con índices parciales y script de rollback |
 | T11   | 1cac656| Completada| Puerto estrecho ResolvedorEmpresaPublico (EMP) y adaptador consumidor (ACC) |
 | T12   | 4c79190| Completada| Adaptadores de Personal (PER) y cupo de Suscripciones (SUS) fail-closed |
-| T13   |        | Pendiente |                      |
+| T13   | c7ea9c2| Completada| Controladores HTTP, DTOs validados y filtro de excepciones RFC 9457 |
 | T14   |        | Pendiente |                      |
 | T15   |        | Pendiente |                      |
 | T16   |        | Pendiente |                      |
