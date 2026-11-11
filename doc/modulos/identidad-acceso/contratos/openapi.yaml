@@ -155,7 +155,7 @@ paths:
       tags:
         - Cuentas
       summary: Habilitar Cuenta de Empresa
-      description: Habilita el acceso al sistema para una persona en la Empresa con credenciales y roles.
+      description: Crea una Cuenta de Empresa independiente y, cuando corresponda, la vincula con un Empleado validado por PER.
       operationId: habilitarCuentaEmpresa
       x-use-case: ACC-UC-001
       x-business-rules:
@@ -169,6 +169,7 @@ paths:
         - ACC-BR-016
         - ACC-BR-018
         - ACC-BR-019
+        - ACC-BR-021
       security:
         - BearerAuth: []
       requestBody:
@@ -330,6 +331,7 @@ paths:
         - ACC-BR-006
         - ACC-BR-016
         - ACC-BR-017
+        - ACC-BR-021
       security:
         - BearerAuth: []
       requestBody:
@@ -392,6 +394,7 @@ paths:
         - ACC-BR-005
         - ACC-BR-007
         - ACC-BR-016
+        - ACC-BR-021
       security:
         - BearerAuth: []
       requestBody:
@@ -411,6 +414,60 @@ paths:
             ETag:
               schema:
                 type: string
+        '400':
+          $ref: '#/components/responses/ErrorSolicitudInvalida'
+        '403':
+          $ref: '#/components/responses/ErrorAccesoDenegado'
+        '404':
+          $ref: '#/components/responses/ErrorRecursoNoEncontrado'
+        '409':
+          $ref: '#/components/responses/ErrorConflicto'
+        '422':
+          $ref: '#/components/responses/ErrorReglaNegocio'
+
+  /empresas/{empresaId}/cuentas/{cuentaId}/vincular-empleado:
+    parameters:
+      - name: empresaId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Identificador de la Empresa
+      - name: cuentaId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Identificador de la Cuenta de Empresa
+    post:
+      tags:
+        - Cuentas
+      summary: Vincular una Cuenta de Empresa con un Empleado
+      description: Vincula una Cuenta de Empresa existente con una ficha laboral activa de la misma Empresa.
+      operationId: vincularEmpleado
+      x-use-case: ACC-UC-012
+      x-business-rules:
+        - ACC-BR-002
+        - ACC-BR-015
+        - ACC-BR-021
+        - ACC-BR-022
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SolicitudVincularEmpleado'
+      responses:
+        '200':
+          description: Cuenta vinculada exitosamente con el Empleado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaCuentaEmpresa'
         '400':
           $ref: '#/components/responses/ErrorSolicitudInvalida'
         '403':
@@ -622,6 +679,10 @@ components:
         empresaId:
           type: string
           format: uuid
+        empleadoId:
+          type: string
+          format: uuid
+          description: Presente únicamente cuando la Cuenta de Empresa está vinculada con un Empleado.
         sesionId:
           type: string
           format: uuid
@@ -696,16 +757,19 @@ components:
     SolicitudHabilitarCuenta:
       type: object
       required:
-        - personaId
         - correoAcceso
         - contrasenia
         - accesoWeb
         - accesoMovil
         - roles
       properties:
-        personaId:
+        empleadoId:
           type: string
           format: uuid
+          description: Referencia laboral opcional; obligatoria para roles CAPATAZ o EMPLEADO.
+        nombreMostrado:
+          type: string
+          description: Etiqueta opcional de presentación; no sustituye datos personales de PER.
         correoAcceso:
           type: string
           format: email
@@ -749,6 +813,16 @@ components:
             $ref: '#/components/schemas/RolCodigo'
           minItems: 1
 
+    SolicitudVincularEmpleado:
+      type: object
+      required:
+        - empleadoId
+      properties:
+        empleadoId:
+          type: string
+          format: uuid
+          description: Identificador del Empleado activo en PER perteneciente a la misma Empresa.
+
     SolicitudInicializarPlataforma:
       type: object
       required:
@@ -781,7 +855,6 @@ components:
       required:
         - id
         - empresaId
-        - personaId
         - correoAcceso
         - accesoWeb
         - accesoMovil
@@ -797,9 +870,11 @@ components:
         empresaId:
           type: string
           format: uuid
-        personaId:
+        empleadoId:
           type: string
           format: uuid
+        nombreMostrado:
+          type: string
         correoAcceso:
           type: string
         accesoWeb:
@@ -966,7 +1041,7 @@ components:
             $ref: '#/components/schemas/ProblemaDetalle'
 
     ErrorRecursoNoEncontrado:
-      description: Cuenta, persona o empresa no encontrada (404)
+      description: Cuenta, Empleado o Empresa no encontrada (404)
       content:
         application/problem+json:
           schema:
