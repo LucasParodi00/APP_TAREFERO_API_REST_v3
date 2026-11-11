@@ -270,7 +270,7 @@ Estos cambios no se aplican a los archivos dueños durante esta revisión. La ap
 | T05   | d8722ae| Completada| Casos de uso de gestión de cuentas (ACC-UC-001, ACC-UC-008, ACC-UC-010, ACC-UC-012) |
 | T06   | 650abb6| Completada| Autenticación tenant, autorización, renovación con rotación y cambio/restablecimiento de credenciales |
 | T07   | 77a621f| Completada| Casos de uso de plataforma y soporte (ACC-UC-006 bootstrap, ACC-UC-007, ACC-UC-011) |
-| T08   |        | Pendiente |                      |
+| T08   | 9ebed33| Completada| Hashing Argon2id (D-01), JWT asimétrico EdDSA/jose (D-02), refresh SHA-256 (D-03) y reloj |
 | T09   |        | Pendiente |                      |
 | T10   |        | Pendiente |                      |
 | T11   |        | Pendiente |                      |
