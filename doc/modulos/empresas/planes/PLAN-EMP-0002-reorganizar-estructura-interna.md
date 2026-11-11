@@ -4,7 +4,7 @@ id: PLAN-EMP-0002
 title: "Reorganizar la estructura interna del módulo Empresas"
 module: "EMP"
 task: EMP-TASK-004
-status: En ejecución
+status: En verificación
 mode: estandar
 created: 2026-11-11
 approved_by: "Ingeniero"
@@ -134,20 +134,24 @@ No copia reglas ni escenarios: referencia IDs y tags. -->
 | T03 | `PLAN-EMP-0002 T03` | Completada | Persistencia TypeORM aplanada en infraestructura/persistencia/; separados RepositorioEmpresasTypeOrm y ConsultaEmpresasTypeOrm con proyeccion directa y pruebas integradas. |
 | T04 | `PLAN-EMP-0002 T04` | Completada | Capa Presentacion aplanada eliminando presentacion/http/; renombrada carpeta solicitudes a dtos; controladores, decoradores, filtros y pruebas actualizados. |
 | T05 | `PLAN-EMP-0002 T05` | Completada | EmpresasModule actualizado con tokens separados REPOSITORIO_EMPRESAS y CONSULTA_EMPRESAS; verificada composicion en prueba de integracion. |
-| T06 | | Pendiente | |
+| T06 | `PLAN-EMP-0002 T06` | Completada | Separados dobles de aceptacion en RepositorioAceptacion y ConsultaAceptacion; comprobada ausencia de rutas intermedias obsoletas y paso de 112 pruebas. |
 
 ## 9. Evidencia
 
 | Control | Resultado | Comando ejecutado | Observado |
 |---|---|---|---|
-| Línea base del módulo | NOT RUN | `yarn test src/modulos/empresas --runInBand` | `jest` no disponible porque no están instaladas las dependencias |
-| | NOT RUN | | |
+| Línea base del módulo | OK | `yarn test` | 109 pruebas pasadas inicialmente tras aprobación |
+| Pruebas unitarias e integración | OK | `yarn test` | 11 suites, 112 pruebas pasadas |
+| Compilación TypeScript | OK | `yarn build` | `nest build` completado exitosamente sin errores |
+| Validación OpenAPI | OK | `yarn spectral lint doc/modulos/empresas/contratos/openapi.yaml` | 0 errores |
+| Linter y formato | OK | `yarn eslint "src/modulos/empresas/**/*.ts"` | 0 errores y 0 advertencias |
+| Verificación arquitectónica ADR-0009 | OK | Búsqueda de `puertos/salida`, `puertos/comunes`, `persistencia/typeorm`, `presentacion/http` en `src/modulos/empresas` | 0 ocurrencias en código fuente; dominio sin dependencias de aplicación |
 
 ## 10. Cierre
 
-- **Conformidad:** Pendiente de ejecución y verificación de `EMP-UC-001` a `EMP-UC-008`, `EMP-BR-001` a `EMP-BR-014` y `ADR-0009`.
+- **Conformidad:** Ejecución completa de las 6 tareas del plan `PLAN-EMP-0002` satisfaciendo `ADR-0009`, conservando funcionalidad de `EMP-UC-001` a `EMP-UC-008` y reglas `EMP-BR-001` a `EMP-BR-014`.
 - **Desviaciones:** Ninguna registrada.
-- **Ítems que pasan a Implementado:** Ninguno; la tarea no cambia el estado de la especificación funcional ya implementada.
-- **Tarea que pasa a Completada:** `EMP-TASK-004`.
+- **Ítems que pasan a Implementado:** Ninguno; la tarea de refactorización interna no cambia el estado de la especificación funcional.
+- **Tarea que pasa a Completada:** `EMP-TASK-004` (sujeta a verificación formal en fase 4).
 - **Revisor:** sesión/agente de fase 4 distinto del implementador.
-- **Estado final:** Pendiente.
+- **Estado final:** En verificación.

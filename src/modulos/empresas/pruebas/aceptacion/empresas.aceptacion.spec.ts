@@ -28,7 +28,7 @@ import {
     ConfiguracionGeneralInvalida,
 } from '../../dominio/errores';
 
-class RepositorioAceptacion implements RepositorioEmpresas, ConsultaEmpresas {
+class RepositorioAceptacion implements RepositorioEmpresas {
     private empresas = new Map<string, Empresa>();
 
     guardar(empresa: Empresa): Promise<void> {
@@ -40,19 +40,22 @@ class RepositorioAceptacion implements RepositorioEmpresas, ConsultaEmpresas {
         return Promise.resolve(this.empresas.get(id) ?? null);
     }
 
-    obtenerPorAlias(alias: string): Promise<Empresa | null> {
+    existeAlias(alias: string): Promise<boolean> {
         for (const emp of this.empresas.values()) {
             if (emp.alias.valor === alias) {
-                return Promise.resolve(emp);
+                return Promise.resolve(true);
             }
         }
-        return Promise.resolve(null);
+        return Promise.resolve(false);
     }
 
-    async existeAlias(alias: string): Promise<boolean> {
-        const encontrada = await this.obtenerPorAlias(alias);
-        return encontrada !== null;
+    obtenerMapa(): Map<string, Empresa> {
+        return this.empresas;
     }
+}
+
+class ConsultaAceptacion implements ConsultaEmpresas {
+    constructor(private readonly empresas: Map<string, Empresa>) {}
 
     obtenerPorIdOAlias(idOAlias: string): Promise<EmpresaLectura | null> {
         const emp = this.empresas.get(idOAlias);
@@ -98,6 +101,7 @@ class VerificadorAsignacionComercialAceptacion implements VerificadorAsignacionC
 
 describe('Pruebas de Aceptación — Módulo Empresas (T09)', () => {
     let repo: RepositorioAceptacion;
+    let consulta: ConsultaAceptacion;
     let verificador: VerificadorAsignacionComercialAceptacion;
 
     const superAdmin = {
@@ -119,6 +123,7 @@ describe('Pruebas de Aceptación — Módulo Empresas (T09)', () => {
 
     beforeEach(() => {
         repo = new RepositorioAceptacion();
+        consulta = new ConsultaAceptacion(repo.obtenerMapa());
         verificador = new VerificadorAsignacionComercialAceptacion();
     });
 
@@ -312,19 +317,19 @@ describe('Pruebas de Aceptación — Módulo Empresas (T09)', () => {
         });
 
         it('@EMP-UC-002 @AC-01 consulta exitosa por SuperAdministrador', async () => {
-            const uc = new ConsultarEmpresa(repo);
+            const uc = new ConsultarEmpresa(consulta);
             const res = await uc.ejecutar({ idOAlias: '019313ea-1111-7000-8000-000000000001' }, superAdmin);
             expect(res.nombre).toBe('Yerba Norte');
         });
 
         it('@EMP-UC-002 @AC-02 consulta exitosa por Administrador sobre su Empresa', async () => {
-            const uc = new ConsultarEmpresa(repo);
+            const uc = new ConsultarEmpresa(consulta);
             const res = await uc.ejecutar({ idOAlias: '019313ea-1111-7000-8000-000000000001' }, adminPropia);
             expect(res.id).toBe('019313ea-1111-7000-8000-000000000001');
         });
 
         it('@EMP-UC-002 @AC-03 rechazo por Administrador que intenta acceder a otra Empresa', async () => {
-            const uc = new ConsultarEmpresa(repo);
+            const uc = new ConsultarEmpresa(consulta);
             await expect(uc.ejecutar({ idOAlias: '019313ea-1111-7000-8000-000000000001' }, adminOtra)).rejects.toThrow(
                 PermisoDenegado,
             );
@@ -353,21 +358,21 @@ describe('Pruebas de Aceptación — Módulo Empresas (T09)', () => {
         });
 
         it('@EMP-UC-003 @AC-01 listado exitoso con paginación', async () => {
-            const uc = new ListarEmpresas(repo);
+            const uc = new ListarEmpresas(consulta);
             const res = await uc.ejecutar({ pagina: 1, limite: 10 }, superAdmin);
             expect(res.total).toBe(2);
             expect(res.elementos.length).toBe(2);
         });
 
         it('@EMP-UC-003 @AC-02 filtrado por estado y nombre', async () => {
-            const uc = new ListarEmpresas(repo);
+            const uc = new ListarEmpresas(consulta);
             const res = await uc.ejecutar({ pagina: 1, limite: 10, nombre: 'Alfa' }, superAdmin);
             expect(res.total).toBe(1);
             expect(res.elementos[0].alias).toBe('yerba-alfa');
         });
 
         it('@EMP-UC-003 @AC-03 rechazo por actor no autorizado', async () => {
-            const uc = new ListarEmpresas(repo);
+            const uc = new ListarEmpresas(consulta);
             await expect(uc.ejecutar({ pagina: 1, limite: 10 }, adminPropia)).rejects.toThrow(PermisoDenegado);
         });
     });
