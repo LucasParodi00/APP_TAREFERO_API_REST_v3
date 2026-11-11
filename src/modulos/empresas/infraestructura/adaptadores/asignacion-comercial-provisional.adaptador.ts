@@ -7,8 +7,8 @@ import { VerificadorAsignacionComercial } from '../../aplicacion/puertos/salida/
  * la asignación comercial permitiendo desacoplar el ciclo de desarrollo.
  */
 export class AdaptadorAsignacionComercialProvisional implements VerificadorAsignacionComercial {
-  confirmarAsignacion(empresaId: string): Promise<boolean> {
-    void empresaId;
-    return Promise.resolve(true);
-  }
+    confirmarAsignacion(empresaId: string): Promise<boolean> {
+        void empresaId;
+        return Promise.resolve(true);
+    }
 }

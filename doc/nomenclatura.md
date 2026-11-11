@@ -40,9 +40,11 @@ Un agente no inventa una convención que no esté aquí: si falta, pregunta. -->
 | Use case | Clase con verbo en infinitivo + objeto; archivo con sufijo `caso-de-uso` | `CrearUsuario` · `crear-usuario.caso-de-uso.ts` |
 | Command | `Comando` + verbo + objeto | `ComandoCrearUsuario` |
 | Query | `Consulta` + verbo + objeto | `ConsultaObtenerUsuario` |
-| Repository | `Repositorio` + recurso plural | `RepositorioUsuarios` |
+| Repository | Contrato de Dominio: `Repositorio` + recurso plural; recibe y devuelve solo tipos de Dominio | `RepositorioUsuarios` |
 | Implementación de repositorio | Repositorio + tecnología | `RepositorioUsuariosTypeOrm` |
-| Port | Nombre de la capacidad; se organiza en `puertos/entrada` o `puertos/salida` | `GeneradorTokens` |
+| Read query port | `Consulta` + recurso plural; devuelve modelos de lectura de Aplicación | `ConsultaEmpresas` |
+| Implementación de consulta | Consulta + recurso plural + tecnología | `ConsultaEmpresasTypeOrm` |
+| Port | Nombre de la capacidad; se ubica directamente en `aplicacion/puertos` | `GeneradorTokens` |
 | Adapter | Nombre de la implementación concreta | `GeneradorJwt` |
 | Mapper | `Mapeador` + concepto | `MapeadorUsuario` |
 | Controller | `Controlador` + recurso plural | `ControladorUsuarios` |

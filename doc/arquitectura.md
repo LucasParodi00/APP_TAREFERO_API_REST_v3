@@ -23,7 +23,7 @@ Este repositorio contiene la API y sus procesos de apoyo. La aplicación web y l
 | Runtime | Node.js LTS mantenido; versión exacta fijada al inicializar | Aceptado | `ADR-0001`, `ADR-0005` |
 | Gestor de paquetes | Yarn 1 o superior (compatible con Yarn 1.22.x y lockfile versionado) | Aceptado | `ADR-0005` |
 | Framework API | NestJS; versión exacta compatible fijada al inicializar | Aceptado | `ADR-0001` |
-| Estilo | Monolito modular con arquitectura hexagonal | Aceptado | `ADR-0002` |
+| Estilo | Monolito modular con arquitectura hexagonal y estructura interna simplificada | Aceptado | `ADR-0002`, `ADR-0009` |
 | Persistencia | PostgreSQL con PostGIS; versiones pendientes de verificar | Aceptado | `ADR-0003` |
 | ORM | TypeORM | Aceptado | `ADR-0003` |
 | Controlador PostgreSQL | `pg` | Aceptado | `ADR-0003` |
@@ -93,43 +93,35 @@ Ejemplo para `EMP`; los nombres concretos se ajustan a `nomenclatura.md`:
 src/modulos/empresas/
 ├── dominio/
 │   ├── agregados/
-│   │   └── empresa/
+│   ├── entidades/
 │   ├── objetos-valor/
 │   ├── enumeraciones/
 │   ├── politicas/
 │   ├── eventos/
+│   ├── repositorios/
 │   └── errores/
 ├── aplicacion/
 │   ├── comandos/
 │   ├── consultas/
 │   ├── puertos/
-│   │   ├── entrada/
-│   │   └── salida/
 │   ├── modelos-lectura/
+│   ├── mapeadores/
 │   └── errores/
 ├── infraestructura/
 │   ├── persistencia/
-│   │   └── typeorm/
-│   │       ├── entidades/
-│   │       ├── mapeadores/
-│   │       └── repositorios/
-│   ├── autenticacion/
-│   ├── transacciones/
-│   ├── mensajeria/
-│   └── configuracion/
+│   └── adaptadores/
 ├── presentacion/
-│   └── http/
-│       ├── controladores/
-│       ├── solicitudes/
-│       ├── respuestas/
-│       ├── mapeadores/
-│       ├── guardias/
-│       └── filtros/
+│   ├── controladores/
+│   ├── dtos/
+│   ├── decoradores/
+│   ├── guardias/
+│   └── filtros/
 ├── pruebas/
 │   ├── dominio/
 │   ├── aplicacion/
 │   ├── integracion/
 │   ├── contrato/
+│   ├── presentacion/
 │   └── aceptacion/
 └── empresas.module.ts
 
@@ -138,21 +130,23 @@ migraciones/empresas/
 
 `pruebas` y el punto de composición no son capas adicionales. El primero verifica el módulo y el segundo conecta sus adaptadores.
 
+La estructura es una guía de ubicación, no una obligación de crear carpetas vacías. Cada carpeta interna se crea cuando el módulo contiene al menos un artefacto de esa categoría. Se agrega otro nivel únicamente cuando conviven varias tecnologías o transportes, o cuando la cantidad de archivos perjudica la navegación; por ejemplo, `presentacion/http/` si aparece otro transporte, o `persistencia/typeorm/` si se incorpora otra tecnología de persistencia en el mismo módulo.
+
 ## 7. Capas y dependencias permitidas
 
 | Capa | Contiene | Puede usar | No puede usar |
 |---|---|---|---|
-| Dominio | Agregados, entidades, objetos de valor, invariantes, políticas, eventos y errores de negocio | Solo Dominio y librería estándar | Aplicación, Infraestructura, Presentación, NestJS, TypeORM, HTTP, base de datos y otros módulos |
-| Aplicación | Casos de uso, comandos, consultas, autorización contextual, transacciones y puertos | Dominio | Implementaciones de Infraestructura, Presentación, NestJS, TypeORM y HTTP |
-| Infraestructura | Implementaciones de puertos, TypeORM, PostgreSQL, JWT, archivos, mensajería e integraciones | Aplicación y Dominio | Presentación y reglas de negocio nuevas |
+| Dominio | Agregados, entidades, objetos de valor, invariantes, políticas, eventos, repositorios de agregados y errores de negocio | Solo Dominio y librería estándar | Aplicación, Infraestructura, Presentación, NestJS, TypeORM, HTTP, base de datos y otros módulos |
+| Aplicación | Casos de uso, comandos, consultas, autorización contextual, transacciones, modelos de lectura y puertos | Dominio | Implementaciones de Infraestructura, Presentación, NestJS, TypeORM y HTTP |
+| Infraestructura | Implementaciones de repositorios de Dominio y puertos de Aplicación, TypeORM, PostgreSQL, JWT, archivos, mensajería e integraciones | Aplicación y Dominio | Presentación y reglas de negocio nuevas |
 | Presentación | Controllers, DTO, guards, pipes, filtros y traducción HTTP | Puertos/casos de uso de Aplicación y modelos de respuesta | Persistencia concreta, TypeORM y acceso directo al Dominio para ejecutar negocio |
 
 La dirección general es:
 
 ```text
 HTTP → Presentación → Aplicación → Dominio
-                        ↑
-Infraestructura ── implementa puertos de Aplicación
+                        ↑            ↑
+Infraestructura ── implementa puertos y repositorios
 ```
 
 ## 8. Dominio
@@ -162,16 +156,20 @@ Infraestructura ── implementa puertos de Aplicación
 - Los objetos de valor validan conceptos como Correo electrónico, CUIT, Dinero o Identificador.
 - Los errores de Dominio tienen código estable, datos seguros y mensaje predeterminado en español; no conocen códigos HTTP.
 - Una política contiene una decisión de negocio que no pertenece naturalmente a una sola entidad.
-- Una interfaz vive en Dominio únicamente cuando expresa una capacidad propia del modelo. Las necesidades de orquestación o tecnología se definen como puertos de Aplicación.
+- Un repositorio de Dominio representa una colección de agregados y su contrato usa exclusivamente agregados, entidades, objetos de valor e identificadores del Dominio.
+- Un repositorio de Dominio no expone DTO, modelos de lectura, paginación HTTP, SQL, TypeORM ni detalles del almacenamiento.
+- Las interfaces que expresan necesidades de orquestación, consultas optimizadas o tecnología se definen como puertos de Aplicación.
 - Un módulo puede tener varias raíces de agregado; no se crea un módulo por entidad.
 
 ## 9. Aplicación: comandos, consultas y puertos
 
 - Un caso de uso es el orquestador de una intención del actor.
-- Un comando modifica estado y normalmente carga agregados mediante repositorios.
-- Una consulta no modifica estado y puede usar una proyección optimizada sin reconstruir agregados completos.
+- Un comando modifica estado y normalmente carga y guarda agregados mediante repositorios definidos por Dominio.
+- Una consulta no modifica estado y usa un puerto de Aplicación que puede devolver una proyección optimizada sin reconstruir agregados completos.
 - La separación comando/consulta no obliga a incorporar `@nestjs/cqrs`; la biblioteca se agrega solo si aporta una necesidad concreta.
-- Los puertos de salida se nombran por capacidad: `RepositorioUsuarios`, `GeneradorTokens`, `UnidadTrabajo`, `Reloj` o `VerificadorPlanSuscripcion`.
+- Los puertos de consulta se nombran por el recurso leído: `ConsultaEmpresas`, `ConsultaUsuarios`.
+- Los demás puertos de Aplicación se nombran por capacidad: `GeneradorTokens`, `UnidadTrabajo`, `Reloj` o `VerificadorPlanSuscripcion`.
+- Los puertos se ubican directamente en `aplicacion/puertos/`; no se crean subdivisiones `entrada` y `salida` mientras no exista una necesidad concreta de distinguirlas.
 - El caso de uso conoce el contrato, nunca la implementación TypeORM ni el mapper.
 - El caso de uso establece el límite transaccional cuando una operación produce varios efectos atómicos.
 - La autorización que depende del recurso o de datos del negocio se realiza en Aplicación o mediante una política de Dominio, no exclusivamente en un guard HTTP.
@@ -179,10 +177,11 @@ Infraestructura ── implementa puertos de Aplicación
 ## 10. Infraestructura: persistencia y mapeo
 
 - Las entidades TypeORM representan el esquema físico y viven únicamente en Infraestructura.
-- Los repositorios TypeORM implementan puertos definidos por Aplicación.
+- Los repositorios TypeORM implementan repositorios definidos por Dominio.
+- Los adaptadores de consulta implementan puertos definidos por Aplicación y pueden usar SQL o TypeORM para devolver modelos de lectura sin reconstruir agregados.
 - El mapper convierte entidad TypeORM a agregado de Dominio y viceversa dentro del repositorio; el caso de uso no llama al mapper.
 - Las migraciones son la única fuente del esquema físico.
-- Las consultas de lectura pueden implementar puertos de proyección directamente con SQL o TypeORM, sin exponer entidades persistentes.
+- Repositorios, entidades persistentes y mapeadores se ubican directamente en `infraestructura/persistencia/`; sus nombres identifican la tecnología concreta cuando corresponda.
 - Las restricciones de base de datos son una defensa adicional, no la única ubicación de reglas del negocio.
 - No se utiliza carga diferida que produzca consultas invisibles fuera del límite del repositorio.
 
@@ -324,8 +323,9 @@ La misma persona puede operar en más de una Empresa solo mediante una Cuenta de
 | Regla invariante o transición | Dominio: agregado, objeto de valor o política | Prueba unitaria con ejemplos de la regla |
 | Permiso general de ruta | Presentación: guard | Prueba permitida y denegada |
 | Autorización dependiente del recurso | Aplicación o política de Dominio | Prueba de caso de uso |
-| Caso de uso | Aplicación: comando/consulta y orquestador | Prueba con dobles de puertos |
-| Repositorio | Puerto en Aplicación; implementación en Infraestructura | Prueba de integración |
+| Caso de uso | Aplicación: comando/consulta y orquestador | Prueba con dobles de repositorios y puertos |
+| Repositorio de agregados | Contrato en Dominio; implementación en Infraestructura | Prueba de integración |
+| Consulta o proyección | Puerto y modelo de lectura en Aplicación; implementación en Infraestructura | Prueba de integración |
 | Entidad TypeORM y mapper | Infraestructura | Integración y round-trip de mapeo |
 | Operación OpenAPI | Presentación: Controller y DTO | Prueba de contrato |
 | Escenario Gherkin | Pruebas de aceptación | Prueba con los mismos tags |
