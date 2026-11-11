@@ -276,7 +276,7 @@ Estos cambios no se aplican a los archivos dueños durante esta revisión. La ap
 | T11   | 1cac656| Completada| Puerto estrecho ResolvedorEmpresaPublico (EMP) y adaptador consumidor (ACC) |
 | T12   | 4c79190| Completada| Adaptadores de Personal (PER) y cupo de Suscripciones (SUS) fail-closed |
 | T13   | c7ea9c2| Completada| Controladores HTTP, DTOs validados y filtro de excepciones RFC 9457 |
-| T14   |        | Pendiente |                      |
+| T14   | 2ebcf79| Completada| AutenticacionGuard, @RequierePermiso, @Publico, ContextoSolicitud e hidratación req.contexto |
 | T15   |        | Pendiente |                      |
 | T16   |        | Pendiente |                      |
 | T17   |        | Pendiente |                      |
