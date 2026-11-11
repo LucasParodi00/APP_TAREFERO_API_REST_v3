@@ -3,10 +3,11 @@ import { ConsultarEmpresa } from '../../aplicacion/consultas/consultar-empresa.c
 import { ListarEmpresas } from '../../aplicacion/consultas/listar-empresas.caso-de-uso';
 import { ModificarEmpresa } from '../../aplicacion/comandos/modificar-empresa.caso-de-uso';
 import { ModificarConfiguracionGeneral } from '../../aplicacion/comandos/modificar-configuracion-general.caso-de-uso';
-import { RepositorioEmpresas } from '../../aplicacion/puertos/salida/repositorio-empresas.puerto';
-import { VerificadorAsignacionComercial } from '../../aplicacion/puertos/salida/verificador-asignacion-comercial.puerto';
+import { RepositorioEmpresas } from '../../dominio/repositorios/repositorio-empresas';
+import { ConsultaEmpresas } from '../../aplicacion/puertos/consulta-empresas.puerto';
+import { VerificadorAsignacionComercial } from '../../aplicacion/puertos/verificador-asignacion-comercial.puerto';
 import { Empresa } from '../../dominio/agregados/empresa';
-import { CriteriosListadoEmpresas, ResultadoListadoEmpresas } from '../../aplicacion/modelos-lectura';
+import { CriteriosListadoEmpresas, ResultadoListadoEmpresas, EmpresaLectura } from '../../aplicacion/modelos-lectura';
 import { PermisoDenegado, EmpresaNoEncontrada, ConflictoConcurrencia } from '../../aplicacion/errores';
 import { AliasNoDisponible, AsignacionComercialRequerida } from '../../dominio/errores';
 import { MapeadorEmpresaLectura } from '../../aplicacion/mapeadores/mapeador-empresa-lectura';
@@ -23,18 +24,34 @@ class RepositorioEmpresasEnMemoria implements RepositorioEmpresas {
         return Promise.resolve(this.empresas.get(id) ?? null);
     }
 
-    obtenerPorAlias(alias: string): Promise<Empresa | null> {
+    existeAlias(alias: string): Promise<boolean> {
         for (const emp of this.empresas.values()) {
             if (emp.alias.valor === alias) {
-                return Promise.resolve(emp);
+                return Promise.resolve(true);
+            }
+        }
+        return Promise.resolve(false);
+    }
+
+    obtenerMapa(): Map<string, Empresa> {
+        return this.empresas;
+    }
+}
+
+class ConsultaEmpresasEnMemoria implements ConsultaEmpresas {
+    constructor(private readonly empresas: Map<string, Empresa>) {}
+
+    obtenerPorIdOAlias(idOAlias: string): Promise<EmpresaLectura | null> {
+        const porId = this.empresas.get(idOAlias);
+        if (porId) {
+            return Promise.resolve(MapeadorEmpresaLectura.aLectura(porId));
+        }
+        for (const emp of this.empresas.values()) {
+            if (emp.alias.valor === idOAlias) {
+                return Promise.resolve(MapeadorEmpresaLectura.aLectura(emp));
             }
         }
         return Promise.resolve(null);
-    }
-
-    async existeAlias(alias: string): Promise<boolean> {
-        const encontrada = await this.obtenerPorAlias(alias);
-        return encontrada !== null;
     }
 
     listar(criterios: CriteriosListadoEmpresas): Promise<ResultadoListadoEmpresas> {
@@ -67,6 +84,7 @@ class VerificadorAsignacionComercialMock implements VerificadorAsignacionComerci
 
 describe('Casos de Uso — Gestión de Datos de Empresas (T04)', () => {
     let repo: RepositorioEmpresasEnMemoria;
+    let consulta: ConsultaEmpresasEnMemoria;
     let verificador: VerificadorAsignacionComercialMock;
     const superAdminCtx = {
         actorId: 'super-admin-1',
@@ -80,6 +98,7 @@ describe('Casos de Uso — Gestión de Datos de Empresas (T04)', () => {
 
     beforeEach(() => {
         repo = new RepositorioEmpresasEnMemoria();
+        consulta = new ConsultaEmpresasEnMemoria(repo.obtenerMapa());
         verificador = new VerificadorAsignacionComercialMock();
     });
 
@@ -136,7 +155,7 @@ describe('Casos de Uso — Gestión de Datos de Empresas (T04)', () => {
         });
 
         it('permite al SuperAdministrador consultar cualquier empresa por ID o alias', async () => {
-            const uc = new ConsultarEmpresa(repo);
+            const uc = new ConsultarEmpresa(consulta);
             const resId = await uc.ejecutar({ idOAlias: 'empresa-1' }, superAdminCtx);
             expect(resId.nombre).toBe('Yerba Norte');
 
@@ -145,18 +164,18 @@ describe('Casos de Uso — Gestión de Datos de Empresas (T04)', () => {
         });
 
         it('permite al Administrador consultar su propia empresa', async () => {
-            const uc = new ConsultarEmpresa(repo);
+            const uc = new ConsultarEmpresa(consulta);
             const res = await uc.ejecutar({ idOAlias: 'empresa-1' }, adminEmpresa1Ctx);
             expect(res.id).toBe('empresa-1');
         });
 
         it('rechaza con PermisoDenegado si el Administrador consulta otra empresa', async () => {
-            const uc = new ConsultarEmpresa(repo);
+            const uc = new ConsultarEmpresa(consulta);
             await expect(uc.ejecutar({ idOAlias: 'otra-empresa' }, adminEmpresa1Ctx)).rejects.toThrow(PermisoDenegado);
         });
 
         it('rechaza con EmpresaNoEncontrada si no existe la empresa', async () => {
-            const uc = new ConsultarEmpresa(repo);
+            const uc = new ConsultarEmpresa(consulta);
             await expect(uc.ejecutar({ idOAlias: 'no-existe' }, superAdminCtx)).rejects.toThrow(EmpresaNoEncontrada);
         });
     });
@@ -169,14 +188,14 @@ describe('Casos de Uso — Gestión de Datos de Empresas (T04)', () => {
         });
 
         it('permite al SuperAdministrador listar con paginación', async () => {
-            const uc = new ListarEmpresas(repo);
+            const uc = new ListarEmpresas(consulta);
             const res = await uc.ejecutar({ pagina: 1, limite: 10 }, superAdminCtx);
             expect(res.total).toBe(2);
             expect(res.elementos.length).toBe(2);
         });
 
         it('rechaza con PermisoDenegado a un Administrador', async () => {
-            const uc = new ListarEmpresas(repo);
+            const uc = new ListarEmpresas(consulta);
             await expect(uc.ejecutar({ pagina: 1, limite: 10 }, adminEmpresa1Ctx)).rejects.toThrow(PermisoDenegado);
         });
     });

@@ -1,6 +1,6 @@
 import { RepositorioEmpresas } from '../../dominio/repositorios/repositorio-empresas';
-import { VerificadorAsignacionComercial } from '../puertos/salida/verificador-asignacion-comercial.puerto';
-import { ContextoSolicitud } from '../puertos/comunes/contexto-solicitud';
+import { VerificadorAsignacionComercial } from '../puertos/verificador-asignacion-comercial.puerto';
+import { ContextoSolicitud } from '../puertos/contexto-solicitud';
 import { EmpresaLectura } from '../modelos-lectura';
 import { PermisoDenegado } from '../errores';
 import {

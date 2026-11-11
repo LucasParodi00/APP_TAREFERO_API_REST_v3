@@ -1,5 +1,5 @@
 import { Repository, FindOptionsWhere, ILike } from 'typeorm';
-import { RepositorioEmpresas } from '../../../../aplicacion/puertos/salida/repositorio-empresas.puerto';
+import { RepositorioEmpresas } from '../../../../dominio/repositorios/repositorio-empresas';
 import { Empresa } from '../../../../dominio/agregados/empresa';
 import { CriteriosListadoEmpresas, ResultadoListadoEmpresas } from '../../../../aplicacion/modelos-lectura';
 import { EmpresaTypeOrmEntity } from '../entidades/empresa.typeorm-entity';

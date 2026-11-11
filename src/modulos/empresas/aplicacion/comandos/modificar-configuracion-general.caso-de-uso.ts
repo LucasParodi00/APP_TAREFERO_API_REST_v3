@@ -1,5 +1,5 @@
 import { RepositorioEmpresas } from '../../dominio/repositorios/repositorio-empresas';
-import { ContextoSolicitud } from '../puertos/comunes/contexto-solicitud';
+import { ContextoSolicitud } from '../puertos/contexto-solicitud';
 import { EmpresaLectura } from '../modelos-lectura';
 import { EmpresaNoEncontrada, PermisoDenegado, ConflictoConcurrencia } from '../errores';
 import { PaisReferencia, ZonaHoraria, MonedaPrincipal } from '../../dominio/objetos-valor';

@@ -130,7 +130,7 @@ No copia reglas ni escenarios: referencia IDs y tags. -->
 | Tarea | Commit | Estado | Notas o desviaciones |
 |---|---|---|---|
 | T01 | `PLAN-EMP-0002 T01` | Completada | Contrato RepositorioEmpresas movido a Dominio sin modelos de lectura; comandos y pruebas actualizados. |
-| T02 | | Pendiente | |
+| T02 | `PLAN-EMP-0002 T02` | Completada | Puertos aplanados en aplicacion/puertos/; definido ConsultaEmpresas; casos de uso de consulta y dobles de prueba actualizados; carpetas comunes y salida eliminadas. |
 | T03 | | Pendiente | |
 | T04 | | Pendiente | |
 | T05 | | Pendiente | |

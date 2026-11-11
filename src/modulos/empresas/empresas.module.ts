@@ -8,11 +8,12 @@ import { ModificarConfiguracionGeneral } from './aplicacion/comandos/modificar-c
 import { SuspenderEmpresa } from './aplicacion/comandos/suspender-empresa.caso-de-uso';
 import { ReactivarEmpresa } from './aplicacion/comandos/reactivar-empresa.caso-de-uso';
 import { CerrarEmpresa } from './aplicacion/comandos/cerrar-empresa.caso-de-uso';
-import { REPOSITORIO_EMPRESAS, RepositorioEmpresas } from './aplicacion/puertos/salida/repositorio-empresas.puerto';
+import { REPOSITORIO_EMPRESAS, RepositorioEmpresas } from './dominio/repositorios/repositorio-empresas';
+import { CONSULTA_EMPRESAS, ConsultaEmpresas } from './aplicacion/puertos/consulta-empresas.puerto';
 import {
     VERIFICADOR_ASIGNACION_COMERCIAL,
     VerificadorAsignacionComercial,
-} from './aplicacion/puertos/salida/verificador-asignacion-comercial.puerto';
+} from './aplicacion/puertos/verificador-asignacion-comercial.puerto';
 import { AdaptadorAsignacionComercialProvisional } from './infraestructura/adaptadores/asignacion-comercial-provisional.adaptador';
 
 @Module({
@@ -30,13 +31,13 @@ import { AdaptadorAsignacionComercialProvisional } from './infraestructura/adapt
         },
         {
             provide: ConsultarEmpresa,
-            useFactory: (repo: RepositorioEmpresas) => new ConsultarEmpresa(repo),
-            inject: [REPOSITORIO_EMPRESAS],
+            useFactory: (consulta: ConsultaEmpresas) => new ConsultarEmpresa(consulta),
+            inject: [CONSULTA_EMPRESAS],
         },
         {
             provide: ListarEmpresas,
-            useFactory: (repo: RepositorioEmpresas) => new ListarEmpresas(repo),
-            inject: [REPOSITORIO_EMPRESAS],
+            useFactory: (consulta: ConsultaEmpresas) => new ListarEmpresas(consulta),
+            inject: [CONSULTA_EMPRESAS],
         },
         {
             provide: ModificarEmpresa,

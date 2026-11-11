@@ -6,10 +6,11 @@ import { ModificarConfiguracionGeneral } from '../../aplicacion/comandos/modific
 import { SuspenderEmpresa } from '../../aplicacion/comandos/suspender-empresa.caso-de-uso';
 import { ReactivarEmpresa } from '../../aplicacion/comandos/reactivar-empresa.caso-de-uso';
 import { CerrarEmpresa } from '../../aplicacion/comandos/cerrar-empresa.caso-de-uso';
-import { RepositorioEmpresas } from '../../aplicacion/puertos/salida/repositorio-empresas.puerto';
-import { VerificadorAsignacionComercial } from '../../aplicacion/puertos/salida/verificador-asignacion-comercial.puerto';
+import { RepositorioEmpresas } from '../../dominio/repositorios/repositorio-empresas';
+import { ConsultaEmpresas } from '../../aplicacion/puertos/consulta-empresas.puerto';
+import { VerificadorAsignacionComercial } from '../../aplicacion/puertos/verificador-asignacion-comercial.puerto';
 import { Empresa } from '../../dominio/agregados/empresa';
-import { CriteriosListadoEmpresas, ResultadoListadoEmpresas } from '../../aplicacion/modelos-lectura';
+import { CriteriosListadoEmpresas, ResultadoListadoEmpresas, EmpresaLectura } from '../../aplicacion/modelos-lectura';
 import { MapeadorEmpresaLectura } from '../../aplicacion/mapeadores/mapeador-empresa-lectura';
 import { PermisoDenegado, EmpresaNoEncontrada, ConflictoConcurrencia } from '../../aplicacion/errores';
 import {
@@ -27,7 +28,7 @@ import {
     ConfiguracionGeneralInvalida,
 } from '../../dominio/errores';
 
-class RepositorioAceptacion implements RepositorioEmpresas {
+class RepositorioAceptacion implements RepositorioEmpresas, ConsultaEmpresas {
     private empresas = new Map<string, Empresa>();
 
     guardar(empresa: Empresa): Promise<void> {
@@ -51,6 +52,19 @@ class RepositorioAceptacion implements RepositorioEmpresas {
     async existeAlias(alias: string): Promise<boolean> {
         const encontrada = await this.obtenerPorAlias(alias);
         return encontrada !== null;
+    }
+
+    obtenerPorIdOAlias(idOAlias: string): Promise<EmpresaLectura | null> {
+        const emp = this.empresas.get(idOAlias);
+        if (emp) {
+            return Promise.resolve(MapeadorEmpresaLectura.aLectura(emp));
+        }
+        for (const e of this.empresas.values()) {
+            if (e.alias.valor === idOAlias) {
+                return Promise.resolve(MapeadorEmpresaLectura.aLectura(e));
+            }
+        }
+        return Promise.resolve(null);
     }
 
     listar(criterios: CriteriosListadoEmpresas): Promise<ResultadoListadoEmpresas> {

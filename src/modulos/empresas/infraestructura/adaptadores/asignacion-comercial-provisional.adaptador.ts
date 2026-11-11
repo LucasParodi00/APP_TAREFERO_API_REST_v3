@@ -1,4 +1,4 @@
-import { VerificadorAsignacionComercial } from '../../aplicacion/puertos/salida/verificador-asignacion-comercial.puerto';
+import { VerificadorAsignacionComercial } from '../../aplicacion/puertos/verificador-asignacion-comercial.puerto';
 
 /**
  * Adaptador provisional de verificación de asignación comercial.

@@ -1,15 +1,14 @@
-import { RepositorioEmpresas } from '../puertos/salida/repositorio-empresas.puerto';
-import { ContextoSolicitud } from '../puertos/comunes/contexto-solicitud';
+import { ConsultaEmpresas } from '../puertos/consulta-empresas.puerto';
+import { ContextoSolicitud } from '../puertos/contexto-solicitud';
 import { EmpresaLectura } from '../modelos-lectura';
 import { EmpresaNoEncontrada, PermisoDenegado } from '../errores';
-import { MapeadorEmpresaLectura } from '../mapeadores/mapeador-empresa-lectura';
 
 export interface ConsultaConsultarEmpresa {
     idOAlias: string;
 }
 
 export class ConsultarEmpresa {
-    constructor(private readonly repositorio: RepositorioEmpresas) {}
+    constructor(private readonly consultaEmpresas: ConsultaEmpresas) {}
 
     async ejecutar(consulta: ConsultaConsultarEmpresa, contexto: ContextoSolicitud): Promise<EmpresaLectura> {
         const esSuperAdmin = contexto.rol === 'SUPER_ADMINISTRADOR';
@@ -19,10 +18,7 @@ export class ConsultarEmpresa {
             throw new PermisoDenegado();
         }
 
-        let empresa = await this.repositorio.obtenerPorId(consulta.idOAlias);
-        if (!empresa) {
-            empresa = await this.repositorio.obtenerPorAlias(consulta.idOAlias);
-        }
+        const empresa = await this.consultaEmpresas.obtenerPorIdOAlias(consulta.idOAlias);
 
         if (!empresa) {
             if (esAdmin && contexto.empresaId !== consulta.idOAlias) {
@@ -35,6 +31,6 @@ export class ConsultarEmpresa {
             throw new PermisoDenegado('Un administrador solo puede consultar su propia empresa.');
         }
 
-        return MapeadorEmpresaLectura.aLectura(empresa);
+        return empresa;
     }
 }

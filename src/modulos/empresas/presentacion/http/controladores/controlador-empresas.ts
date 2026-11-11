@@ -9,7 +9,7 @@ import { ModificarConfiguracionGeneral } from '../../../aplicacion/comandos/modi
 import { SuspenderEmpresa } from '../../../aplicacion/comandos/suspender-empresa.caso-de-uso';
 import { ReactivarEmpresa } from '../../../aplicacion/comandos/reactivar-empresa.caso-de-uso';
 import { CerrarEmpresa } from '../../../aplicacion/comandos/cerrar-empresa.caso-de-uso';
-import type { ContextoSolicitud } from '../../../aplicacion/puertos/comunes/contexto-solicitud';
+import type { ContextoSolicitud } from '../../../aplicacion/puertos/contexto-solicitud';
 import { ContextoUsuario } from '../decoradores/contexto-usuario.decorador';
 import { VersionIfMatch } from '../decoradores/version-if-match.decorador';
 import {
