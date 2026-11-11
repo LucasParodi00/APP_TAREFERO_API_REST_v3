@@ -94,8 +94,8 @@ export class CuentaSuspendida extends ErrorDominioIdentidadAcceso {
 
 export class EmpresaFueraDeAlcance extends ErrorDominioIdentidadAcceso {
     readonly codigo = 'ACC_EMPRESA_FUERA_DE_ALCANCE';
-    constructor() {
-        super('La operación solicitada no corresponde a la Empresa del contexto autorizado.');
+    constructor(mensaje = 'La operación solicitada no corresponde a la Empresa del contexto autorizado.') {
+        super(mensaje);
     }
 }
 
