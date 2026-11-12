@@ -209,8 +209,8 @@ Secciones 1–7: las escribe el planificador. 8: el implementador. 9–10: el re
 | T03 | de2cdb0 | Completada | Adaptadores GeneradorUuidV7 y RelojSistema con uuid@11.1.0 fijada |
 | T04 | 88f9f5e | Completada | PaginadorTypeOrm por composición en src/comun/infraestructura/persistencia |
 | T05 | 2aa2114 | Completada | DTOs de paginación, decoradores y FiltroExcepcionesRfc9457 en src/comun/presentacion |
-| T06 | | Completada | Índices públicos explícitos por capa en src/comun |
-| T07 | | Pendiente | |
+| T06 | 4e1a148 | Completada | Índices públicos explícitos por capa en src/comun |
+| T07 | | Completada | Reglas de Dependency Cruiser para src/comun y pruebas de arquitectura |
 | T08 | | Pendiente | |
 
 ## 9. Evidencia
