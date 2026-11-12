@@ -208,8 +208,8 @@ Secciones 1–7: las escribe el planificador. 8: el implementador. 9–10: el re
 | T02 | 2f23c0b | Completada | Contratos, puertos y modelos de lectura en src/comun/aplicacion |
 | T03 | de2cdb0 | Completada | Adaptadores GeneradorUuidV7 y RelojSistema con uuid@11.1.0 fijada |
 | T04 | 88f9f5e | Completada | PaginadorTypeOrm por composición en src/comun/infraestructura/persistencia |
-| T05 | | Completada | DTOs de paginación, decoradores y FiltroExcepcionesRfc9457 en src/comun/presentacion |
-| T06 | | Pendiente | |
+| T05 | 2aa2114 | Completada | DTOs de paginación, decoradores y FiltroExcepcionesRfc9457 en src/comun/presentacion |
+| T06 | | Completada | Índices públicos explícitos por capa en src/comun |
 | T07 | | Pendiente | |
 | T08 | | Pendiente | |
 
