@@ -23,7 +23,7 @@ Este repositorio contiene la API y sus procesos de apoyo. La aplicación web y l
 | Runtime | Node.js LTS mantenido; versión exacta fijada al inicializar | Aceptado | `ADR-0001`, `ADR-0005` |
 | Gestor de paquetes | Yarn 1 o superior (compatible con Yarn 1.22.x y lockfile versionado) | Aceptado | `ADR-0005` |
 | Framework API | NestJS; versión exacta compatible fijada al inicializar | Aceptado | `ADR-0001` |
-| Estilo | Monolito modular con arquitectura hexagonal y estructura interna simplificada | Aceptado | `ADR-0002`, `ADR-0009` |
+| Estilo | Monolito modular con arquitectura hexagonal, estructura interna simplificada y núcleo común | Aceptado | `ADR-0002`, `ADR-0009`, `ADR-0012` |
 | Persistencia | PostgreSQL con PostGIS; versiones pendientes de verificar | Aceptado | `ADR-0003` |
 | ORM | TypeORM | Aceptado | `ADR-0003` |
 | Controlador PostgreSQL | `pg` | Aceptado | `ADR-0003` |
@@ -132,14 +132,96 @@ migraciones/empresas/
 
 La estructura es una guía de ubicación, no una obligación de crear carpetas vacías. Cada carpeta interna se crea cuando el módulo contiene al menos un artefacto de esa categoría. Se agrega otro nivel únicamente cuando conviven varias tecnologías o transportes, o cuando la cantidad de archivos perjudica la navegación; por ejemplo, `presentacion/http/` si aparece otro transporte, o `persistencia/typeorm/` si se incorpora otra tecnología de persistencia en el mismo módulo.
 
+### 6.1 Núcleo técnico transversal (`src/comun/`)
+
+Decisiones: `ADR-0012`, `ADR-0013`. Los componentes técnicos y utilidades transversales que se repiten entre módulos no constituyen un módulo funcional de negocio ni replican agregados. Se agrupan bajo `src/comun/` respetando de forma estricta las cuatro capas hexagonales:
+
+```text
+src/comun/
+├── dominio/
+│   ├── errores/          # ErrorDominioBase
+│   └── objetos-valor/    # Objetos de valor transversales (ej. IdentificadorUuid, Dinero)
+├── aplicacion/
+│   ├── errores/          # ErrorAplicacionBase
+│   ├── modelos-lectura/  # CriteriosPaginacion, ResultadoPaginado<T>
+│   └── puertos/          # ContextoSolicitud canónico
+├── infraestructura/
+│   ├── persistencia/     # PaginadorTypeOrm (helper para SelectQueryBuilder con LIMIT/OFFSET)
+│   └── adaptadores/      # Adaptadores técnicos compartidos
+└── presentacion/
+    ├── dtos/             # ConsultaPaginadaDto, RespuestaPaginadaDto<T>
+    ├── decoradores/      # @Contexto(), @IfMatch(), @IdempotencyKey()
+    ├── filtros/          # FiltroExcepcionesRfc9457 reutilizable
+    └── pipes/            # Pipes de validación o transformación transversal
+```
+
+#### Consulta obligatoria antes de crear
+
+Antes de diseñar o implementar cualquier componente técnico, el agente o desarrollador debe buscar primero en la API pública de la capa correspondiente de `src/comun/`. Si la capacidad existe, el módulo funcional la reutiliza; está prohibido crear una copia, variante local o envoltorio equivalente salvo que un plan aprobado demuestre una incompatibilidad concreta.
+
+Catálogo canónico inicial:
+
+| Necesidad técnica | Ubicación canónica | Fuente del comportamiento |
+|---|---|---|
+| Identificadores y generación UUID v7 | `src/comun/dominio/objetos-valor` · `src/comun/aplicacion/puertos` · `src/comun/infraestructura/adaptadores` | `convenciones.md` §2 |
+| Fecha civil, fecha-hora UTC y reloj | `src/comun/dominio/objetos-valor` · `src/comun/aplicacion/puertos` · `src/comun/infraestructura/adaptadores` | `convenciones.md` §2 · `arquitectura.md` §9 |
+| Dinero y código de moneda | `src/comun/dominio/objetos-valor` | `convenciones.md` §2 |
+| Criterios, resultado, DTO y ejecución de paginación | `src/comun/aplicacion/modelos-lectura` · `src/comun/infraestructura/persistencia` · `src/comun/presentacion/dtos` | `convenciones.md` §3.2–§3.3 |
+| Contratos base y traducción de errores | `src/comun/dominio/errores` · `src/comun/aplicacion/errores` · `src/comun/presentacion/filtros` | `convenciones.md` §4 · `arquitectura.md` §12 |
+| Contexto autenticado de solicitud | `src/comun/aplicacion/puertos` · `src/comun/presentacion/decoradores` | `arquitectura.md` §13.3 |
+| Decoradores y transformaciones HTTP transversales | `src/comun/presentacion` | `convenciones.md` §3 |
+
+La tabla define dónde buscar y ubicar cada capacidad; `convenciones.md` continúa siendo dueño de su comportamiento y formato. Los índices públicos de cada capa de `src/comun/` son el inventario ejecutable: los módulos no importan rutas internas que no estén exportadas allí.
+
+#### Criterio de ingreso a `src/comun/`
+
+Una capacidad nueva pertenece a `src/comun/` únicamente cuando cumple **todas** estas condiciones:
+
+1. Es técnica y no expresa reglas, vocabulario, permisos, estados ni propiedad de datos de un módulo funcional.
+2. Su contrato puede permanecer estable sin importar archivos de `src/modulos/` ni conocer un módulo consumidor.
+3. Puede ubicarse en una capa común concreta sin invertir las dependencias hexagonales.
+
+Además, debe cumplir **al menos una** de estas evidencias:
+
+- la necesitan dos o más módulos actuales;
+- implementa una convención global o una decisión arquitectónica aprobada;
+- existe una necesidad futura explícitamente aprobada y trazable en una tarea, plan o ADR.
+
+La posibilidad hipotética de reutilización futura no es evidencia suficiente. Si la capacidad solo resuelve una necesidad actual de un módulo y no implementa un estándar global, permanece en ese módulo hasta que aparezca evidencia de transversalidad.
+
+#### Flujo de creación y promoción
+
+1. Buscar la capacidad en los índices públicos de `src/comun/` y en este catálogo.
+2. Si existe, reutilizarla desde la misma capa o una capa más interna.
+3. Si no existe, aplicar el criterio de ingreso anterior.
+4. Si califica como transversal, crear una tarea `CMN` y un plan aprobado; el plan del módulo consumidor declara esa dependencia y no implementa una copia provisional.
+5. Si no califica, implementarla dentro del módulo dueño.
+6. Si una capacidad local adquiere después uso transversal, promoverla mediante una tarea `CMN` y migrar cada consumidor con su propia tarea y plan; no se mueve ni se generaliza silenciosamente durante otra entrega.
+
+Ejemplos de límite:
+
+- Generar UUID v7, representar Dinero, obtener la hora mediante `Reloj` o paginar con TypeORM son capacidades comunes.
+- Calcular una remuneración, convertir monedas con una cotización, decidir el vencimiento de una Sesión o validar las fechas de una Campaña permanecen en sus módulos dueños.
+
+Reglas estrictas de `src/comun/`:
+- `src/comun/` no contiene entidades de negocio, tablas ni casos de uso funcionales.
+- `src/comun/` **nunca** importa archivos de `src/modulos/`.
+- Los módulos no duplican una capacidad publicada por `src/comun/`; cualquier excepción exige justificación y aprobación en el plan.
+- Los módulos consumen únicamente los índices públicos de la capa común correspondiente; no dependen de rutas internas.
+- Un módulo funcional solo puede importar de `src/comun/` elementos de su **misma capa o de capas más internas**:
+  - `src/modulos/<m>/dominio` solo puede usar `src/comun/dominio` (TypeScript puro, sin NestJS ni TypeORM).
+  - `src/modulos/<m>/aplicacion` puede usar `src/comun/aplicacion` y `src/comun/dominio` (TypeScript puro).
+  - `src/modulos/<m>/infraestructura` puede usar `src/comun/infraestructura`, `src/comun/aplicacion` y `src/comun/dominio`.
+  - `src/modulos/<m>/presentacion` puede usar `src/comun/presentacion`, `src/comun/aplicacion` y `src/comun/dominio`.
+
 ## 7. Capas y dependencias permitidas
 
 | Capa | Contiene | Puede usar | No puede usar |
 |---|---|---|---|
-| Dominio | Agregados, entidades, objetos de valor, invariantes, políticas, eventos, repositorios de agregados y errores de negocio | Solo Dominio y librería estándar | Aplicación, Infraestructura, Presentación, NestJS, TypeORM, HTTP, base de datos y otros módulos |
-| Aplicación | Casos de uso, comandos, consultas, autorización contextual, transacciones, modelos de lectura y puertos | Dominio | Implementaciones de Infraestructura, Presentación, NestJS, TypeORM y HTTP |
-| Infraestructura | Implementaciones de repositorios de Dominio y puertos de Aplicación, TypeORM, PostgreSQL, JWT, archivos, mensajería e integraciones | Aplicación y Dominio | Presentación y reglas de negocio nuevas |
-| Presentación | Controllers, DTO, guards, pipes, filtros y traducción HTTP | Puertos/casos de uso de Aplicación y modelos de respuesta | Persistencia concreta, TypeORM y acceso directo al Dominio para ejecutar negocio |
+| Dominio | Agregados, entidades, objetos de valor, invariantes, políticas, eventos, repositorios de agregados y errores de negocio | Solo Dominio del módulo, `src/comun/dominio` y librería estándar | Aplicación, Infraestructura, Presentación, NestJS, TypeORM, HTTP, base de datos y otros módulos |
+| Aplicación | Casos de uso, comandos, consultas, autorización contextual, transacciones, modelos de lectura y puertos | Dominio del módulo, `src/comun/aplicacion` y `src/comun/dominio` | Implementaciones de Infraestructura, Presentación, NestJS, TypeORM y HTTP |
+| Infraestructura | Implementaciones de repositorios de Dominio y puertos de Aplicación, TypeORM, PostgreSQL, JWT, archivos, mensajería e integraciones | Aplicación y Dominio del módulo, `src/comun` (infraestructura, aplicación y dominio) | Presentación y reglas de negocio nuevas |
+| Presentación | Controllers, DTO, guards, pipes, filtros y traducción HTTP | Puertos/casos de uso de Aplicación y modelos de respuesta del módulo, `src/comun` (presentación, aplicación y dominio) | Persistencia concreta, TypeORM y acceso directo al Dominio para ejecutar negocio |
 
 La dirección general es:
 
@@ -236,7 +318,7 @@ No se usan `HttpException` de NestJS dentro de Dominio o Aplicación.
 
 ## 13. Modelo SaaS, autenticación, Sesión y contexto de Empresa
 
-Decisión: `ADR-0008`, que reemplaza `ADR-0004`. La protección de credenciales y tokens sigue `ADR-0006`.
+Decisiones: `ADR-0008`, que reemplaza `ADR-0004`, y `ADR-0010` para la relación entre Cuenta de Empresa y Empleado. La protección de credenciales y tokens sigue `ADR-0006`.
 
 ### 13.1 Alta y administración del cliente SaaS
 
@@ -250,7 +332,7 @@ Decisión: `ADR-0008`, que reemplaza `ADR-0004`. La protección de credenciales 
 
 1. Presentación valida el formato de credenciales.
 2. Aplicación resuelve la Cuenta de Empresa según el contrato de inicio de sesión que apruebe `ACC`; la Empresa nunca se deduce de un dato ambiguo.
-3. Se valida la Cuenta de Empresa y, cuando corresponda al modelo de identidad aprobado, el Usuario relacionado.
+3. Se valida la Cuenta de Empresa; no existe una identidad global de Usuario adicional. Cuando la operación lo requiera, el vínculo laboral opcional se resuelve mediante `empleadoId` conforme a `ADR-0010`.
 4. Se comprueba que la Empresa esté habilitada y que su Suscripción de Empresa permita el acceso.
 5. Se obtienen roles, permisos y alcance vigentes de la Cuenta de Empresa.
 6. Se crea o renueva una Sesión persistente.
@@ -265,16 +347,16 @@ Una operación móvil creada antes de revocar la Sesión, Cuenta de Empresa, Emp
 
 1. El middleware asigna un identificador de solicitud/correlación.
 2. El guard valida firma, formato y vencimiento del JWT.
-3. Se consulta la persistencia para comprobar que Sesión, Cuenta de Empresa y Empresa continúan activas, además del Usuario si el modelo aprobado lo requiere como identidad separada.
+3. Se consulta la persistencia para comprobar que Sesión, Cuenta de Empresa y Empresa continúan activas.
 4. Se cargan roles, permisos y alcances actuales.
-5. Se construye un `ContextoSolicitud` con `solicitudId`, `cuentaEmpresaId`, `empresaId`, `sesionId`, roles, permisos y alcance; incluye `usuarioId` solo si existe una identidad separada aprobada.
+5. Se construye un `ContextoSolicitud` con `solicitudId`, `cuentaEmpresaId`, `empresaId`, `sesionId`, roles, permisos y alcance; puede incluir `empleadoId` cuando la Cuenta de Empresa esté vinculada con una ficha laboral.
 6. El guard comprueba el permiso general de la operación.
 7. Los pipes validan el DTO.
 8. El Controller ejecuta el caso de uso pasando el contexto, no el objeto HTTP.
 9. El caso de uso verifica las condiciones de autorización que dependan del recurso.
 10. El resultado y los fallos relevantes quedan vinculados al contexto para auditoría.
 
-La consulta directa a persistencia es la política inicial. Una caché futura solo puede incorporarse con invalidación inmediata ante cambios de Sesión, Cuenta de Empresa, Usuario cuando corresponda, Empresa, Rol, Permiso, Suscripción de Empresa o alcance.
+La consulta directa a persistencia es la política inicial. Una caché futura solo puede incorporarse con invalidación inmediata ante cambios de Sesión, Cuenta de Empresa, Empresa, Rol, Permiso, Suscripción de Empresa o alcance.
 
 ### 13.4 Aislamiento multiempresa
 
@@ -283,7 +365,7 @@ La consulta directa a persistencia es la política inicial. Una caché futura so
 - Todo repositorio tenant-scoped recibe el contexto o un identificador de Empresa ya validado por Aplicación y filtra obligatoriamente por él.
 - Toda referencia entre datos tenant-scoped comprueba que pertenezca a la misma Empresa.
 - Un ID válido no concede permiso.
-- SuperAdministrador, catálogos globales y cualquier identidad transversal que `ACC` apruebe son excepciones explícitas; no desactivan el filtro de Empresa para datos de negocio.
+- SuperAdministrador y catálogos globales son excepciones explícitas; no desactivan el filtro de Empresa para datos de negocio.
 - El SuperAdministrador no obtiene acceso implícito a los datos de una Empresa. Cualquier acceso de soporte futuro requiere caso de uso, autorización y auditoría propios.
 
 ### 13.5 Crear o habilitar una Cuenta de Empresa
@@ -291,12 +373,12 @@ La consulta directa a persistencia es la política inicial. Una caché futura so
 1. El actor autenticado debe tener permiso para administrar accesos.
 2. La Empresa destino se toma del `ContextoSolicitud`; solo el flujo explícito de plataforma del SuperAdministrador selecciona otra Empresa y exige motivo auditable.
 3. Se consulta la Suscripción de Empresa antes de activar otra Cuenta de Empresa o consumir cualquier otro recurso limitado.
-4. Se crea o vincula la identidad según el modelo que apruebe `ACC`; no se presupone una identidad global ni credenciales compartidas entre Empresas.
+4. Se crea la Cuenta de Empresa sin identidad global adicional. `empleadoId` es opcional para el Administrador y obligatorio para una Cuenta con rol Capataz o Empleado; el vínculo siempre pertenece a la misma Empresa.
 5. Se crea o habilita la Cuenta de Empresa y se asignan únicamente roles autorizados para esa Empresa.
-6. Cuenta de Empresa, roles e historial se guardan dentro del límite transaccional definido; la identidad se incluye cuando corresponda.
+6. Cuenta de Empresa, vínculo laboral opcional, roles e historial se guardan dentro del límite transaccional definido.
 7. La auditoría conserva actor, Cuenta de Empresa del actor, Sesión, solicitud y Empresa.
 
-La misma persona puede operar en más de una Empresa solo mediante una Cuenta de Empresa propia de cada una. Sus roles, permisos, estado y límites no se trasladan. La independencia o reutilización de identidad y credenciales permanece pendiente de `ACC-Q-001`.
+La misma persona puede operar en más de una Empresa solo mediante una Cuenta de Empresa propia de cada una. Sus credenciales, roles, permisos, estado y límites no se trasladan. No existe una identidad global compartida entre esas cuentas.
 
 ## 14. Historial y auditoría
 
@@ -341,6 +423,9 @@ La misma persona puede operar en más de una Empresa solo mediante una Cuenta de
 | Presentación no usa repositorios TypeORM | Dependency Cruiser; pendiente de configurar al inicializar |
 | Un módulo no importa internos de otro | Dependency Cruiser; pendiente de configurar al inicializar |
 | No existen ciclos entre módulos | Dependency Cruiser; pendiente de configurar al inicializar |
+| `src/comun` no depende de ningún módulo funcional (`src/modulos`) | Dependency Cruiser; pendiente de configurar |
+| Dominio funcional o común no depende de NestJS ni TypeORM | Dependency Cruiser; pendiente de configurar |
+| Un módulo funcional solo importa de `src/comun` de su misma capa o capas más internas | Dependency Cruiser; pendiente de configurar |
 
 La herramienta y los comandos están definidos en `convenciones.md` §9. La fase 0 no puede demostrar todavía una violación intencional porque el proyecto NestJS no fue inicializado y esta fase no permite escribir código o configuración del proyecto.
 

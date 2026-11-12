@@ -53,12 +53,12 @@ Los roles no incluidos no reciben permisos de Chacras ni Lotes por esta especifi
 
 **Flujo principal**
 
-1. El actor solicita registrar una Chacra indicando los datos descriptivos.
+1. El actor solicita registrar una Chacra indicando los datos descriptivos y opcionalmente los datos de ubicación de referencia (`direccion` y `puntoGeograficoReferencia`) según `TER-Q-018`.
 2. El sistema comprueba el permiso y el contexto de TER-DEP-001 y TER-DEP-002 según arquitectura.md §13.4.
 3. El sistema valida TER-BR-001, TER-BR-002 y TER-BR-003.
 4. El sistema valida TER-BR-007 dentro de la Empresa propietaria con el control concurrente de convenciones.md §3.5.
 5. El sistema registra la Chacra aplicando TER-BR-005 y conserva la auditoría de la fundación.
-6. El sistema informa la Chacra registrada y su versión.
+6. El sistema informa la Chacra registrada, su versión y sus datos descriptivos y de ubicación de referencia.
 
 **Excepciones**
 
@@ -73,7 +73,7 @@ Los roles no incluidos no reciben permisos de Chacras ni Lotes por esta especifi
 
 **Postcondiciones**
 
-- Existe una Chacra en la Empresa autorizada; no se crea ni se exige ningún Lote.
+- Existe una Chacra en la Empresa autorizada; si se informaron dirección o punto geográfico de referencia, quedan registrados; no se crea ni se exige ningún Lote.
 
 **Escenarios de aceptación**
 
@@ -138,6 +138,11 @@ Escenario: Exigir contexto explícito de soporte
   Cuando solicita registrar chacra mediante soporte
   Entonces se rechaza con ACC_CONTEXTO_SOPORTE_REQUERIDO
 
+@TER-UC-001 @AC-11
+Escenario: Registrar Chacra con ubicación de referencia válida
+  Dado un Administrador autorizado, datos descriptivos válidos y datos opcionales de ubicación según TER-Q-018
+  Cuando registra una Chacra indicando dirección textual y coordenadas de referencia
+  Entonces la Chacra queda registrada con su ubicación de referencia asociada y no se exige delimitar geometrías de Lote
 ```
 
 ### TER-UC-002 — Consultar Chacra
@@ -325,11 +330,11 @@ Escenario: Filtrar el listado por estado
 
 **Flujo principal**
 
-1. El actor solicita modificar los datos descriptivos de una Chacra indicando la versión conocida.
+1. El actor solicita modificar los datos descriptivos y/o de ubicación de referencia (`direccion`, `puntoGeograficoReferencia`) de una Chacra indicando la versión conocida. Puede actualizar o limpiar con `null` los datos opcionales de ubicación según `TER-Q-018`.
 2. El sistema comprueba el permiso y el contexto mediante TER-DEP-001 y TER-DEP-002.
-3. El sistema valida TER-BR-001, TER-BR-002, TER-BR-007 y TER-BR-008; la comprobación de unicidad excluye la propia Chacra.
+3. El sistema valida TER-BR-001, TER-BR-002, TER-BR-007, TER-BR-008 y la validez de los datos de ubicación enviados; la comprobación de unicidad excluye la propia Chacra.
 4. El sistema verifica la versión conforme a convenciones.md §3.5.
-5. El sistema registra los cambios y la auditoría, incrementando la versión.
+5. El sistema registra los cambios y la auditoría, incrementando la versión. Si se envió `null` en dirección o punto geográfico de referencia, se limpian dichos valores.
 6. El sistema informa el resultado.
 
 **Excepciones**
@@ -347,7 +352,7 @@ Escenario: Filtrar el listado por estado
 
 **Postcondiciones**
 
-- Los datos descriptivos quedan actualizados sin cambiar la Empresa propietaria ni eliminar historial.
+- Los datos descriptivos y de ubicación de referencia quedan actualizados o limpiados sin cambiar la Empresa propietaria ni eliminar historial.
 
 **Escenarios de aceptación**
 
@@ -412,6 +417,17 @@ Escenario: Corregir datos descriptivos de una Chacra inactiva
   Cuando corrige sus datos descriptivos válidos
   Entonces la modificación se registra, conserva el nombre corto reservado y la Chacra permanece INACTIVA
 
+@TER-UC-004 @AC-11
+Escenario: Actualizar ubicación de referencia
+  Dado un Administrador autorizado, una Chacra existente y versión vigente
+  Cuando actualiza la dirección textual y/o el punto geográfico de referencia válidos
+  Entonces la Chacra conserva su identidad y estado, actualiza su ubicación de referencia e incrementa su versión
+
+@TER-UC-004 @AC-12
+Escenario: Limpiar ubicación de referencia
+  Dado un Administrador autorizado y una Chacra con dirección y punto de referencia registrados
+  Cuando solicita modificar la Chacra enviando null en dirección y punto geográfico de referencia
+  Entonces los datos de ubicación quedan limpios (null), la Chacra conserva su identidad y estado e incrementa su versión
 ```
 
 ### TER-UC-005 — Inactivar Chacra
@@ -420,7 +436,7 @@ Escenario: Corregir datos descriptivos de una Chacra inactiva
 - **Actor:** Administrador; SuperAdministrador mediante soporte auditado.
 - **Objetivo:** Inactivar Chacra dentro del alcance autorizado.
 - **Requerimientos:** `TER-REQ-005`.
-- **Reglas:** `TER-BR-005`, `TER-BR-006`.
+- **Reglas:** `TER-BR-005`, `TER-BR-006`, `TER-BR-023`.
 
 **Precondiciones**
 
@@ -430,7 +446,7 @@ Escenario: Corregir datos descriptivos de una Chacra inactiva
 
 1. El actor solicita inactivar una Chacra indicando la versión conocida.
 2. El sistema comprueba el permiso y el contexto mediante TER-DEP-001 y TER-DEP-002.
-3. El sistema valida TER-BR-005 y la versión según convenciones.md §3.5.
+3. El sistema valida TER-BR-005, la versión según convenciones.md §3.5 y comprueba que la Chacra no contenga Lotes ACTIVOS según TER-BR-023.
 4. El sistema aplica TER-BR-006, registra el cambio de estado y conserva su auditoría e historial.
 5. El sistema informa la Chacra y su nueva versión.
 
@@ -441,6 +457,7 @@ Escenario: Corregir datos descriptivos de una Chacra inactiva
 | El actor no tiene permiso o solicita otra Empresa fuera de su contexto | 2 | Se rechaza sin revelar datos ajenos ni modificar la Chacra | `TER_ACCESO_DENEGADO` |
 | Soporte sin el contexto requerido por `ACC-BR-011` | 2 | Se rechaza sin ejecutar la operación | `ACC_CONTEXTO_SOPORTE_REQUERIDO` |
 | No se cumple `TER-BR-005` | 3 | Se rechaza sin confirmar cambios parciales | `TER_TRANSICION_ESTADO_INVALIDA` |
+| Contiene Lotes ACTIVOS (`TER-BR-023`) | 3 | Se rechaza sin confirmar cambios parciales | `TER_ESTADO_CHACRA_LOTES_INCOMPATIBLE` |
 | Versión anterior a la vigente | 3 | Se rechaza sin confirmar cambios parciales | `TER_VERSION_CONFLICTO` |
 | Chacra inexistente dentro del alcance | 2 | Se rechaza sin confirmar cambios parciales | `TER_CHACRA_NO_ENCONTRADA` |
 
@@ -499,6 +516,11 @@ Escenario: Exigir contexto explícito de soporte
   Cuando solicita inactivar chacra mediante soporte
   Entonces se rechaza con ACC_CONTEXTO_SOPORTE_REQUERIDO
 
+@TER-UC-005 @AC-09
+Escenario: Rechazar inactivación si la Chacra contiene Lotes activos
+  Dado una Chacra ACTIVA que contiene al menos un Lote ACTIVO y versión vigente
+  Cuando el Administrador solicita inactivar la Chacra
+  Entonces se rechaza con TER_ESTADO_CHACRA_LOTES_INCOMPATIBLE, la Chacra permanece ACTIVA y no se aplican inactivaciones en cascada
 ```
 
 ### TER-UC-006 — Registrar Lote

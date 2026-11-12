@@ -268,3 +268,73 @@ La decisión se incorpora a la especificación propuesta de ACC. No requiere una
 
 **Alcance de la respuesta:** quedan definidos el control de contraseña actual, la caducidad de Sesiones de la cuenta afectada y los límites y normalización de correo, contraseña y motivo de soporte.
 
+## ACC-Q-019 — Cuenta de Empresa y vínculo opcional con Empleado
+
+- **Estado:** Respondida
+- **Bloqueante:** No
+- **Origen:** aclaración del Ingeniero sobre el flujo SaaS y aprobación de la solución propuesta; corrige la interpretación de `ACC-Q-002`, `ACC-Q-004` y `PER-Q-001`
+- **Afecta:** `ACC-ENT-001`, `ACC-BR-015`, `ACC-REQ-001`, `ACC-UC-001`, `ACC-DEP-003`, `PER-BR-007`, `PER-REQ-003`, `PER-UC-002`, glosario y arquitectura
+- **Pregunta:** ¿La Cuenta de Empresa es la identidad de acceso tenant-scoped, sin una entidad Persona ni `personaId`, y se vincula opcionalmente con un Empleado mediante `empleadoId`?
+- **Interpretaciones posibles:**
+  - a) Sí. El Administrador inicial puede tener Cuenta de Empresa sin ser Empleado; un Empleado puede existir sin acceso; cuando se habilita su acceso, ACC conserva `empleadoId`; Capataz y Empleado con acceso requieren una ficha activa.
+  - b) Toda Cuenta de Empresa debe referenciar una entidad Persona adicional, aunque no exista vínculo laboral.
+- **Recomendación del agente:** opción a), porque representa el flujo SaaS aprobado sin inventar una entidad Persona ni duplicar datos laborales.
+- **Respuesta:** Aprobada la opción a). La suscripción pertenece a la Empresa; el SuperAdministrador crea la Empresa y una Cuenta de Empresa inicial con rol Administrador y sin `empleadoId`. Los Empleados pertenecen a PER y pueden no tener acceso. Al habilitar un Empleado, PER valida su ficha y ACC crea o vincula la Cuenta mediante `empleadoId`. Capataz y Empleado con acceso requieren Empleado activo; el Administrador puede no ser Empleado. ACC conserva el vínculo y PER no lo duplica.
+- **Respondida por / fecha:** Parodi Lucas / 2026-11-11 (aprobación explícita en el chat).
+
+## ACC-Q-020 — Datos y vinculación posterior del Administrador inicial
+
+- **Estado:** Respondida
+- **Bloqueante:** No
+- **Origen:** aprobación del Ingeniero de la solución propuesta para el Administrador inicial
+- **Afecta:** `ACC-ENT-001`, `ACC-BR-015`, `ACC-UC-001`
+- **Pregunta:** ¿Qué datos conserva ACC para un Administrador sin Empleado y puede vincularse posteriormente con una ficha laboral?
+- **Interpretaciones posibles:**
+  - a) ACC conserva los datos de acceso y un nombre mostrado opcional; DNI y demás datos personales solo existen en PER cuando haya Empleado. La vinculación posterior es explícita, auditable y no crea otra Cuenta.
+  - b) ACC duplica DNI, nombre, apellido y demás datos personales aunque exista una ficha en PER.
+- **Recomendación del agente:** opción a), para mantener un único dueño por dato.
+- **Respuesta:** Aprobada la opción a). El Administrador inicial no requiere DNI ni ficha laboral; puede tener un nombre mostrado opcional. Si posteriormente se registra como Empleado, su Cuenta existente se vincula explícitamente con ese Empleado sin duplicar la Cuenta ni trasladarla a otra Empresa.
+- **Respondida por / fecha:** Parodi Lucas / 2026-11-11 (aprobación explícita en el chat).
+
+## ACC-Q-021 — Bootstrap de plataforma y vigencia del soporte
+
+- **Estado:** Respondida
+- **Bloqueante:** No
+- **Origen:** `ACC-Q-005`, `ACC-Q-007`, `ACC-Q-017`; aprobación del Ingeniero de la solución propuesta
+- **Afecta:** `ACC-BR-011`, `ACC-UC-006`, `ACC-UC-007`, `ACC-ENT-004`, `ACC-ENT-005`
+- **Pregunta:** ¿El `.env` se limita al bootstrap o recuperación operativa del primer SuperAdministrador y el contexto de soporte es temporal, ligado a una Sesión de plataforma y a una sola Empresa?
+- **Interpretaciones posibles:**
+  - a) Sí. La identidad de plataforma queda persistida y auditable; el soporte tiene vigencia acotada, no permite cambiar de Empresa ni suplanta a un Administrador.
+  - b) Las variables de entorno sustituyen permanentemente la identidad persistente y el soporte no tiene vigencia explícita.
+- **Recomendación del agente:** opción a), para conservar auditoría y limitar el alcance de soporte.
+- **Respuesta:** Aprobada la opción a). `.env` se usa para el bootstrap o recuperación operativa inicial; los SuperAdministradores son identidades persistentes. Cada contexto de soporte queda asociado a la Sesión de plataforma, una Empresa, un motivo y una vigencia, sin impersonación.
+- **Respondida por / fecha:** Parodi Lucas / 2026-11-11 (aprobación explícita en el chat).
+
+## ACC-Q-022 — Alcance exacto de la asignación de Capataz a Chacras
+
+- **Estado:** Respondida
+- **Bloqueante:** Sí
+- **Origen:** `ACC-TASK-005`; la aprobación del Ingeniero del 2026-11-12 quedó registrada sin el texto de las recomendaciones aprobadas
+- **Afecta:** reglas, requerimientos, casos de uso, permisos, entidad lógica y dependencias de la asignación de Chacras
+- **Pregunta:** Para materializar sin ambigüedad la aprobación del 2026-11-12, ¿confirmás que la cardinalidad, la consulta y la reactivación son exactamente las descritas en la opción a)?
+- **Interpretaciones posibles:**
+  - a) Una Cuenta de Empresa con rol Capataz puede tener cero o varias Chacras asignadas y una Chacra puede estar asignada a cero o varios Capataces de la misma Empresa. El Administrador consulta y administra todas las asignaciones de su Empresa; el Capataz solo consulta sus propias asignaciones vigentes; el SuperAdministrador lo hace únicamente mediante soporte auditado. La asignación se inactiva sin borrado físico, solo las asignaciones activas integran el alcance vigente y una relación inactiva requiere una operación explícita de reactivación, sin crear otra asignación.
+  - b) La aprobación previa tenía otra cardinalidad, otro alcance de consulta o un comportamiento diferente al reactivar; indicar el texto exacto que debe documentarse.
+- **Recomendación del agente:** opción a). Es consistente con `TER-Q-008`, `TER-DEP-002`, la selección de Chacras aprobada en `PLAN-TER-0001` D-01 y la conservación histórica ya utilizada en ACC; hace explícita la diferencia entre asignar, inactivar y reactivar.
+- **Respuesta:** Aprobada la opción a). Una Cuenta de Empresa con rol Capataz puede tener cero o varias Chacras asignadas y una Chacra puede estar asignada a cero o varios Capataces de la misma Empresa. El Administrador consulta y administra todas las asignaciones de su Empresa; el Capataz solo consulta sus propias asignaciones vigentes; el SuperAdministrador lo hace únicamente mediante soporte auditado. La asignación se conserva al inactivarse, solo las asignaciones activas integran el alcance vigente y una relación inactiva requiere reactivación explícita sin crear otra asignación.
+- **Respondida por / fecha:** Parodi Lucas / 2026-11-12 (aprobación explícita en el chat).
+
+## ACC-Q-023 — Estados de la Cuenta y la Chacra en una asignación
+
+- **Estado:** Respondida
+- **Bloqueante:** Sí
+- **Origen:** hueco detectado al derivar `ACC-Q-022`; `PLAN-ACC-0002` exige validar identidad, Empresa y estado de la Chacra
+- **Afecta:** validaciones para asignar y reactivar, composición del alcance vigente y dependencia con `TER`
+- **Pregunta:** ¿Cómo deben afectar los estados de la Cuenta de Empresa y de la Chacra a la asignación territorial?
+- **Interpretaciones posibles:**
+  - a) Asignar o reactivar exige una Cuenta ACTIVA que conserve el rol Capataz y una Chacra ACTIVA de la misma Empresa. Suspender la Cuenta, quitarle el rol Capataz o inactivar la Chacra no modifica ni inactiva automáticamente la asignación: ACC conserva su historia. Una Cuenta que no esté ACTIVA o no tenga actualmente el rol Capataz no recibe alcance territorial; una Chacra posteriormente INACTIVA permanece en el alcance de una asignación activa para permitir las consultas históricas ya aprobadas en TER.
+  - b) Alguno de esos cambios inactiva automáticamente la asignación o se permite asignar o reactivar Cuentas o Chacras inactivas; indicar el comportamiento requerido para cada caso.
+- **Recomendación del agente:** opción a). Evita efectos automáticos no solicitados, conserva la historia y mantiene la consulta de Chacras inactivas aprobada en `TER-BR-008`, sin habilitar nuevas asignaciones sobre recursos inactivos.
+- **Respuesta:** Aprobada la opción a). Asignar o reactivar exige una Cuenta ACTIVA con rol Capataz y una Chacra ACTIVA de la misma Empresa. Los cambios posteriores de estado o rol no modifican automáticamente la asignación. Una Cuenta que no esté ACTIVA o no conserve el rol Capataz no recibe alcance territorial; una Chacra posteriormente INACTIVA permanece en el alcance de una asignación activa para las consultas históricas aprobadas en TER.
+- **Respondida por / fecha:** Parodi Lucas / 2026-11-12 (aprobación explícita en el chat).
+

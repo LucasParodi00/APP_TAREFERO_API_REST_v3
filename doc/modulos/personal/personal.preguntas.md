@@ -25,6 +25,8 @@ No borrar preguntas respondidas: cambian de estado. -->
 - **Respuesta:** Opción c). Capataz y Empleado con acceso requieren ficha de Empleado; el Administrador puede existir como Persona sin ser Empleado. El SuperAdministrador permanece fuera del tenant.
 - **Respondida por / fecha:** Parodi Lucas / 2026-11-05
 
+**Aclaración posterior:** `ACC-Q-019`, aprobada por el Ingeniero el 2026-11-11, conserva el resultado funcional pero retira la entidad Persona: el Administrador puede tener Cuenta de Empresa sin `empleadoId`; Capataz y Empleado con acceso requieren un Empleado ACTIVO.
+
 ## PER-Q-002 — Identidad por Empresa y unicidad del DNI
 
 - **Estado:** Respondida

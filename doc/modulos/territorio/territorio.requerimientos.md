@@ -399,10 +399,10 @@ La primera entrega de Chacras, derivada de `B-01` y `TER-Q-001` a `TER-Q-010`, y
 ### TER-REQ-005 — Inactivar Chacra
 
 - **Estado:** Aprobado
-- **Origen:** `TER-Q-003`, `TER-Q-006`
+- **Origen:** `TER-Q-003`, `TER-Q-006`, `TER-Q-022`
 - **Prioridad:** Must
-- **Requerimiento:** El sistema debe permitir inactivar una Chacra conservando los registros que la referencian.
-- **Reglas que aplica:** `TER-BR-005`, `TER-BR-006`.
+- **Requerimiento:** El sistema debe permitir inactivar una Chacra siempre que no contenga Lotes activos (`TER-BR-023`), conservando los registros que la referencian.
+- **Reglas que aplica:** `TER-BR-005`, `TER-BR-006`, `TER-BR-023`.
 
 ### TER-REQ-006 — Registrar Lote
 
@@ -535,8 +535,8 @@ La primera entrega de Chacras, derivada de `B-01` y `TER-Q-001` a `TER-Q-010`, y
 
 ## 4. Fuera de alcance
 
-- La ubicación de referencia de Chacra aprobada en `TER-Q-018` requiere un cambio controlado sobre la primera entrega; no se modifica silenciosamente dentro de esta redacción de Lotes.
-- La aplicación de `TER-BR-023` a `TER-REQ-005` y `TER-UC-005` requiere un cambio controlado sobre la primera entrega de Chacras; hasta ese cambio, esta entrega solo la aplica al registro y reactivación de Lotes.
+- La ubicación de referencia de Chacra aprobada en `TER-Q-018` está incorporada en `TER-ENT-001`, `TER-UC-001` y `TER-UC-004`; no se admiten geometrías complejas ni polígonos sobre Chacra.
+- La aplicación de `TER-BR-023` a la inactivación de Chacra según `TER-Q-022` está incorporada en `TER-REQ-005` y `TER-UC-005`; no se aplican inactivaciones en cascada.
 - Cultivos, implantaciones y cosechas conservan los dueños registrados en arquitectura.md; no se agregan como atributos de Chacra por anticipado — origen `B-01` y arquitectura.
 - Reactivación de Chacras: definición posterior según `TER-Q-006`.
 - El responsable es un dato descriptivo; no se genera una Cuenta de Empresa, permiso o asignación por informarlo — origen `B-01`.

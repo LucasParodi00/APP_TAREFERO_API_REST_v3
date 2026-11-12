@@ -119,7 +119,7 @@ Borrador derivado del brief y de las respuestas del Ingeniero. Los ítems requie
 ### ACC-BR-008 — Último SuperAdministrador activo
 
 - **Estado:** Aprobado
-- **Origen:** `B-05`, `B-12`, `ACC-Q-007`
+- **Origen:** `B-05`, `B-12`, `ACC-Q-007`, `ACC-Q-021`
 - **Tipo:** Invariante
 - **Regla:** Una operación no puede dejar la plataforma sin al menos un SuperAdministrador activo.
 - **Si se incumple:** se rechaza con `ACC_ULTIMO_SUPERADMINISTRADOR`.
@@ -164,17 +164,17 @@ Borrador derivado del brief y de las respuestas del Ingeniero. Los ítems requie
 ### ACC-BR-011 — Contexto explícito de soporte
 
 - **Estado:** Aprobado
-- **Origen:** `B-05`, `B-13`, `ACC-Q-005`
+- **Origen:** `B-05`, `B-13`, `ACC-Q-005`, `ACC-Q-021`
 - **Tipo:** Autorización de dominio
-- **Regla:** Una intervención de soporte requiere Empresa destino y motivo, conserva la identidad real del SuperAdministrador y no omite las reglas de integridad del negocio.
+- **Regla:** Una intervención de soporte requiere Empresa destino, motivo, Sesión de plataforma y vigencia; conserva la identidad real del SuperAdministrador, solo opera sobre la Empresa seleccionada, no suplanta a un Administrador y no omite las reglas de integridad del negocio.
 - **Si se incumple:** se rechaza con `ACC_CONTEXTO_SOPORTE_REQUERIDO`.
 - **Ejemplos:**
 
 | Situación | Resultado |
 |---|---|
-| Soporte con Empresa y motivo identificados | Admitido si se satisfacen las demás condiciones. |
+| Soporte vigente con Empresa, motivo y Sesión identificados | Admitido si se satisfacen las demás condiciones. |
 | Soporte ejecuta una acción sin exigir roles internos de la Empresa | Caso límite admitido. |
-| Soporte intenta operar sin motivo o eludiendo integridad | Se rechaza con `ACC_CONTEXTO_SOPORTE_REQUERIDO`. |
+| Soporte intenta operar sin motivo, vencido, sobre otra Empresa o eludiendo integridad | Se rechaza con `ACC_CONTEXTO_SOPORTE_REQUERIDO`. |
 
 ### ACC-BR-012 — Cambio de contraseña voluntario
 
@@ -221,20 +221,20 @@ Borrador derivado del brief y de las respuestas del Ingeniero. Los ítems requie
 | La persona tiene una cuenta en otra Empresa | Sus sesiones de la otra Empresa no se modifican. |
 | No se puede completar la invalidación de sesiones | No se confirma un cambio parcial. |
 
-### ACC-BR-015 — Cuenta única por persona y Empresa
+### ACC-BR-015 — Cuenta única por Empleado y Empresa
 
 - **Estado:** Aprobado
-- **Origen:** `ACC-Q-016`
+- **Origen:** `ACC-Q-016`, `ACC-Q-019`
 - **Tipo:** Invariante
-- **Regla:** Cada persona puede tener como máximo una Cuenta de Empresa en una misma Empresa, incluso si la cuenta existente está suspendida.
-- **Si se incumple:** se rechaza con `ACC_CUENTA_PERSONA_DUPLICADA`.
+- **Regla:** Un Empleado puede vincularse con una sola Cuenta de Empresa de su misma Empresa, incluso si la cuenta existente está suspendida; las cuentas sin Empleado se identifican por su correo único conforme a `ACC-BR-003`.
+- **Si se incumple:** se rechaza con `ACC_CUENTA_EMPLEADO_DUPLICADA`.
 - **Ejemplos:**
 
 | Situación | Resultado |
 |---|---|
-| Persona sin cuenta previa en la Empresa | Se permite habilitarla. |
-| La persona ya tiene cuenta en otra Empresa | Se permite una cuenta propia en esta Empresa. |
-| Segunda cuenta para la misma persona y Empresa | Se rechaza con `ACC_CUENTA_PERSONA_DUPLICADA`. |
+| Empleado activo sin cuenta previa en la Empresa | Se permite habilitarlo. |
+| Administrador inicial sin Empleado y con correo disponible | Se permite crear la Cuenta de Empresa. |
+| Segunda cuenta vinculada con el mismo Empleado de la Empresa | Se rechaza con `ACC_CUENTA_EMPLEADO_DUPLICADA`. |
 
 ### ACC-BR-016 — Ciclo de acceso de Empresa
 
@@ -311,15 +311,150 @@ Borrador derivado del brief y de las respuestas del Ingeniero. Los ítems requie
 | Motivo de 1000 caracteres | Se admite. |
 | Motivo vacío después de normalizar o de 1001 caracteres | Se rechaza con `ACC_MOTIVO_SOPORTE_INVALIDO`. |
 
+### ACC-BR-021 — Vínculo laboral según rol
+
+- **Estado:** Aprobado
+- **Origen:** `ACC-Q-019`
+- **Tipo:** Invariante
+- **Regla:** `empleadoId` es opcional para una Cuenta de Empresa con rol Administrador y obligatorio para cualquier Cuenta que reúna el rol Capataz o Empleado; cuando existe debe referenciar un Empleado ACTIVO de la misma Empresa.
+- **Si se incumple:** se rechaza con `ACC_VINCULO_EMPLEADO_INVALIDO`.
+- **Ejemplos:**
+
+| Situación | Resultado |
+|---|---|
+| Administrador inicial sin ficha de Empleado | Se admite. |
+| Empleado activo de la misma Empresa recibe rol Capataz | Se admite si se satisfacen las demás condiciones. |
+| Cuenta con rol Empleado sin `empleadoId` o vinculada a otra Empresa | Se rechaza con `ACC_VINCULO_EMPLEADO_INVALIDO`. |
+
+### ACC-BR-022 — Vinculación posterior sin duplicar la Cuenta
+
+- **Estado:** Aprobado
+- **Origen:** `ACC-Q-020`
+- **Tipo:** Transición
+- **Regla:** Una Cuenta de Empresa sin vínculo laboral puede vincularse explícita y auditadamente con un Empleado ACTIVO de la misma Empresa sin crear otra Cuenta ni cambiar sus credenciales, Empresa o historial.
+- **Si se incumple:** se rechaza con `ACC_VINCULACION_EMPLEADO_INVALIDA`.
+- **Ejemplos:**
+
+| Situación | Resultado |
+|---|---|
+| Administrador existente se registra luego como Empleado de su Empresa | Se vincula su Cuenta existente. |
+| La Cuenta ya está vinculada con ese Empleado | Se informa el resultado idempotente sin crear otra Cuenta. |
+| Se intenta vincular un Empleado de otra Empresa o crear una segunda Cuenta | Se rechaza con `ACC_VINCULACION_EMPLEADO_INVALIDA`. |
+
+### ACC-BR-023 — Cuenta habilitada como Capataz para asignar
+
+- **Estado:** Aprobado
+- **Origen:** `ACC-Q-023`
+- **Tipo:** Validación
+- **Regla:** Crear o reactivar una asignación territorial exige que la Cuenta de Empresa esté ACTIVA y conserve el rol Capataz.
+- **Si se incumple:** se rechaza con `ACC_CUENTA_CAPATAZ_NO_DISPONIBLE`.
+- **Ejemplos:**
+
+| Situación | Resultado |
+|---|---|
+| Cuenta ACTIVA con rol Capataz | Se admite si se satisfacen las demás condiciones. |
+| Cuenta SUSPENDIDA con una asignación histórica | La asignación se conserva, pero no puede crearse ni reactivarse otra. |
+| Cuenta ACTIVA sin rol Capataz | Se rechaza con `ACC_CUENTA_CAPATAZ_NO_DISPONIBLE`. |
+
+### ACC-BR-024 — Chacra disponible para asignar
+
+- **Estado:** Aprobado
+- **Origen:** `ACC-Q-022`, `ACC-Q-023`
+- **Tipo:** Validación
+- **Regla:** Crear o reactivar una asignación territorial exige una Chacra ACTIVA perteneciente a la misma Empresa que la Cuenta de Empresa del Capataz.
+- **Si se incumple:** se rechaza con `ACC_CHACRA_NO_DISPONIBLE`.
+- **Ejemplos:**
+
+| Situación | Resultado |
+|---|---|
+| Chacra ACTIVA de la misma Empresa | Se admite si se satisfacen las demás condiciones. |
+| Chacra asignada que posteriormente queda INACTIVA | La asignación se conserva y no cambia automáticamente de estado. |
+| Chacra INACTIVA o perteneciente a otra Empresa al asignar o reactivar | Se rechaza con `ACC_CHACRA_NO_DISPONIBLE`. |
+
+### ACC-BR-025 — Una asignación por Cuenta y Chacra
+
+- **Estado:** Aprobado
+- **Origen:** `ACC-Q-022`
+- **Tipo:** Invariante
+- **Regla:** Cada par formado por una Cuenta de Empresa con rol Capataz y una Chacra conserva una única asignación territorial, incluso cuando esté INACTIVA; una Cuenta puede relacionarse con varias Chacras y una Chacra con varios Capataces de su Empresa.
+- **Si se incumple:** se rechaza con `ACC_ASIGNACION_TERRITORIAL_EXISTENTE`.
+- **Ejemplos:**
+
+| Situación | Resultado |
+|---|---|
+| Un Capataz recibe asignaciones a dos Chacras | Se admite. |
+| Dos Capataces de la misma Empresa reciben la misma Chacra | Se admite. |
+| Se intenta crear otro registro para un par que ya tiene una asignación ACTIVA | Se rechaza con `ACC_ASIGNACION_TERRITORIAL_EXISTENTE`. |
+
+### ACC-BR-026 — Ciclo explícito de la asignación territorial
+
+- **Estado:** Aprobado
+- **Origen:** `ACC-Q-022`
+- **Tipo:** Transición
+- **Regla:** Una asignación territorial se crea ACTIVA y solo admite las transiciones ACTIVA a INACTIVA e INACTIVA a ACTIVA; la segunda requiere una solicitud explícita de reactivación.
+- **Si se incumple:** se rechaza con `ACC_TRANSICION_ASIGNACION_TERRITORIAL_INVALIDA`.
+- **Ejemplos:**
+
+| Situación | Resultado |
+|---|---|
+| Inactivar una asignación ACTIVA | Se admite. |
+| Reactivar explícitamente una asignación INACTIVA que cumple las condiciones vigentes | Se admite. |
+| Tratar una nueva asignación sobre el mismo par como reactivación implícita | Se rechaza con `ACC_TRANSICION_ASIGNACION_TERRITORIAL_INVALIDA`. |
+
+### ACC-BR-027 — Conservación independiente de la asignación
+
+- **Estado:** Aprobado
+- **Origen:** `ACC-Q-022`, `ACC-Q-023`
+- **Tipo:** Invariante
+- **Regla:** Una asignación territorial no se elimina físicamente ni cambia automáticamente de estado cuando la Cuenta se suspende, pierde el rol Capataz o la Chacra queda INACTIVA; su ciclo se administra exclusivamente mediante `ACC-BR-026`.
+- **Si se incumple:** se rechaza con `ACC_ELIMINACION_ASIGNACION_TERRITORIAL_NO_PERMITIDA`.
+- **Ejemplos:**
+
+| Situación | Resultado |
+|---|---|
+| Suspender la Cuenta de un Capataz | La asignación conserva su estado y su historia. |
+| Una Chacra asignada pasa a INACTIVA | La asignación ACTIVA se conserva para las consultas históricas autorizadas. |
+| Solicitar el borrado físico de una asignación | Se rechaza con `ACC_ELIMINACION_ASIGNACION_TERRITORIAL_NO_PERMITIDA`. |
+
+### ACC-BR-028 — Composición del alcance territorial vigente
+
+- **Estado:** Aprobado
+- **Origen:** `ACC-Q-022`, `ACC-Q-023`
+- **Tipo:** Cálculo
+- **Regla:** El alcance territorial vigente de un Capataz contiene exactamente los identificadores de Chacra de sus asignaciones ACTIVA; solo se entrega cuando su Cuenta de Empresa está ACTIVA y conserva el rol Capataz. El estado posterior de la Chacra no la excluye del alcance.
+- **Si se incumple:** se rechaza la resolución con `ACC_ALCANCE_TERRITORIAL_INVALIDO`.
+- **Ejemplos:**
+
+| Situación | Resultado |
+|---|---|
+| Capataz ACTIVO con dos asignaciones ACTIVA, una de ellas a una Chacra posteriormente INACTIVA | El alcance contiene ambas Chacras. |
+| Capataz ACTIVO sin asignaciones ACTIVA | El alcance es una selección vacía. |
+| Se incluye una asignación INACTIVA o se entrega alcance a una Cuenta SUSPENDIDA o sin rol Capataz | Se rechaza con `ACC_ALCANCE_TERRITORIAL_INVALIDO`. |
+
+### ACC-BR-029 — Consulta de asignaciones según el actor
+
+- **Estado:** Aprobado
+- **Origen:** `ACC-Q-022`
+- **Tipo:** Autorización de dominio
+- **Regla:** El Administrador puede consultar todas las asignaciones de su Empresa; el Capataz solo sus propias asignaciones ACTIVA; el SuperAdministrador únicamente las de la Empresa seleccionada mediante soporte auditado.
+- **Si se incumple:** se rechaza con `ACC_ASIGNACION_TERRITORIAL_FUERA_DE_ALCANCE`.
+- **Ejemplos:**
+
+| Situación | Resultado |
+|---|---|
+| Administrador consulta asignaciones activas e inactivas de su Empresa | Se admite. |
+| Capataz consulta sus propias asignaciones ACTIVA | Se admite. |
+| Capataz consulta una asignación INACTIVA, ajena o de otra Empresa | Se rechaza con `ACC_ASIGNACION_TERRITORIAL_FUERA_DE_ALCANCE`. |
+
 ## 2. Requerimientos funcionales
 
 ### ACC-REQ-001 — Habilitar una Cuenta de Empresa
 
 - **Estado:** Aprobado
-- **Origen:** `B-01`, `B-05`, `B-06`, `B-07`, `ACC-Q-004`, `ACC-Q-015`, `ACC-Q-016`, `ACC-Q-018`
+- **Origen:** `B-01`, `B-05`, `B-06`, `B-07`, `ACC-Q-004`, `ACC-Q-015`, `ACC-Q-016`, `ACC-Q-018`, `ACC-Q-019`
 - **Prioridad:** Must
-- **Requerimiento:** El sistema debe permitir habilitar una Cuenta de Empresa para una persona registrada, manteniendo la administración inicial y posterior del cliente según ACC-Q-015.
-- **Reglas que aplica:** `ACC-BR-001`, `ACC-BR-002`, `ACC-BR-003`, `ACC-BR-004`, `ACC-BR-006`, `ACC-BR-007`, `ACC-BR-015`, `ACC-BR-016`, `ACC-BR-018`, `ACC-BR-019`.
+- **Requerimiento:** El sistema debe permitir crear una Cuenta de Empresa independiente, sin exigir Empleado para un Administrador y vinculándola con un Empleado activo cuando el acceso se habilita desde PER.
+- **Reglas que aplica:** `ACC-BR-001`, `ACC-BR-002`, `ACC-BR-003`, `ACC-BR-004`, `ACC-BR-006`, `ACC-BR-007`, `ACC-BR-015`, `ACC-BR-016`, `ACC-BR-018`, `ACC-BR-019`, `ACC-BR-021`.
 
 ### ACC-REQ-002 — Iniciar sesión en una Empresa
 
@@ -364,7 +499,7 @@ Borrador derivado del brief y de las respuestas del Ingeniero. Los ítems requie
 ### ACC-REQ-007 — Operar mediante soporte de plataforma
 
 - **Estado:** Aprobado
-- **Origen:** `B-05`, `B-13`, `ACC-Q-005`, `ACC-Q-018`
+- **Origen:** `B-05`, `B-13`, `ACC-Q-005`, `ACC-Q-018`, `ACC-Q-021`
 - **Prioridad:** Must
 - **Requerimiento:** El sistema debe permitir realizar una intervención de soporte sobre una Empresa mediante un contexto explícito auditable.
 - **Reglas que aplica:** `ACC-BR-002`, `ACC-BR-011`, `ACC-BR-020`.
@@ -388,10 +523,10 @@ Borrador derivado del brief y de las respuestas del Ingeniero. Los ítems requie
 ### ACC-REQ-010 — Administrar habilitación de acceso
 
 - **Estado:** Aprobado
-- **Origen:** `ACC-Q-016`, `ACC-Q-016`
+- **Origen:** `ACC-Q-016`, `ACC-Q-019`
 - **Prioridad:** Must
 - **Requerimiento:** El sistema debe permitir suspender y reactivar una Cuenta de Empresa y modificar sus canales y roles dentro del alcance autorizado.
-- **Reglas que aplica:** `ACC-BR-002`, `ACC-BR-005`, `ACC-BR-006`, `ACC-BR-007`, `ACC-BR-016`, `ACC-BR-017`.
+- **Reglas que aplica:** `ACC-BR-002`, `ACC-BR-005`, `ACC-BR-006`, `ACC-BR-007`, `ACC-BR-016`, `ACC-BR-017`, `ACC-BR-021`.
 
 ### ACC-REQ-011 — Consultar intervenciones de soporte
 
@@ -400,6 +535,54 @@ Borrador derivado del brief y de las respuestas del Ingeniero. Los ítems requie
 - **Prioridad:** Should
 - **Requerimiento:** El sistema debe permitir consultar en el historial de Empresa las intervenciones de soporte con la presentación aprobada en ACC-Q-008.
 - **Reglas que aplica:** `ACC-BR-002`, `ACC-BR-009`.
+
+### ACC-REQ-012 — Vincular una Cuenta con un Empleado
+
+- **Estado:** Aprobado
+- **Origen:** `ACC-Q-019`, `ACC-Q-020`
+- **Prioridad:** Must
+- **Requerimiento:** El sistema debe permitir vincular una Cuenta de Empresa existente sin Empleado con una ficha activa de la misma Empresa, conservando una sola Cuenta y su historial.
+- **Reglas que aplica:** `ACC-BR-002`, `ACC-BR-015`, `ACC-BR-021`, `ACC-BR-022`.
+
+### ACC-REQ-013 — Asignar una Chacra a un Capataz
+
+- **Estado:** Aprobado
+- **Origen:** `ACC-Q-022`, `ACC-Q-023`
+- **Prioridad:** Must
+- **Requerimiento:** El sistema debe permitir crear una asignación territorial entre una Cuenta de Empresa habilitada como Capataz y una Chacra disponible de la misma Empresa.
+- **Reglas que aplica:** `ACC-BR-002`, `ACC-BR-023`, `ACC-BR-024`, `ACC-BR-025`, `ACC-BR-026`.
+
+### ACC-REQ-014 — Inactivar una asignación territorial
+
+- **Estado:** Aprobado
+- **Origen:** `ACC-Q-022`
+- **Prioridad:** Must
+- **Requerimiento:** El sistema debe permitir inactivar explícitamente una asignación territorial sin eliminarla.
+- **Reglas que aplica:** `ACC-BR-002`, `ACC-BR-026`, `ACC-BR-027`.
+
+### ACC-REQ-015 — Reactivar una asignación territorial
+
+- **Estado:** Aprobado
+- **Origen:** `ACC-Q-022`, `ACC-Q-023`
+- **Prioridad:** Must
+- **Requerimiento:** El sistema debe permitir reactivar explícitamente una asignación territorial existente cuando la Cuenta y la Chacra vuelvan a satisfacer las condiciones vigentes.
+- **Reglas que aplica:** `ACC-BR-002`, `ACC-BR-023`, `ACC-BR-024`, `ACC-BR-025`, `ACC-BR-026`, `ACC-BR-027`.
+
+### ACC-REQ-016 — Consultar asignaciones territoriales
+
+- **Estado:** Aprobado
+- **Origen:** `ACC-Q-022`
+- **Prioridad:** Must
+- **Requerimiento:** El sistema debe permitir consultar y listar asignaciones territoriales dentro del alcance autorizado de cada actor.
+- **Reglas que aplica:** `ACC-BR-002`, `ACC-BR-029`.
+
+### ACC-REQ-017 — Resolver el alcance territorial vigente
+
+- **Estado:** Aprobado
+- **Origen:** `ACC-Q-022`, `ACC-Q-023`
+- **Prioridad:** Must
+- **Requerimiento:** Cuando se resuelve una solicitud de una Cuenta de Empresa con rol Capataz, el sistema debe proporcionar su selección vigente de identificadores de Chacra conforme a sus asignaciones territoriales.
+- **Reglas que aplica:** `ACC-BR-001`, `ACC-BR-002`, `ACC-BR-007`, `ACC-BR-028`.
 
 ## 3. Dependencias con otros módulos
 
@@ -421,14 +604,14 @@ Borrador derivado del brief y de las respuestas del Ingeniero. Los ítems requie
 - **Qué:** habilitación comercial vigente y cupo disponible; mientras SUS sea futuro se requiere el contrato provisional contemplado en arquitectura.md §13.1. No se inventan nombres de planes ni límites.
 - **Para qué:** `ACC-BR-006`, `ACC-REQ-001`, `ACC-REQ-002`, `ACC-REQ-009`, `ACC-REQ-010`.
 
-### ACC-DEP-003 — Personal — Persona o Empleado de la Empresa
+### ACC-DEP-003 — Personal — Empleado de la Empresa
 
 - **Estado:** Aprobado
-- **Origen:** `B-07`, `B-09`, `B-10`, `ACC-Q-002`, `ACC-Q-004`
+- **Origen:** `B-07`, `B-09`, `B-10`, `ACC-Q-002`, `ACC-Q-004`, `ACC-Q-019`, `ACC-Q-020`
 - **Módulo:** `PER` (Personal)
-- **Dirección:** Este módulo consume
-- **Qué:** referencia a la persona registrada, pertenencia a la Empresa y comprobación de identidad; PER conserva DNI, nombre, apellido y datos personales/laborales. La unicidad del DNI indicada en B-10 se deriva a su dueño mediante esta dependencia. No se presupone que toda cuenta de Administrador represente un Empleado.
-- **Para qué:** `ACC-REQ-001`, `ACC-REQ-008`.
+- **Dirección:** Este módulo consume la referencia laboral provista por PER
+- **Qué:** `empleadoId`, Empresa y estado laboral necesarios para crear o vincular una Cuenta de Empresa. PER conserva DNI, nombre, apellido y demás datos personales/laborales; ACC conserva el vínculo opcional sin duplicar esos datos. Una Cuenta de Administrador puede no tener Empleado.
+- **Para qué:** `ACC-BR-015`, `ACC-BR-021`, `ACC-BR-022`, `ACC-REQ-001`, `ACC-REQ-012`.
 
 ### ACC-DEP-004 — Módulos de negocio — Contexto autorizado
 
@@ -437,7 +620,16 @@ Borrador derivado del brief y de las respuestas del Ingeniero. Los ítems requie
 - **Módulo:** GLOBAL (consumidores de autorización)
 - **Dirección:** Este módulo provee
 - **Qué:** contexto de actor, Empresa, Sesión, permisos y alcance según arquitectura.md §13; identifica separadamente el soporte de plataforma. El historial funcional sigue bajo cada módulo dueño.
-- **Para qué:** `ACC-REQ-003`, `ACC-REQ-007`, `ACC-REQ-011`.
+- **Para qué:** `ACC-REQ-003`, `ACC-REQ-007`, `ACC-REQ-011`, `ACC-REQ-017`.
+
+### ACC-DEP-005 — Territorio — Identidad y estado de Chacra
+
+- **Estado:** Aprobado
+- **Origen:** `ACC-Q-022`, `ACC-Q-023`, `TER-Q-008`, `TER-DEP-002`
+- **Módulo:** `TER` (Territorio)
+- **Dirección:** Este módulo consume
+- **Qué:** identidad, Empresa propietaria y estado vigente de una Chacra, mediante un contrato público de TER; ACC conserva únicamente la referencia `chacraId` y no modifica datos ni geometrías territoriales.
+- **Para qué:** `ACC-BR-024`, `ACC-REQ-013`, `ACC-REQ-015`.
 
 ## 4. Fuera de alcance
 
@@ -449,4 +641,5 @@ Borrador derivado del brief y de las respuestas del Ingeniero. Los ítems requie
 - Aceptación de comandos offline después de revocación: convenciones.md §7.2; el mecanismo corresponde a SIN y no se resuelve confiando en el reloj del móvil.
 - Mecanismo operativo de acceso y recuperación de plataforma: a cargo del Ingeniero mediante `.env`, conforme a `ACC-Q-017`. Los casos de soporte y creación posteriores parten de un SuperAdministrador autenticado. No se define aquí un ingreso público de plataforma.
 - Administración detallada de dispositivos, cierre voluntario y revocación administrativa independiente de cambio de contraseña: no se agregan como capacidades aprobadas de esta entrega; `ACC-Q-017` no enumeró sus permisos ni comportamiento. La verificación de vigencia sigue la fundación.
+- Modificación de datos, estado o geometrías de Chacras y Lotes; asignación de Cuadrillas o Labores: `ACC-Q-022`, `ACC-DEP-005`. ACC solo administra y entrega el alcance territorial de la Cuenta de Empresa con rol Capataz.
 

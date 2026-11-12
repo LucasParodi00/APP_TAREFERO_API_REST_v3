@@ -96,9 +96,9 @@ owner: "Analista"
 ### PER-BR-007 — Acceso separado de la ficha laboral
 
 - **Estado:** Aprobado
-- **Origen:** `B-01`, `PER-Q-001`
+- **Origen:** `B-01`, `PER-Q-001`, `ACC-Q-019`
 - **Tipo:** Invariante
-- **Regla:** La ficha de Empleado no concede acceso; Capataz y Empleado con acceso requieren una ficha activa, mientras un Administrador puede existir en ACC sin ser Empleado.
+- **Regla:** La ficha de Empleado no concede acceso; Capataz y Empleado con acceso requieren una ficha activa vinculada mediante `empleadoId`, mientras un Administrador puede tener una Cuenta de Empresa sin ser Empleado.
 - **Si se incumple:** se rechaza con `PER_ACCESO_EMPLEADO_INVALIDO`.
 
 | Situación | Resultado |
@@ -406,9 +406,9 @@ owner: "Analista"
 
 ### PER-REQ-003 — Habilitar acceso de un Empleado
 - **Estado:** Aprobado
-- **Origen:** `B-01`, `PER-Q-001`, `PER-Q-035`
+- **Origen:** `B-01`, `PER-Q-001`, `PER-Q-035`, `ACC-Q-019`
 - **Prioridad:** Must
-- **Requerimiento:** Cuando el Administrador habilite acceso a un Empleado, el sistema debe coordinar con ACC la Cuenta de Empresa, correo, credencial, roles y permisos sin copiar esos datos en PER.
+- **Requerimiento:** Cuando el Administrador habilite acceso a un Empleado, PER debe validar la ficha activa y coordinar con ACC la creación de la Cuenta de Empresa vinculada mediante `empleadoId`, sin copiar credenciales, roles, permisos ni la referencia de vinculación en PER.
 - **Reglas que aplica:** `PER-BR-007`, `PER-BR-008`.
 
 ### PER-REQ-004 — Administrar restricciones e indisponibilidades
@@ -508,10 +508,10 @@ owner: "Analista"
 
 ### PER-DEP-003 — Identidad y acceso — Cuenta y contexto autorizado
 - **Estado:** Aprobado
-- **Origen:** `B-01`, `PER-Q-001`, `PER-Q-035`
+- **Origen:** `B-01`, `PER-Q-001`, `PER-Q-035`, `ACC-Q-019`
 - **Módulo:** `ACC` (Identidad y acceso)
 - **Dirección:** Este módulo consume y provee
-- **Qué:** PER provee la referencia laboral y consume contexto, Cuenta de Empresa, roles, permisos, suspensión y revocación de Sesiones; no conserva credenciales.
+- **Qué:** PER provee `empleadoId`, Empresa y estado laboral para que ACC conserve el vínculo opcional; consume contexto, roles, permisos, suspensión y revocación de Sesiones, sin conservar Cuenta de Empresa, credenciales ni la vinculación.
 - **Para qué:** `PER-BR-007`, `PER-BR-008`, `PER-BR-011`, `PER-BR-015`, `PER-REQ-003`, `PER-REQ-010`.
 
 ### PER-DEP-004 — Archivos — Evidencias privadas

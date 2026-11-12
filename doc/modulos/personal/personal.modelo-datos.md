@@ -384,7 +384,7 @@ Todas las entidades de este modelo contienen `empresaId` conforme a `PER-BR-001`
 |---|---|---|---|
 | Empresa cliente | EMP | Tenant y vigencia | `PER-DEP-001` |
 | Límite de Empleados activos | SUS | Validar alta o reactivación | `PER-DEP-002` |
-| Cuenta, roles, permisos y Sesiones | ACC | Autorizar y vincular acceso | `PER-DEP-003` |
+| Cuenta, vínculo opcional por `empleadoId`, roles, permisos y Sesiones | ACC | Autorizar acceso sin duplicar la Cuenta ni el vínculo en PER | `PER-DEP-003` |
 | Archivos y evidencias | ARC | Referencias sin copiar binarios | `PER-DEP-004` |
 | Labor, ubicación y cantidades | LAB | Hechos para cálculo; ubicación efectiva de Cuadrilla | `PER-DEP-005` |
 | Cantidad productiva | COS | Hechos para POR_PRODUCCION | `PER-DEP-006` |

@@ -61,6 +61,7 @@ Un agente no inventa una convención que no esté aquí: si falta, pregunta. -->
 | Elemento | Regla | Ejemplo |
 |---|---|---|
 | Carpeta de módulo | minúsculas, plural, guiones | `src/modulos/identidad-acceso/` |
+| Núcleo común transversal | minúsculas, palabra fija `comun` con estructura hexagonal | `src/comun/` |
 | Capas | `dominio`, `aplicacion`, `infraestructura`, `presentacion` | `src/modulos/identidad-acceso/dominio/` |
 | Áreas internas | minúsculas, plural, guiones | `dominio/cuentas-empresa/` |
 | Clase / tipo | PascalCase | `Usuario`, `CrearUsuario` |

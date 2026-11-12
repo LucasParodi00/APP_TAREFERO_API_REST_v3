@@ -35,6 +35,8 @@ Decisiones relacionadas: `ADR-0001`, `ADR-0003` y `ADR-0005`.
 | Booleano | boolean | `boolean` | No se representa con `0`, `1`, `S` o `N`. |
 | Enumeración | string en MAYÚSCULAS | texto o enum según el caso | Los valores se definen en el modelo de datos del módulo. |
 
+La implementación canónica de los tipos técnicos transversales se busca en `src/comun/` según `arquitectura.md` §6.1. Esta sección define su comportamiento y formato; `arquitectura.md` define su ubicación y el criterio para crear o promover componentes comunes.
+
 `requerido`, `opcional` y `nullable` son conceptos distintos. Un campo requerido debe estar presente; uno opcional puede omitirse; uno nullable puede contener `null`.
 
 ### 2.1 Presentación de fechas

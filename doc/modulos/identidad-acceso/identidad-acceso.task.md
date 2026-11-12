@@ -48,3 +48,25 @@ module: 'ACC'
 - **Depende de:** `ACC-TASK-001`; contrato de Empresa en `ACC-DEP-001` y contexto de `ACC-DEP-004`.
 - **Plan:** `planes/PLAN-ACC-0001-modulo-identidad-acceso.md`
 - **Bloqueo:** Ninguno. Plan `PLAN-ACC-0001` aprobado por el Ingeniero el 11/11/2026.
+
+## ACC-TASK-005 — Especificar el alcance territorial del Capataz
+
+- **Épica:** `EPIC-002`
+- **Tipo:** Especificación
+- **Estado:** Completada
+- **Prioridad:** Alta
+- **Alcance:** `ACC-Q-022`, `ACC-Q-023`; `ACC-BR-023` a `ACC-BR-029`; `ACC-REQ-013` a `ACC-REQ-017`; `ACC-UC-013` a `ACC-UC-017`; `ACC-ENT-006`; `ACC-DEP-005`.
+- **Depende de:** `ACC-TASK-001`; especificación aprobada de Chacras en `TER-TASK-001`.
+- **Plan:** No aplica
+- **Bloqueo:** Ninguno. Especificación aprobada por el Ingeniero el 12/11/2026.
+
+## ACC-TASK-006 — Administrar asignaciones de Capataz a Chacras
+
+- **Épica:** `EPIC-002`
+- **Tipo:** Implementación
+- **Estado:** Bloqueada
+- **Prioridad:** Alta
+- **Alcance:** `ACC-UC-013` a `ACC-UC-017`; `ACC-BR-023` a `ACC-BR-029`; `ACC-ENT-006`; `ACC-DEP-005`.
+- **Depende de:** `ACC-TASK-005`; contrato público de validación de Chacras de `TER`; `ACC-DEP-004`; `TER-DEP-002`.
+- **Plan:** `planes/PLAN-ACC-0002-asignar-capataz-a-chacras.md`
+- **Bloqueo:** `PLAN-ACC-0002` continúa `Bloqueado`: `TER-TASK-002` y `PLAN-TER-0001` ya asumieron la propiedad del puerto público de `ACC-DEP-005` y D-12 está aprobada, pero falta implementarlo; también faltan una capacidad común aprobada de idempotencia persistente y el cierre conforme de los planes base `PLAN-CMN-0001` y `PLAN-ACC-0001`.

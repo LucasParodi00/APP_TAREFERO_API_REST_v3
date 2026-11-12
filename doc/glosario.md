@@ -111,7 +111,7 @@ El brief no se reescribe: la normalización ocurre al derivar la especificación
 
 ### Cuenta de Empresa
 
-- **Definición:** relación de acceso mediante la cual una persona opera dentro de una Empresa cliente con estado, roles, permisos y alcance propios de esa Empresa.
+- **Definición:** identidad de acceso tenant-scoped mediante la cual un Usuario opera dentro de una Empresa cliente con credenciales, estado, roles, permisos, canales y alcance propios de esa Empresa. Puede vincularse opcionalmente con un Empleado de la misma Empresa; el Administrador inicial no necesita ser Empleado.
 - **Sinónimos aceptados:** cuenta de acceso de empresa, usuario interno con acceso
 - **No usar:** Membresía; Suscripción de Empresa; Empleado o Usuario como sustituto de la relación
 - **Nombre en código:** `CuentaEmpresa`
@@ -255,12 +255,12 @@ El brief no se reescribe: la normalización ocurre al derivar la especificación
 
 ### Usuario
 
-- **Definición:** persona reconocida por Tarefero que puede recibir acceso a una o más Empresas cliente. Su autorización y estado dentro de cada Empresa se expresan mediante una Cuenta de Empresa; la ubicación definitiva de sus credenciales depende de la decisión pendiente del módulo `ACC`.
+- **Definición:** persona que accede a Tarefero mediante una Cuenta de Empresa o, para el SuperAdministrador, mediante una identidad de plataforma. No constituye una entidad global compartida entre Empresas: cada Cuenta de Empresa conserva credenciales, estado y autorización independientes.
 - **Sinónimos aceptados:** usuario del sistema
 - **No usar:** Empleado; no toda persona registrada laboralmente necesita acceso
 - **Nombre en código:** `Usuario`
 - **Módulo dueño:** `ACC`
-- **Ejemplo:** un Capataz puede ser un Empleado vinculado a un Usuario con una Cuenta de Empresa activa.
+- **Ejemplo:** un Capataz es un Empleado vinculado a una Cuenta de Empresa activa; el mismo individuo en otra Empresa utiliza otra Cuenta de Empresa independiente.
 
 ### Variedad
 

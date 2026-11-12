@@ -35,6 +35,7 @@ Una sesión, una fase, un rol. La fase 4 siempre en una sesión distinta de la f
 7. **No ajustar la especificación al código.**
 8. **No afirmar lo que no se ejecutó.**
 9. **Scripts de apoyo** (`tools/`). Las herramientas en Python (`spec_lint.py`, etc.) son de asistencia opcional; su ejecución no es un requisito obligatorio ni bloqueante si Python no está disponible en el entorno.
+10. **Reutilizar antes de crear.** Antes de diseñar un componente técnico, buscarlo en `src/comun/`; su reutilización, creación o promoción se decide exclusivamente con `doc/arquitectura.md` §6.1. No duplicar capacidades canónicas dentro de un módulo ni promover utilidades por una reutilización futura meramente hipotética.
 
 ## Detenerse y avisar cuando
 

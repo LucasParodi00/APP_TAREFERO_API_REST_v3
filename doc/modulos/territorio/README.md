@@ -43,7 +43,7 @@ La entrega de Chacras contiene ocho reglas, cinco requerimientos, cinco casos de
 
 La entrega de Lotes contiene quince reglas, ocho requerimientos, cinco dependencias nuevas, ocho casos de uso y dos entidades aprobados. Todas sus decisiones están respondidas en `TER-Q-011` a `TER-Q-023`; no quedan preguntas abiertas. Fue aprobada por el Ingeniero el 03/11/2026: `TER-TASK-004` está completada y `TER-TASK-005`, `TER-TASK-006` y `TER-TASK-007` están listas para planificación.
 
-La ubicación opcional de referencia de Chacra y la coordinación de estados con sus Lotes fueron aprobadas en `TER-Q-018` y `TER-Q-022`. Se incorporaron al alcance de `TER-TASK-002`, cuyo plan deberá declarar el cambio controlado sobre la primera entrega.
+La ubicación opcional de referencia de Chacra y la coordinación de estados con sus Lotes fueron aprobadas en `TER-Q-018` y `TER-Q-022`. Quedaron materializadas en las fuentes normativas del módulo (`TER-ENT-001`, `TER-REQ-005` y `TER-UC-001`, `TER-UC-004`, `TER-UC-005`) conforme al cambio controlado exigido por su plan de implementación.
 
 ## Archivos
 

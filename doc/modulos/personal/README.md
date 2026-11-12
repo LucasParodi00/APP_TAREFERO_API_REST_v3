@@ -10,7 +10,7 @@ normative: false
 
 ## De qué se trata
 
-Personal gestiona la ficha laboral de cada Empleado dentro de una Empresa, sus períodos de actividad, datos opcionales, restricciones operativas e indisponibilidades. Un Empleado puede no tener acceso al sistema; cuando lo necesita, PER se integra con Identidad y acceso sin asumir la propiedad de sus credenciales.
+Personal gestiona la ficha laboral de cada Empleado dentro de una Empresa, sus períodos de actividad, datos opcionales, restricciones operativas e indisponibilidades. Un Empleado puede no tener acceso al sistema; cuando lo necesita, PER valida la ficha y entrega `empleadoId` a Identidad y acceso, que conserva la Cuenta de Empresa y su vínculo sin duplicarlos en PER.
 
 El módulo también administra Cuadrillas con integrantes, responsables y líderes vigentes, conserva su historia y permite al Capataz registrar la asistencia diaria de cualquier Empleado activo de su Empresa. La remuneración se configura por modalidad y PER calcula el bruto devengado, mientras Economía conserva la obligación y el pago.
 
@@ -47,7 +47,7 @@ Todos los registros están aislados por Empresa mediante `empresaId`. Los códig
 
 - **Empresas:** identidad, pertenencia y vigencia de la Empresa (`PER-DEP-001`).
 - **Suscripciones:** cupo de Empleados activos permitido (`PER-DEP-002`).
-- **Identidad y acceso:** Cuenta de Empresa, credenciales, permisos y suspensión de acceso (`PER-DEP-003`).
+- **Identidad y acceso:** Cuenta de Empresa, vínculo opcional por `empleadoId`, credenciales, permisos y suspensión de acceso (`PER-DEP-003`).
 - **Archivos:** evidencias privadas y documentación adjunta (`PER-DEP-004`).
 - **Labores:** trabajo, ubicación y cantidades confirmadas (`PER-DEP-005`).
 - **Cosechas:** cantidades productivas confirmadas (`PER-DEP-006`).

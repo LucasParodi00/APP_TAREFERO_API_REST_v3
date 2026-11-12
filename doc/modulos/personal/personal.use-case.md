@@ -124,9 +124,9 @@ Escenario: Denegar administración al Capataz
 
 1. El Administrador solicita habilitar acceso e informa correo, contraseña inicial, roles y permisos para ACC.
 2. El sistema verifica `PER-BR-007`.
-3. PER entrega la referencia laboral a ACC mediante `PER-DEP-003`.
-4. ACC crea o habilita la Cuenta de Empresa conforme a su propia especificación.
-5. PER conserva únicamente la referencia de vinculación.
+3. PER entrega `empleadoId`, Empresa y estado laboral a ACC mediante `PER-DEP-003`.
+4. ACC crea la Cuenta de Empresa y conserva el vínculo conforme a su propia especificación.
+5. PER informa el resultado sin copiar la Cuenta, credenciales, roles ni vinculación.
 
 **Flujos alternativos**
 
@@ -152,7 +152,8 @@ Escenario: Denegar administración al Capataz
 Escenario: Habilitar acceso a un Empleado activo
   Dado un Empleado ACTIVO sin acceso
   Cuando el Administrador solicita habilitarlo con los datos requeridos por ACC
-  Entonces ACC crea la Cuenta de Empresa y PER conserva su referencia
+  Entonces ACC crea la Cuenta de Empresa vinculada mediante empleadoId
+  Y PER no duplica la Cuenta ni su referencia
 
 @PER-UC-002 @AC-02
 Escenario: Suspender acceso al inactivar

@@ -25,7 +25,7 @@ Empresa es externa a TER. Una Chacra puede existir sin Lotes según `TER-Q-004`;
 ### TER-ENT-001 — Chacra
 
 - **Estado:** Aprobado
-- **Descripción:** lugar físico de una Empresa cliente, conforme al término Chacra del glosario. Esta entrega conserva su identidad y datos descriptivos; no exige geometría para registrarlo.
+- **Descripción:** lugar físico de una Empresa cliente, conforme al término Chacra del glosario. Esta entrega conserva su identidad, datos descriptivos y ubicación de referencia opcional; no exige geometría para registrarlo ni la convierte en una delimitación territorial.
 - **Identidad:** identificador según convenciones.md §2.
 
 | Atributo | Tipo | Requerido | Restricción | Origen |
@@ -35,6 +35,8 @@ Empresa es externa a TER. Una Chacra puede existir sin Lotes según `TER-Q-004`;
 | `nombre` | Texto | Sí | Hasta 150 caracteres; `TER-BR-001` | `B-01`, `TER-Q-002`, `TER-Q-006` |
 | `nombreCorto` | Texto | Sí | Hasta 50 caracteres; `TER-BR-002`, `TER-BR-007` | `B-01`, `TER-Q-002`, `TER-Q-005`, `TER-Q-006`, `TER-Q-007`, `TER-Q-010` |
 | `responsableNombre` | Texto | No | Hasta 150 caracteres; sin relación con Usuario, Persona ni Cuenta de Empresa | `B-01`, `TER-Q-002`, `TER-Q-006` |
+| `direccion` | Texto | No | Hasta 500 caracteres; sin espacios exteriores, no vacía ni de solo espacios; limpiable con `null` | `B-06`, `TER-Q-018` |
+| `puntoGeograficoReferencia` | Coordenadas | No | Punto geográfico WGS84 (SRID 4326) con latitud [-90, 90] y longitud [-180, 180]; limpiable con `null` | `B-06`, `TER-Q-018` |
 | `estado` | Enumeración | Sí | Valores `ACTIVA`, `INACTIVA`; `TER-BR-005`, `TER-BR-006` | `TER-Q-006` |
 | `creadoEn` | FechaHora | Sí | Convenciones §2 y §6.1 | Convenciones |
 | `creadoPor` | Referencia de actor | Sí | Convenciones §6.1; contexto técnico de auditoría según arquitectura §14 | Convenciones |
@@ -43,6 +45,8 @@ Empresa es externa a TER. Una Chacra puede existir sin Lotes según `TER-Q-004`;
 | `version` | Entero | Sí | Convenciones §3.5 | Convenciones |
 
 La comparación de unicidad ignora mayúsculas, tildes, espacios exteriores y espacios consecutivos según `TER-Q-007`; la forma técnica de normalización se definirá en la planificación sin cambiar ese significado. La longitud máxima fue confirmada en `TER-Q-006`.
+
+La ubicación de referencia (`direccion` y `puntoGeograficoReferencia`) es opcional e independiente según `TER-Q-018`: puede omitirse al registrar (`TER-UC-001`), o bien informarse uno o ambos datos, y modificarse o limpiarse con `null` en `TER-UC-004`. `direccion` elimina espacios exteriores, conserva el contenido interior y rechaza cadenas vacías o compuestas exclusivamente por espacios. `puntoGeograficoReferencia` almacena un punto geográfico de referencia (latitud y longitud en WGS84) sin convertir a la Chacra en una delimitación territorial ni exigir geometrías de polígonos.
 
 **Relaciones**
 
