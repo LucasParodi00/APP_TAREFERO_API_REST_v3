@@ -204,8 +204,8 @@ Secciones 1–7: las escribe el planificador. 8: el implementador. 9–10: el re
 
 | Tarea | Commit | Estado | Notas o desviaciones |
 |---|---|---|---|
-| T01 | | Completada | Errores base, categorías y objetos de valor técnicos en src/comun/dominio |
-| T02 | | Pendiente | |
+| T01 | ca12ad7 | Completada | Errores base, categorías y objetos de valor técnicos en src/comun/dominio |
+| T02 | | Completada | Contratos, puertos y modelos de lectura en src/comun/aplicacion |
 | T03 | | Pendiente | |
 | T04 | | Pendiente | |
 | T05 | | Pendiente | |
