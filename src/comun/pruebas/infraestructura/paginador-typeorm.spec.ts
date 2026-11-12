@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 import { SelectQueryBuilder } from 'typeorm';
 import { CriteriosPaginacion, ResultadoPaginado } from '../../aplicacion';
 import { PaginadorTypeOrm } from '../../infraestructura/persistencia/paginador-typeorm';

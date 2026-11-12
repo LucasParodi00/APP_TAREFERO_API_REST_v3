@@ -1,6 +1,17 @@
 import { execSync } from 'child_process';
+
+interface ReglaCruiser {
+    name: string;
+    from: { path: string };
+    to: { path: string[] };
+}
+
+interface ConfiguracionCruiser {
+    forbidden: ReglaCruiser[];
+}
+
 // eslint-disable-next-line @typescript-eslint/no-require-imports
-const config = require('../../../../.dependency-cruiser.js');
+const config = require('../../../../.dependency-cruiser.js') as ConfiguracionCruiser;
 
 describe('Arquitectura - Blindaje de fronteras hexagonales en src/comun', () => {
     it('no debe presentar violaciones arquitectónicas al ejecutar depcruise', () => {
@@ -9,7 +20,7 @@ describe('Arquitectura - Blindaje de fronteras hexagonales en src/comun', () => 
     });
 
     it('debe contener las reglas de frontera aprobadas en ADR-0012 y arquitectura §17', () => {
-        const nombresReglas = config.forbidden.map((r: { name: string }) => r.name);
+        const nombresReglas = config.forbidden.map((r: ReglaCruiser) => r.name);
 
         expect(nombresReglas).toContain('comun-no-depende-de-modulos');
         expect(nombresReglas).toContain('comun-dominio-no-depende-de-otras-capas');
@@ -23,14 +34,14 @@ describe('Arquitectura - Blindaje de fronteras hexagonales en src/comun', () => 
 
     it('las reglas de comun deben prohibir explícitamente dependencias indebidas', () => {
         // comun no depende de modulos
-        const reglaComunNoModulos = config.forbidden.find((r: { name: string }) => r.name === 'comun-no-depende-de-modulos');
-        expect(reglaComunNoModulos.from.path).toBe('^src/comun');
-        expect(reglaComunNoModulos.to.path).toContain('^src/modulos');
+        const reglaComunNoModulos = config.forbidden.find((r: ReglaCruiser) => r.name === 'comun-no-depende-de-modulos');
+        expect(reglaComunNoModulos?.from.path).toBe('^src/comun');
+        expect(reglaComunNoModulos?.to.path).toContain('^src/modulos');
 
         // modulo dominio solo comun dominio
-        const reglaModDom = config.forbidden.find((r: { name: string }) => r.name === 'modulo-dominio-solo-usa-comun-dominio');
-        expect(reglaModDom.to.path).toContain('^src/comun/aplicacion');
-        expect(reglaModDom.to.path).toContain('^src/comun/infraestructura');
-        expect(reglaModDom.to.path).toContain('^src/comun/presentacion');
+        const reglaModDom = config.forbidden.find((r: ReglaCruiser) => r.name === 'modulo-dominio-solo-usa-comun-dominio');
+        expect(reglaModDom?.to.path).toContain('^src/comun/aplicacion');
+        expect(reglaModDom?.to.path).toContain('^src/comun/infraestructura');
+        expect(reglaModDom?.to.path).toContain('^src/comun/presentacion');
     });
 });

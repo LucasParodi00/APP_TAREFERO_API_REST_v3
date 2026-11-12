@@ -4,7 +4,7 @@ id: PLAN-CMN-0001
 title: "Implementar núcleo común transversal hexagonal bajo src/comun"
 module: "CMN"
 task: CMN-TASK-001
-status: En ejecución
+status: En verificación
 mode: estandar
 created: 2026-11-11
 approved_by: "Ingeniero — 2026-11-12"
@@ -210,14 +210,22 @@ Secciones 1–7: las escribe el planificador. 8: el implementador. 9–10: el re
 | T04 | 88f9f5e | Completada | PaginadorTypeOrm por composición en src/comun/infraestructura/persistencia |
 | T05 | 2aa2114 | Completada | DTOs de paginación, decoradores y FiltroExcepcionesRfc9457 en src/comun/presentacion |
 | T06 | 4e1a148 | Completada | Índices públicos explícitos por capa en src/comun |
-| T07 | | Completada | Reglas de Dependency Cruiser para src/comun y pruebas de arquitectura |
-| T08 | | Pendiente | |
+| T07 | 36958a9 | Completada | Reglas de Dependency Cruiser para src/comun y pruebas de arquitectura |
+| T08 | | Completada | Verificación integral de unitarias, cobertura, arquitectura, tipos, build y no regresión |
 
 ## 9. Evidencia
 
 | Control | Resultado | Comando ejecutado | Observado |
 |---|---|---|---|
-| | | | |
+| Unitarias comunes | Aprobado | `yarn test --runInBand src/comun/pruebas/` | 7 suites pasadas, 85 pruebas pasadas |
+| Cobertura | Aprobado | `yarn test:cov --runInBand --collectCoverageFrom="comun/**/*.ts" src/comun/pruebas/` | Global: 98.64% líneas, 91.71% ramas, 94.44% funciones, 98.63% sentencias. Dominio: 100% líneas, 98.7% ramas. Aplicación: 100% líneas, 84.2% ramas. Infraestructura: 100% líneas, 100% ramas. Presentación: 95.55% líneas, 83.82% ramas |
+| Arquitectura | Aprobado | `yarn test:arquitectura` | 0 violaciones detectadas (218 módulos, 890 dependencias analizadas) |
+| Formato | Aprobado | `yarn prettier --check "src/comun/**/*.ts"` | Todos los archivos creados cumplen formato Prettier |
+| Lint | Aprobado | `yarn eslint "src/comun/**/*.ts"` | 0 errores, 0 advertencias |
+| Tipado | Aprobado | `yarn typecheck` | Comprobación estricta sin errores (`tsc --noEmit`) |
+| Compilación | Aprobado | `yarn build` | Build NestJS finalizado con éxito |
+| No regresión | Aprobado | `yarn test --runInBand src/modulos/empresas src/modulos/identidad-acceso` | 26 suites pasadas, 267 pruebas pasadas, 0 regresiones |
+| Suite integral | Aprobado | `yarn test --runInBand` | 34 suites pasadas, 353 pruebas pasadas |
 
 ## 10. Cierre
 

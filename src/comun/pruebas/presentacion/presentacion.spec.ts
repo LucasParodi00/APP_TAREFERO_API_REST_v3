@@ -292,7 +292,8 @@ describe('Presentación Común - FiltroExcepcionesRfc9457', () => {
                 instance: '/api/v1/test',
             }),
         );
-        const jsonCall = mockResponse.json.mock.calls[0][0];
+        const primerLlamado = mockResponse.json.mock.calls[0] as unknown[];
+        const jsonCall = primerLlamado[0] as { detail: string };
         expect(jsonCall.detail).not.toContain('secret123');
         expect(jsonCall.detail).not.toContain('Database password');
     });

@@ -15,8 +15,7 @@ describe('Común - Verificación de APIs públicas por capa (index.ts)', () => {
         expect(Dominio.Dinero).toBeDefined();
 
         // Dominio no debe exponer nada de aplicación, infraestructura ni presentación
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const dom = Dominio as any;
+        const dom = Dominio as Record<string, unknown>;
         expect(dom.CriteriosPaginacion).toBeUndefined();
         expect(dom.GeneradorUuidV7).toBeUndefined();
         expect(dom.FiltroExcepcionesRfc9457).toBeUndefined();
@@ -30,8 +29,7 @@ describe('Común - Verificación de APIs públicas por capa (index.ts)', () => {
         expect(Aplicacion.GENERADOR_IDENTIFICADORES).toBeDefined();
         expect(Aplicacion.RELOJ).toBeDefined();
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const app = Aplicacion as any;
+        const app = Aplicacion as Record<string, unknown>;
         expect(app.GeneradorUuidV7).toBeUndefined();
         expect(app.PaginadorTypeOrm).toBeUndefined();
         expect(app.FiltroExcepcionesRfc9457).toBeUndefined();
@@ -42,8 +40,7 @@ describe('Común - Verificación de APIs públicas por capa (index.ts)', () => {
         expect(Infraestructura.RelojSistema).toBeDefined();
         expect(Infraestructura.PaginadorTypeOrm).toBeDefined();
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const infra = Infraestructura as any;
+        const infra = Infraestructura as Record<string, unknown>;
         expect(infra.FiltroExcepcionesRfc9457).toBeUndefined();
         expect(infra.ConsultaPaginadaDto).toBeUndefined();
     });
