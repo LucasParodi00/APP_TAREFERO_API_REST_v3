@@ -206,8 +206,8 @@ Secciones 1–7: las escribe el planificador. 8: el implementador. 9–10: el re
 |---|---|---|---|
 | T01 | ca12ad7 | Completada | Errores base, categorías y objetos de valor técnicos en src/comun/dominio |
 | T02 | 2f23c0b | Completada | Contratos, puertos y modelos de lectura en src/comun/aplicacion |
-| T03 | | Completada | Adaptadores GeneradorUuidV7 y RelojSistema con uuid@11.1.0 fijada |
-| T04 | | Pendiente | |
+| T03 | de2cdb0 | Completada | Adaptadores GeneradorUuidV7 y RelojSistema con uuid@11.1.0 fijada |
+| T04 | | Completada | PaginadorTypeOrm por composición en src/comun/infraestructura/persistencia |
 | T05 | | Pendiente | |
 | T06 | | Pendiente | |
 | T07 | | Pendiente | |
