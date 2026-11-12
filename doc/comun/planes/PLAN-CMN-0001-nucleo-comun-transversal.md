@@ -211,7 +211,7 @@ Secciones 1–7: las escribe el planificador. 8: el implementador. 9–10: el re
 | T05 | 2aa2114 | Completada | DTOs de paginación, decoradores y FiltroExcepcionesRfc9457 en src/comun/presentacion |
 | T06 | 4e1a148 | Completada | Índices públicos explícitos por capa en src/comun |
 | T07 | 36958a9 | Completada | Reglas de Dependency Cruiser para src/comun y pruebas de arquitectura |
-| T08 | | Completada | Verificación integral de unitarias, cobertura, arquitectura, tipos, build y no regresión |
+| T08 | 80da640 | Completada | Verificación integral de unitarias, cobertura, arquitectura, tipos, build y no regresión |
 
 ## 9. Evidencia
 
