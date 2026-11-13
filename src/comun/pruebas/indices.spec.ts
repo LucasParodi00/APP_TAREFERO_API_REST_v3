@@ -28,6 +28,7 @@ describe('Común - Verificación de APIs públicas por capa (index.ts)', () => {
         expect(Aplicacion.ResultadoPaginado).toBeDefined();
         expect(Aplicacion.GENERADOR_IDENTIFICADORES).toBeDefined();
         expect(Aplicacion.RELOJ).toBeDefined();
+        expect(Aplicacion.UNIDAD_TRANSACCIONAL).toBeDefined();
 
         const app = Aplicacion as Record<string, unknown>;
         expect(app.GeneradorUuidV7).toBeUndefined();

@@ -111,8 +111,8 @@ No hay cambios funcionales. El plan materializa decisiones técnicas globales ya
 
 | Tarea | Commit | Estado | Notas o desviaciones |
 |---|---|---|---|
-| T01 | | Completada | Versiones exactas fijadas sin rangos para NestJS, TypeORM, pg, uuid y typescript |
-| T02 | | Pendiente | |
+| T01 | 2cb26a4 | Completada | Versiones exactas fijadas sin rangos para NestJS, TypeORM, pg, uuid y typescript |
+| T02 | | Completada | Puerto UnidadTransaccional y símbolo de inyección en src/comun/aplicacion |
 | T03 | | Pendiente | |
 | T04 | | Pendiente | |
 | T05 | | Pendiente | |
