@@ -43,6 +43,7 @@ describe('Común - Verificación de APIs públicas por capa (index.ts)', () => {
         expect(Infraestructura.crearOpcionesDataSource).toBeDefined();
         expect(Infraestructura.crearDataSource).toBeDefined();
         expect(Infraestructura.UnidadTransaccionalTypeOrm).toBeDefined();
+        expect(Infraestructura.PersistenciaModule).toBeDefined();
 
         const infra = Infraestructura as Record<string, unknown>;
         expect(infra.FiltroExcepcionesRfc9457).toBeUndefined();
