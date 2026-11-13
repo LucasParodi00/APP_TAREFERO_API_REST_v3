@@ -21,7 +21,7 @@
     "test:cov": "jest --coverage",
     "test:coverage": "jest --coverage",
     "test:arquitectura": "depcruise src --config .dependency-cruiser.js",
-    "test:integracion": "jest --testPathPattern=integracion",
+    "test:integracion": "jest --testPathPatterns=integracion",
     "test:contratos": "spectral lint doc/modulos/**/contratos/openapi.yaml",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json"
