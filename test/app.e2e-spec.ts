@@ -4,6 +4,9 @@ import supertest from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
 
+process.env.DB_PASSWORD = process.env.DB_PASSWORD ?? 'root';
+process.env.DB_DATABASE = process.env.DB_DATABASE ?? 'postgres';
+
 describe('AppController (e2e)', () => {
     let app: INestApplication<App>;
 
@@ -16,10 +19,13 @@ describe('AppController (e2e)', () => {
         await app.init();
     });
 
+    afterEach(async () => {
+        if (app) {
+            await app.close();
+        }
+    });
+
     it('/ (GET)', () => {
-        return supertest(app.getHttpServer() as App)
-            .get('/')
-            .expect(200)
-            .expect('Hello World!');
+        return supertest(app.getHttpServer()).get('/').expect(200).expect('Hello World!');
     });
 });

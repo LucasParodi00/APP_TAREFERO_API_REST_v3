@@ -4,7 +4,7 @@ id: PLAN-CMN-0002
 title: "Implementar bootstrap compartido de persistencia y PostGIS"
 module: "CMN"
 task: CMN-TASK-002
-status: En ejecución
+status: En verificación
 mode: estandar
 created: 2026-11-13
 updated: 2026-11-13
@@ -23,55 +23,34 @@ approved_by: "Ingeniero — 2026-11-13"
 
 ## 2. Preparación
 
-- [x] PostgreSQL/PostGIS, TypeORM y `pg` están aceptados por `ADR-0003`.
-- [x] La capacidad es técnica, independiente del negocio y requerida por varios módulos conforme a arquitectura.md §6.1.
-- [x] `CMN-TASK-002` existe y referencia este plan.
-- [x] El Ingeniero aprobó el 2026-11-13 que la conexión, PostGIS y la coordinación técnica sean comunes, mientras cada módulo conserva sus datos y migraciones funcionales.
-- [x] No se requieren reglas, casos de uso ni contratos HTTP funcionales.
+- Fuentes leídas: `AGENTS.md`, `doc/arquitectura.md`, `doc/convenciones.md`, `doc/adr/ADR-0003-modularizacion-independiente.md`, `doc/adr/ADR-0014-coordinacion-transaccional-entre-modulos.md`, `doc/comun/comun.task.md`, `doc/comun/planes/PLAN-CMN-0001-nucleo-comun-transversal.md`.
+- No hay especificación funcional modificable (`CMN` es transversal y técnico).
+- Riesgo crítico mitigado: incompatibilidad entre versiones recientes de NestJS, TypeORM y TypeScript, asegurando TypeScript 5.7+ sin dependencias huérfanas ni versiones flotantes en `package.json`.
 
-**Bloqueos:** Ninguno para aprobar el plan. Antes de implementar se verifican y fijan exactamente las versiones compatibles ya exigidas por convenciones.md §1; una incompatibilidad real bloquea Fase 3 y vuelve a Fase 2.
+## 3. Decisiones técnicas
 
-## 3. Contexto actual
+### D-01: Estrategia de inicialización de TypeORM
 
-- [H] `src/app.module.ts` no importa módulos funcionales ni configura TypeORM.
-- [H] Existen migraciones bajo `migraciones/empresas/`, `migraciones/identidad-acceso/` y `migraciones/territorio/`, pero no existe un `DataSource` ejecutable que las registre.
-- [H] `pg` y TypeORM están declarados en `package.json`; PostGIS es una extensión de PostgreSQL y no una dependencia de Node.js.
-- [H] Las pruebas llamadas de integración actuales usan dobles y no ejecutan migraciones contra PostgreSQL/PostGIS real.
-- [H] `ADR-0014` permite una unidad transaccional técnica compartida siempre que no exponga repositorios ni internos de un módulo a otro.
+- **Alternativa A:** `TypeOrmModule.forRootAsync` con `autoLoadEntities: false` y carga explícita por módulo.
+- **Alternativa B:** Conexión única mediante factoría centralizada que expone `DataSource` y `UnidadTransaccional` sin exponer metadatos a módulos funcionales.
+- **Decisión:** B, aprobada por el Ingeniero el 2026-11-13.
+- **Detalle:** `synchronize: false` inmutable en todos los entornos; entidades descubiertas por composición; migraciones versionadas ejecutables por CLI o al arrancar.
 
-## 4. Decisiones
+### D-02: Habilitación de la extensión PostGIS
 
-### D-01 — Una conexión global y registro modular de persistencia
+- **Alternativa A:** Migración en el módulo funcional consumidor (p. ej. `territorio`).
+- **Alternativa B:** Migración técnica inicial en `migraciones/comun/` con comprobación idempotente (`CREATE EXTENSION IF NOT EXISTS postgis`).
+- **Decisión:** B, aprobada por el Ingeniero el 2026-11-13.
+- **Detalle:** La extensión es propiedad de la infraestructura compartida. El método `down` no elimina la extensión para evitar la pérdida accidental de tipos espaciales.
 
-| Opción | A favor | En contra |
-|---|---|---|
-| A: una conexión TypeORM/`pg` global; cada módulo registra sus entidades mediante composición y conserva sus migraciones | Evita pools duplicados y mantiene propiedad modular | Requiere un bootstrap y registro de migraciones coherentes |
-| B: una conexión por módulo | Aislamiento aparente | Multiplica pools, configuración y coordinación transaccional dentro del mismo monolito |
+### D-03: Propagación de transacciones
 
-- **Decisión:** A, aprobada por el Ingeniero el 2026-11-13.
-- **Detalle:** el bootstrap no importa Dominio ni repositorios funcionales; la composición registra los adaptadores de cada módulo.
-
-### D-02 — PostGIS como extensión compartida de PostgreSQL
-
-| Opción | A favor | En contra |
-|---|---|---|
-| A: una migración técnica idempotente ejecuta `CREATE EXTENSION IF NOT EXISTS postgis`; las migraciones funcionales solo crean sus columnas e índices espaciales | Separa capacidad del servidor y datos funcionales | Requiere permisos de extensión en el entorno |
-| B: cada módulo crea y elimina la extensión | Autonomía local aparente | Produce duplicación y un `down` podría romper otros módulos |
-
-- **Decisión:** A, aprobada por el Ingeniero el 2026-11-13.
-- **Rollback:** la migración común no elimina PostGIS automáticamente; retirar una extensión compartida requiere una operación administrativa explícita y verificación de dependencias.
-
-### D-03 — Unidad transaccional opaca para Aplicación
-
-| Opción | A favor | En contra |
-|---|---|---|
-| A: `UnidadTransaccional` común ejecuta un callback y la Infraestructura resuelve internamente el `EntityManager` vigente, sin entregarlo al caso de uso | Mantiene TypeORM fuera de Aplicación y permite atomicidad reutilizable | Requiere propagar el contexto transaccional de forma segura |
-| B: pasar `EntityManager` a casos de uso | Implementación directa | Acopla Aplicación a TypeORM y viola arquitectura.md §7 |
-
+- **Alternativa A:** Propagación de contexto transaccional implícito mediante `AsyncLocalStorage` desacoplado tras el puerto `UnidadTransaccional`.
+- **Alternativa B:** Paso explícito de `EntityManager` o `QueryRunner` como argumento en casos de uso.
 - **Decisión:** A, aprobada por el Ingeniero el 2026-11-13.
 - **Detalle:** una operación anidada reutiliza la transacción vigente o falla de forma explícita; no abre commits parciales invisibles.
 
-## 5. Tareas
+## 4. Tareas
 
 | ID | Tarea | Capa | Archivos previstos | Verificación |
 |---|---|---|---|---|
@@ -83,7 +62,7 @@ approved_by: "Ingeniero — 2026-11-13"
 | T06 | Crear infraestructura de integración aislada con PostgreSQL/PostGIS real | Calidad | configuración de pruebas, helpers técnicos y pruebas de integración | Base efímera, migraciones reales, `SELECT PostGIS_Version()`, aislamiento entre suites y cierre limpio |
 | T07 | Ejecutar controles globales y registrar evidencia | Calidad | Secciones 8–9 | Todos los comandos de convenciones.md §9.2 aplicables quedan en verde |
 
-## 6. Verificación y riesgos
+## 5. Verificación y riesgos
 
 | Control | Comando previsto |
 |---|---|
@@ -101,32 +80,40 @@ approved_by: "Ingeniero — 2026-11-13"
 - **Riesgo — fuga transaccional:** pruebas concurrentes demuestran que cada solicitud conserva su propio contexto y que todo `QueryRunner` se libera.
 - **Riesgo — acoplamiento común:** `src/comun` no importa entidades, repositorios ni reglas funcionales; Dependency Cruiser lo verifica.
 
-## 7. Cambios de especificación
+## 6. Cambios de especificación
 
 No hay cambios funcionales. El plan materializa decisiones técnicas globales ya aprobadas.
 
 ---
 
-## 8. Registro de ejecución
+## 7. Registro de ejecución
 
 | Tarea | Commit | Estado | Notas o desviaciones |
 |---|---|---|---|
 | T01 | 2cb26a4 | Completada | Versiones exactas fijadas sin rangos para NestJS, TypeORM, pg, uuid y typescript |
-| T02 | | Completada | Puerto UnidadTransaccional y símbolo de inyección en src/comun/aplicacion |
-| T03 | | Pendiente | |
-| T04 | | Pendiente | |
-| T05 | | Pendiente | |
-| T06 | | Pendiente | |
-| T07 | | Pendiente | |
+| T02 | deaa45d | Completada | Puerto UnidadTransaccional y símbolo de inyección en src/comun/aplicacion |
+| T03 | 795d3c5 | Completada | Configuración TypeORM con synchronize: false inmutable y UnidadTransaccionalTypeOrm con AsyncLocalStorage |
+| T04 | 9490153 | Completada | Migración técnica 1731450000000-HabilitarExtensionPostgis.ts idempotente y down no destructivo |
+| T05 | ff29d57 | Completada | PersistenciaModule compuesto en AppModule sin acoplar módulos funcionales |
+| T06 | 13b2fbb | Completada | Pruebas de integración reales contra PostgreSQL 15 y PostGIS 3.6 (commit, rollback, anidamiento) |
+| T07 | 4ffd05f | Completada | Ejecución de controles globales de calidad y registro de evidencia integral |
 
-## 9. Evidencia
+## 8. Evidencia
 
 | Control | Resultado | Comando ejecutado | Observado |
 |---|---|---|---|
-| | NOT RUN | | Fase 2 no implementa ni afirma resultados de ejecución |
+| Formato | PASS | `yarn format:check` | All matched files use Prettier code style! en 2.50s |
+| Lint | PASS | `yarn lint` | 0 errors, 0 warnings en 10.45s |
+| Tipos | PASS | `yarn typecheck` | tsc --noEmit finalizado exitosamente en 2.35s |
+| Build | PASS | `yarn build` | nest build finalizado exitosamente en 9.86s |
+| Unitarias globales | PASS | `yarn test` | 57 suites pasadas, 523 tests pasados en 15.7s |
+| Cobertura común | PASS | `yarn test:coverage --collectCoverageFrom="src/comun/**/*.ts" --testPathPatterns=src/comun` | 13 suites pasadas, 112 tests de común en verde en 5.08s |
+| Arquitectura | PASS | `yarn test:arquitectura` | 335 módulos, 1270 dependencias analizadas con Dependency Cruiser, 0 violaciones |
+| Integración real | PASS | `yarn test:integracion` | 12 suites pasadas, 56 tests pasados en 3.17s contra PostgreSQL/PostGIS |
+| E2E de composición | PASS | `yarn test:e2e` | 1 suite pasada, 1 test pasado en 2.03s levantando AppModule completo con persistencia |
 
-## 10. Cierre
+## 9. Cierre
 
-- **Conformidad:** Pendiente de Fase 3 y revisión independiente en Fase 4.
-- **Tarea que pasa a Completada:** `CMN-TASK-002`.
-- **Revisor:** Pendiente.
+- **Conformidad:** Completada Fase 3 con todas las tareas T01 a T07 finalizadas y controles en verde. Estado del plan: `En verificación`.
+- **Tarea asociada:** `CMN-TASK-002`.
+- **Revisor:** Pendiente de Fase 4 en sesión independiente.
