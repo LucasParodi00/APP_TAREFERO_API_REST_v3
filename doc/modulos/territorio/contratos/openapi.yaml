@@ -474,6 +474,7 @@ paths:
           description: Solicitud con formato o campos no admitidos
           x-error-codes:
             - TER_SOLICITUD_INVALIDA
+            - CMN_IDEMPOTENCIA_INVALIDA
           content:
             application/problem+json:
               schema:
@@ -516,9 +517,12 @@ paths:
         '422':
           description: Regla de registro de Lote incumplida
           x-error-codes:
+            - TER_CHACRA_LOTE_INVALIDA
             - TER_NOMBRE_LOTE_INVALIDO
             - TER_CODIGO_LOTE_INVALIDO
             - TER_GEOMETRIA_LOTE_INVALIDA
+            - TER_SUPERFICIE_LOTE_INVALIDA
+            - TER_VERSION_GEOMETRICA_INVALIDA
             - TER_TIPO_SUELO_INVALIDO
             - TER_SISTEMA_RIEGO_INVALIDO
             - TER_ESTADO_CHACRA_LOTES_INCOMPATIBLE
@@ -559,6 +563,11 @@ paths:
           required: false
           schema:
             $ref: '#/components/schemas/EstadoLote'
+        - name: condicionGeometrica
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/CondicionGeometricaLote'
         - name: orden
           in: query
           required: false
@@ -628,6 +637,12 @@ paths:
         - TER-BR-018
         - TER-BR-022
       parameters:
+        - name: chacraId
+          in: query
+          required: false
+          schema:
+            type: string
+            format: uuid
         - name: limite
           in: query
           required: false
@@ -951,6 +966,7 @@ paths:
           x-error-codes:
             - TER_GEOMETRIA_LOTE_INVALIDA
             - TER_SUPERFICIE_LOTE_INVALIDA
+            - TER_VERSION_GEOMETRICA_INVALIDA
           content:
             application/problem+json:
               schema:
@@ -1153,15 +1169,29 @@ paths:
       x-business-rules:
         - TER-BR-016
         - TER-BR-022
+      parameters:
+        - name: limite
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 25
+        - name: desplazamiento
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
       responses:
         '200':
           description: Historial de versiones geométricas
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/RespuestaVersionGeometrica'
+                $ref: '#/components/schemas/PaginaVersionesGeometricas'
         '400':
           description: Identificador inválido
           x-error-codes:
@@ -1241,7 +1271,7 @@ components:
 
   headers:
     ETag:
-      description: ETag fuerte que representa la versión vigente de la Chacra
+      description: ETag fuerte que representa la versión vigente del recurso
       schema:
         type: string
         pattern: '^"[1-9][0-9]*"$'
@@ -1668,6 +1698,11 @@ components:
       required:
         - nombre
         - codigo
+      dependentRequired:
+        geometria:
+          - motivoDelimitacion
+        motivoDelimitacion:
+          - geometria
       properties:
         nombre:
           type: string
@@ -1677,7 +1712,6 @@ components:
           type: string
           minLength: 1
           maxLength: 30
-          pattern: '^[A-Za-z0-9-]+$'
         descripcion:
           type:
             - string
@@ -1700,7 +1734,7 @@ components:
           $ref: '#/components/schemas/GeoJsonPolygon'
         motivoDelimitacion:
           type: string
-          maxLength: 250
+          minLength: 1
 
     SolicitudModificarLote:
       type: object
@@ -1742,7 +1776,6 @@ components:
         motivo:
           type: string
           minLength: 1
-          maxLength: 250
 
     RespuestaLote:
       type: object
@@ -1799,8 +1832,9 @@ components:
           $ref: '#/components/schemas/CondicionGeometricaLote'
         superficieOficialHectareas:
           type:
-            - number
+            - string
             - 'null'
+          pattern: '^[0-9]+(?:\.[0-9]{1,4})?$'
         delimitacionVigente:
           oneOf:
             - $ref: '#/components/schemas/RespuestaVersionGeometrica'
@@ -1821,10 +1855,10 @@ components:
       required:
         - id
         - loteId
-        - numeroVersion
         - geometria
         - superficieHectareas
         - motivo
+        - creadoPor
         - vigenteDesde
         - vigenteHasta
       properties:
@@ -1834,16 +1868,16 @@ components:
         loteId:
           type: string
           format: uuid
-        numeroVersion:
-          type: integer
-          minimum: 1
         geometria:
           $ref: '#/components/schemas/GeoJsonPolygon'
         superficieHectareas:
-          type: number
-          minimum: 0
+          type: string
+          pattern: '^[0-9]+(?:\.[0-9]{1,4})?$'
         motivo:
           type: string
+        creadoPor:
+          type: string
+          format: uuid
         vigenteDesde:
           type: string
           format: date-time
@@ -1864,6 +1898,20 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RespuestaLote'
+        paginacion:
+          $ref: '#/components/schemas/PaginacionRespuesta'
+
+    PaginaVersionesGeometricas:
+      type: object
+      additionalProperties: false
+      required:
+        - datos
+        - paginacion
+      properties:
+        datos:
+          type: array
+          items:
+            $ref: '#/components/schemas/RespuestaVersionGeometrica'
         paginacion:
           $ref: '#/components/schemas/PaginacionRespuesta'
 
@@ -1901,7 +1949,10 @@ components:
               enum:
                 - TER_NOMBRE_LOTE_INVALIDO
                 - TER_CODIGO_LOTE_INVALIDO
+                - TER_CHACRA_LOTE_INVALIDA
                 - TER_GEOMETRIA_LOTE_INVALIDA
+                - TER_SUPERFICIE_LOTE_INVALIDA
+                - TER_VERSION_GEOMETRICA_INVALIDA
                 - TER_TIPO_SUELO_INVALIDO
                 - TER_SISTEMA_RIEGO_INVALIDO
                 - TER_ESTADO_CHACRA_LOTES_INCOMPATIBLE
@@ -1945,6 +1996,7 @@ components:
               enum:
                 - TER_GEOMETRIA_LOTE_INVALIDA
                 - TER_SUPERFICIE_LOTE_INVALIDA
+                - TER_VERSION_GEOMETRICA_INVALIDA
 
     ProblemaInactivacionLoteInvalida:
       allOf:

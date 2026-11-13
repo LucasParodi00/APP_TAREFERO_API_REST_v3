@@ -1,22 +1,22 @@
-import { Module } from "@nestjs/common";
-import { ControladorEmpresas } from "./presentacion/controladores/controlador-empresas";
-import { RegistrarEmpresa } from "./aplicacion/comandos/registrar-empresa.caso-de-uso";
-import { ConsultarEmpresa } from "./aplicacion/consultas/consultar-empresa.caso-de-uso";
-import { ListarEmpresas } from "./aplicacion/consultas/listar-empresas.caso-de-uso";
-import { ModificarEmpresa } from "./aplicacion/comandos/modificar-empresa.caso-de-uso";
-import { ModificarConfiguracionGeneral } from "./aplicacion/comandos/modificar-configuracion-general.caso-de-uso";
-import { SuspenderEmpresa } from "./aplicacion/comandos/suspender-empresa.caso-de-uso";
-import { ReactivarEmpresa } from "./aplicacion/comandos/reactivar-empresa.caso-de-uso";
-import { CerrarEmpresa } from "./aplicacion/comandos/cerrar-empresa.caso-de-uso";
-import { REPOSITORIO_EMPRESAS, RepositorioEmpresas } from "./dominio/repositorios/repositorio-empresas";
-import { CONSULTA_EMPRESAS, ConsultaEmpresas } from "./aplicacion/puertos/consulta-empresas.puerto";
+import { Module } from '@nestjs/common';
+import { ControladorEmpresas } from './presentacion/controladores/controlador-empresas';
+import { RegistrarEmpresa } from './aplicacion/comandos/registrar-empresa.caso-de-uso';
+import { ConsultarEmpresa } from './aplicacion/consultas/consultar-empresa.caso-de-uso';
+import { ListarEmpresas } from './aplicacion/consultas/listar-empresas.caso-de-uso';
+import { ModificarEmpresa } from './aplicacion/comandos/modificar-empresa.caso-de-uso';
+import { ModificarConfiguracionGeneral } from './aplicacion/comandos/modificar-configuracion-general.caso-de-uso';
+import { SuspenderEmpresa } from './aplicacion/comandos/suspender-empresa.caso-de-uso';
+import { ReactivarEmpresa } from './aplicacion/comandos/reactivar-empresa.caso-de-uso';
+import { CerrarEmpresa } from './aplicacion/comandos/cerrar-empresa.caso-de-uso';
+import { REPOSITORIO_EMPRESAS, RepositorioEmpresas } from './dominio/repositorios/repositorio-empresas';
+import { CONSULTA_EMPRESAS, ConsultaEmpresas } from './aplicacion/puertos/consulta-empresas.puerto';
 import {
     VERIFICADOR_ASIGNACION_COMERCIAL,
     VerificadorAsignacionComercial,
-} from "./aplicacion/puertos/verificador-asignacion-comercial.puerto";
-import { AdaptadorAsignacionComercialProvisional } from "./infraestructura/adaptadores/asignacion-comercial-provisional.adaptador";
-import { RESOLVEDOR_EMPRESA_PUBLICO } from "./aplicacion/puertos/resolvedor-empresa-publico.puerto";
-import { AdaptadorResolvedorEmpresaPublico } from "./infraestructura/adaptadores/resolvedor-empresa-publico.adaptador";
+} from './aplicacion/puertos/verificador-asignacion-comercial.puerto';
+import { AdaptadorAsignacionComercialProvisional } from './infraestructura/adaptadores/asignacion-comercial-provisional.adaptador';
+import { RESOLVEDOR_EMPRESA_PUBLICO } from './aplicacion/puertos/resolvedor-empresa-publico.puerto';
+import { AdaptadorResolvedorEmpresaPublico } from './infraestructura/adaptadores/resolvedor-empresa-publico.adaptador';
 
 @Module({
     controllers: [ControladorEmpresas],

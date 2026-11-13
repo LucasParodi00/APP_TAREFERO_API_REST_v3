@@ -41,6 +41,7 @@ Todos los registros están aislados por Empresa mediante `empresaId`. Los códig
 - Una persona puede integrar varias Cuadrillas vigentes y cada alta, baja o liderazgo mantiene su período (`PER-BR-013`, `PER-BR-014`).
 - Solo existe una Asistencia por Empleado y fecha, con resultado explícito e intervalos opcionales válidos (`PER-BR-016`, `PER-BR-017`, `PER-BR-018`).
 - Una indisponibilidad vigente impide registrar presencia y genera una ausencia justificada (`PER-BR-022`).
+- Las restricciones operativas e indisponibilidades se anulan sin borrado físico y conservan actor, fecha, hora y motivo (`PER-BR-028`).
 - La remuneración admite modalidades mensual, jornal, por hora, por Labor, por producción y mixta, con vigencia y valor histórico (`PER-BR-023`, `PER-BR-025`, `PER-BR-026`).
 
 ## Relación con otros módulos
@@ -64,9 +65,9 @@ Todos los registros están aislados por Empresa mediante `empresaId`. Los códig
 
 ## Estado
 
-La especificación fue aprobada por el Ingeniero el 06/11/2026. Contiene 27 reglas de negocio, 14 requerimientos, 7 dependencias, 13 casos de uso y 18 entidades. No hay casos de uso implementados.
+La especificación fue aprobada por el Ingeniero el 06/11/2026 y actualizada por decisiones explícitas del 13/11/2026. Contiene 28 reglas de negocio, 14 requerimientos, 7 dependencias, 13 casos de uso, 16 entidades vigentes y 2 entidades retiradas. No hay casos de uso implementados.
 
-No quedan preguntas abiertas. `PER-Q-032` confirmó que PER es dueño de las tarifas de remuneración; `PER-Q-040` confirmó que LAB o COS atribuyen cantidades individuales a cada Empleado para que PER calcule su remuneración sin repartos implícitos.
+No quedan preguntas abiertas. `PER-Q-041` simplificó la especialidad a un texto libre opcional, `PER-Q-042` definió la auditoría obligatoria de anulaciones y `PER-Q-043` fijó en 100 caracteres los límites de domicilio y especialidad.
 
 ## Archivos
 

@@ -13,8 +13,6 @@ owner: "Analista"
 erDiagram
     EMPLEADO ||--o{ PERIODO_LABORAL : conserva
     EMPLEADO ||--o{ CONTACTO_EMERGENCIA : tiene
-    EMPLEADO ||--o{ EMPLEADO_ESPECIALIDAD : posee
-    ESPECIALIDAD ||--o{ EMPLEADO_ESPECIALIDAD : clasifica
     EMPLEADO ||--o{ LICENCIA_EMPLEADO : acredita
     EMPLEADO ||--o{ RESTRICCION_OPERATIVA : informa
     EMPLEADO ||--o{ INDISPONIBILIDAD : justifica
@@ -53,9 +51,10 @@ Todas las entidades de este modelo contienen `empresaId` conforme a `PER-BR-001`
 | `apellido` | Texto | Sí | Hasta 150; no vacío | `B-01`, `PER-Q-039` |
 | `telefonoContacto` | Texto | Sí | Hasta 30; no único | `B-01`, `PER-Q-039` |
 | `fechaNacimiento` | Fecha | No | `PER-BR-004` | `PER-Q-005`, `PER-Q-037` |
-| `domicilio` | Texto | No | `PER-BR-004` | `PER-Q-005`, `PER-Q-037` |
+| `domicilio` | Texto | No | Hasta 100; `PER-BR-004` | `PER-Q-005`, `PER-Q-037`, `PER-Q-043` |
 | `grupoSanguineo` | Enumeración | No | A, B, AB, O | `PER-Q-005`, `PER-Q-037` |
 | `factorSanguineo` | Enumeración | No | POSITIVO, NEGATIVO | `PER-Q-037` |
+| `especialidad` | Texto | No | Texto libre; hasta 100; `PER-BR-004` | `PER-Q-041`, `PER-Q-043` |
 | `notas` | Texto | No | Hasta 1000 | `PER-Q-005`, `PER-Q-039` |
 | `estado` | Enumeración | Sí | ACTIVO, INACTIVO | `PER-Q-007` |
 
@@ -65,7 +64,6 @@ Todas las entidades de este modelo contienen `empresaId` conforme a `PER-BR-001`
 |---|---|:---:|---|
 | `PER-ENT-002` | Uno a muchos | Sí | `PER-Q-003`, `PER-Q-007` |
 | `PER-ENT-003` | Uno a muchos | No | `PER-Q-005`, `PER-Q-037` |
-| `PER-ENT-005` | Uno a muchos | No | `PER-Q-037` |
 | `PER-ENT-006` | Uno a muchos | No | `PER-Q-005`, `PER-Q-037` |
 | `PER-ENT-007` | Uno a muchos | No | `B-03`, `PER-Q-006` |
 | `PER-ENT-008` | Uno a muchos | No | `PER-Q-033` |
@@ -110,9 +108,10 @@ Todas las entidades de este modelo contienen `empresaId` conforme a `PER-BR-001`
 
 ### PER-ENT-004 — Especialidad
 
-- **Estado:** Aprobado
-- **Descripción:** valor del catálogo de especialidades definido por una Empresa.
+- **Estado:** Retirado
+- **Descripción:** antiguo valor del catálogo de especialidades definido por una Empresa.
 - **Identidad:** Identificador generado.
+- **Motivo del retiro:** `PER-Q-041` reemplaza el catálogo por el atributo opcional `especialidad` de `PER-ENT-001`.
 
 | Atributo | Tipo | Requerido | Restricción | Origen |
 |---|---|:---:|---|---|
@@ -124,9 +123,10 @@ Todas las entidades de este modelo contienen `empresaId` conforme a `PER-BR-001`
 
 ### PER-ENT-005 — Especialidad de Empleado
 
-- **Estado:** Aprobado
-- **Descripción:** vinculación histórica entre un Empleado y una especialidad de su Empresa.
+- **Estado:** Retirado
+- **Descripción:** antigua vinculación histórica entre un Empleado y una especialidad de su Empresa.
 - **Identidad:** Identificador generado.
+- **Motivo del retiro:** `PER-Q-041` retira la asociación porque la especialidad pasa a ser un único texto libre opcional en `PER-ENT-001`.
 
 | Atributo | Tipo | Requerido | Restricción | Origen |
 |---|---|:---:|---|---|
@@ -169,7 +169,9 @@ Todas las entidades de este modelo contienen `empresaId` conforme a `PER-BR-001`
 | `inicio` | Fecha | Sí | `PER-BR-021` | `PER-Q-006` |
 | `fin` | Fecha | No | No anterior al inicio | `PER-Q-006` |
 | `mensajeOperativo` | Texto | Sí | Hasta 1000; sin diagnóstico | `PER-Q-006`, `PER-Q-039` |
-| `anulada` | Booleano | Sí | Conserva historia | `PER-Q-038` |
+| `anuladaEn` | FechaHora | Cond. | `PER-BR-028` | `PER-Q-042` |
+| `anuladaPorCuentaId` | Referencia externa | Cond. | Cuenta de Empresa del Administrador; `PER-BR-028` | `PER-Q-038`, `PER-Q-042` |
+| `motivoAnulacion` | Texto | Cond. | Hasta 1000; `PER-BR-028` | `PER-Q-039`, `PER-Q-042` |
 
 ### PER-ENT-008 — Indisponibilidad
 
@@ -187,8 +189,9 @@ Todas las entidades de este modelo contienen `empresaId` conforme a `PER-BR-001`
 | `fin` | Fecha | Sí | No anterior al inicio | `PER-Q-033` |
 | `mensajeOperativo` | Texto | Sí | Hasta 1000; sin evidencia sensible | `PER-Q-034`, `PER-Q-039` |
 | `archivoId` | Referencia externa | No | `PER-DEP-004` | `PER-Q-038` |
-| `anuladaEn` | FechaHora | No | Solo Administrador | `PER-Q-038` |
-| `motivoAnulacion` | Texto | Cond. | Hasta 1000 | `PER-Q-038`, `PER-Q-039` |
+| `anuladaEn` | FechaHora | Cond. | `PER-BR-028` | `PER-Q-038`, `PER-Q-042` |
+| `anuladaPorCuentaId` | Referencia externa | Cond. | Cuenta de Empresa del Administrador; `PER-BR-028` | `PER-Q-038`, `PER-Q-042` |
+| `motivoAnulacion` | Texto | Cond. | Hasta 1000; `PER-BR-028` | `PER-Q-038`, `PER-Q-039`, `PER-Q-042` |
 
 ### PER-ENT-009 — Cuadrilla
 

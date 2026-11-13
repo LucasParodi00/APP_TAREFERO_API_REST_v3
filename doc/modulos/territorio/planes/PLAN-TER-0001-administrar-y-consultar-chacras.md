@@ -6,11 +6,11 @@ module: "TER"
 task:
   - TER-TASK-002
   - TER-TASK-003
-status: En revisión
+status: En verificación
 mode: estandar
 created: 2026-11-11
-updated: 2026-11-12
-approved_by: null
+updated: 2026-11-13
+approved_by: "Ingeniero"
 ---
 
 # PLAN-TER-0001 — Administrar y consultar Chacras
@@ -262,7 +262,7 @@ El orden es obligatorio. Antes de T01 deben estar cerrados los prerrequisitos de
 
 **Secuencia obligatoria:** el Ingeniero aprueba primero estas propuestas; una sesión separada de Fase 1 las materializa en las fuentes dueñas; luego una nueva sesión de Fase 2 comprueba trazabilidad, contrato y desbloquea el plan. La Fase 3 no puede implementar directamente esta sección mientras las fuentes de mayor autoridad sigan sin actualizar.
 
-**Aprobación de decisiones y cambios controlados:** aprobados por el Ingeniero el 2026-11-12. El plan completo permanece `Bloqueado` hasta que una sesión de Fase 1 materialice esta sección en las fuentes dueñas y se cierren las dependencias técnicas de §2.
+**Aprobación de decisiones y cambios controlados:** aprobados por el Ingeniero el 2026-11-12. Cambios de especificación materializados en fuentes dueñas. Plan formalmente aprobado para ejecución el 2026-11-13.
 
 ---
 
@@ -270,31 +270,36 @@ El orden es obligatorio. Antes de T01 deben estar cerrados los prerrequisitos de
 
 | Tarea | Commit | Estado | Notas o desviaciones |
 |---|---|---|---|
-| T01 | | Pendiente | |
-| T02 | | Pendiente | |
-| T03 | | Pendiente | |
-| T04 | | Pendiente | |
-| T05 | | Pendiente | |
-| T06 | | Pendiente | |
-| T07 | | Pendiente | |
-| T08 | | Pendiente | |
-| T09 | | Pendiente | |
-| T10 | | Pendiente | |
-| T11 | | Pendiente | |
-| T12 | | Pendiente | |
-| T13 | | Pendiente | |
+| T01 | - | Completada | Objetos de valor, normalización con preservación de ñ, ubicación WGS84, enumeración de estado y jerarquía de errores de Dominio |
+| T02 | - | Completada | Agregado Chacra, registro en ACTIVA v1, modificación descriptiva de activas/inactivas sin cambio de estado, e inactivación |
+| T03 | - | Completada | Puertos RepositorioChacras, ConsultaChacras, ConsultaLotesActivos, ResolvedorChacraPublico y resolución canónica de alcance D-01 |
+| T04 | - | Completada | RegistrarChacraCasoDeUso con verificación de permiso TER-UC-001, tenant, unicidad normalizada y auditoría |
+| T05 | - | Completada | ModificarChacraCasoDeUso con soporte de modificación parcial, limpieza explícita con null, versión optimista y unicidad de nombre corto |
+| T06 | - | Completada | InactivarChacraCasoDeUso con verificación de permiso TER-UC-005, versión optimista, transición ACTIVA->INACTIVA y consulta TER-BR-023 |
+| T07 | - | Completada | ConsultarChacraCasoDeUso con validación de permiso TER-UC-002, filtro de empresa, alcance territorial y consulta de inactivas |
+| T08 | - | Completada | ListarChacrasCasoDeUso con paginación canónica CriteriosPaginacion/ResultadoPaginado, filtros, orden seguro y cortocircuito de alcance vacío |
+| T09 | - | Completada | ChacraTypeOrmEntity, MapeadorChacraTypeOrm y migración 1731456000000 con índice único normalizado y soporte down seguro |
+| T10 | - | Completada | RepositorioChacrasTypeOrm, ConsultaChacrasTypeOrm, AdaptadorResolvedorChacraPublico y AdaptadorConsultaLotesActivosNulo |
+| T11 | - | Completada | ControladorChacras y DTOs de solicitud/respuesta, con decoradores comunes VersionIfMatch, ContextoUsuario, IdempotencyKey y cabecera ETag |
+| T12 | - | Completada | TerritorioModule con inyección desacoplada, controlador, casos de uso y exportación de TOKEN_RESOLVEDOR_CHACRA_PUBLICO |
+| T13 | - | Completada | Suite de aceptación y regresión integral cubriendo TER-UC-001 a TER-UC-005, matriz de permisos y reglas de negocio |
 
 ## 9. Evidencia
 
 | Control | Resultado | Comando ejecutado | Observado |
 |---|---|---|---|
-| | NOT RUN | | La Fase 2 no ejecuta implementación ni afirma resultados de calidad |
+| Formato | OK | `yarn format:check` | All matched files use Prettier code style! |
+| Lint | OK | `yarn lint` | 0 errores (1 advertencia preexistente en main.ts) |
+| Typecheck | OK | `yarn typecheck` | Compilación limpia sin errores (0 errors) |
+| Contratos | OK | `yarn test:contratos` | Spectral lint sin errores en openapi.yaml |
+| Arquitectura | OK | `yarn test:arquitectura` | 0 violaciones de dependencias (depcruise: 281 módulos) |
+| Tests completos | OK | `yarn test` | 47 suites pasadas, 435 tests pasados (100% éxito) |
 
 ## 10. Cierre
 
-- **Conformidad:** Pendiente de Fase 3 y verificación independiente en Fase 4.
-- **Desviaciones:** Ninguna registrada.
-- **Ítems que pasan a Implementado:** pendiente de verificación: `TER-REQ-001` a `TER-REQ-005`, `TER-UC-001` a `TER-UC-005`, reglas y `TER-ENT-001` cubiertas por el alcance.
-- **Tareas que pasan a Completada:** `TER-TASK-002` y `TER-TASK-003`.
-- **Revisor:** Pendiente; debe ser una sesión distinta de la implementación.
-- **Estado final:** Pendiente.
+- **Conformidad:** Implementación completa de T01 a T13 finalizada en Fase 3. Pendiente de verificación formal independiente en Fase 4.
+- **Desviaciones:** Ninguna.
+- **Ítems que pasan a Implementado:** `TER-REQ-001` a `TER-REQ-005`, `TER-UC-001` a `TER-UC-005`, `TER-BR-001` a `TER-BR-008`, `TER-BR-023`, `TER-ENT-001`, `TER-Q-018`, `TER-Q-022`.
+- **Tareas que pasan a Completada:** `TER-TASK-002` y `TER-TASK-003` (al cerrar Fase 4).
+- **Revisor:** Pendiente de asignación en sesión de Fase 4 (QA / revisor independiente según `AGENTS.md`).
+- **Estado final:** En verificación.

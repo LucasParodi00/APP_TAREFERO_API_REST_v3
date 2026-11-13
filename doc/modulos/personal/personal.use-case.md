@@ -63,7 +63,7 @@ owner: "Analista"
 **Flujos alternativos**
 
 - **A1 — Reingreso** (desde el paso 5): se reutiliza la ficha INACTIVA y se abre un período nuevo.
-- **A2 — Datos opcionales** (desde el paso 3): se mantienen contactos, especialidades, licencias o referencias de ARC.
+- **A2 — Datos opcionales** (desde el paso 3): se mantienen contactos, una especialidad opcional de texto libre, licencias o referencias de ARC.
 
 **Excepciones**
 
@@ -174,7 +174,7 @@ Escenario: Denegar habilitación sobre una ficha inactiva
 - **Actor:** Administrador.
 - **Objetivo:** Mantener información operativa y períodos justificados que afectan la disponibilidad del Empleado.
 - **Requerimientos:** `PER-REQ-004`.
-- **Reglas:** `PER-BR-004`, `PER-BR-021`, `PER-BR-022`.
+- **Reglas:** `PER-BR-004`, `PER-BR-021`, `PER-BR-022`, `PER-BR-028`.
 
 **Precondiciones**
 
@@ -190,7 +190,7 @@ Escenario: Denegar habilitación sobre una ficha inactiva
 
 **Flujos alternativos**
 
-- **A1 — Anulación**: se anula conservando actor, fecha y motivo.
+- **A1 — Anulación**: el Administrador anula conforme a `PER-BR-028`.
 - **A2 — Consulta operativa**: el Capataz obtiene solo el mensaje permitido mediante `PER-UC-013`.
 
 **Excepciones**
@@ -200,6 +200,7 @@ Escenario: Denegar habilitación sobre una ficha inactiva
 | Capataz intenta administrar | 2 | Se rechaza | `PER_ACCESO_DENEGADO` |
 | Restricción expone información no permitida | 3 | Se rechaza | `PER_RESTRICCION_INVALIDA` |
 | Indisponibilidad inválida | 3 | Se rechaza | `PER_INDISPONIBILIDAD_INVALIDA` |
+| Anulación sin auditoría completa | A1 | Se rechaza sin cambios | `PER_ANULACION_NOVEDAD_INVALIDA` |
 
 **Postcondiciones**
 
@@ -215,10 +216,11 @@ Escenario: Registrar vacaciones
   Entonces el período queda disponible para validar la asistencia
 
 @PER-UC-003 @AC-02
-Escenario: Evitar exposición médica al Capataz
-  Dado una licencia con evidencia privada
-  Cuando el Capataz consulta la disponibilidad
-  Entonces obtiene solo el estado y mensaje operativo
+Escenario: Anular una indisponibilidad con auditoría
+  Dado una indisponibilidad vigente
+  Cuando el Administrador la anula indicando un motivo
+  Entonces se conservan la Cuenta de Empresa del actor, la fecha y hora y el motivo
+  Y la indisponibilidad permanece en la historia
 
 @PER-UC-003 @AC-03
 Escenario: Denegar creación al Capataz
@@ -745,10 +747,11 @@ Escenario: ACC valida una ficha activa
   Entonces PER informa identidad, Empresa y estado sin copiar credenciales
 
 @PER-UC-013 @AC-02
-Escenario: Capataz obtiene datos mínimos para asistencia
-  Dado un Capataz de la Empresa
-  Cuando busca un Empleado activo
+Escenario: Capataz obtiene datos mínimos sin evidencia privada
+  Dado un Empleado activo con una indisponibilidad que posee evidencia privada
+  Cuando un Capataz de la Empresa consulta su contexto para registrar asistencia
   Entonces obtiene solo los datos aprobados por PER-Q-034
+  Y no obtiene diagnósticos ni evidencia privada
 
 @PER-UC-013 @AC-03
 Escenario: Rechazar consulta entre tenants

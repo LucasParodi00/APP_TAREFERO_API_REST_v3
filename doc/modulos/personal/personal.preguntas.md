@@ -561,6 +561,8 @@ No borrar preguntas respondidas: cambian de estado. -->
 - **Respuesta:** Opción a). Los datos opcionales se estructuran según la propuesta; los archivos permanecen en `ARC`.
 - **Respondida por / fecha:** Parodi Lucas / 2026-11-05
 
+**Aclaración posterior:** `PER-Q-041` reemplaza únicamente la definición de especialidades: deja de existir el catálogo y cada Empleado conserva un solo campo opcional de texto libre.
+
 ## PER-Q-038 — Administración de indisponibilidades
 
 - **Estado:** Respondida
@@ -605,3 +607,46 @@ No borrar preguntas respondidas: cambian de estado. -->
 - **Recomendación del agente:** opción a) para la primera versión, porque produce un cálculo individual verificable, evita repartos implícitos y permite que LAB o COS reflejen participaciones diferentes. Una modalidad colectiva configurable puede incorporarse después si el negocio la necesita.
 - **Respuesta:** Opción a). La tarifa se aplica a la cantidad individual confirmada para cada Empleado. LAB o COS atribuye a cada participante sus horas, hectáreas o unidades y PER calcula cada remuneración por separado; no se realizan repartos implícitos de un importe colectivo.
 - **Respondida por / fecha:** Parodi Lucas / 2026-11-06
+
+## PER-Q-041 — Representación de la especialidad del Empleado
+
+- **Estado:** Respondida
+- **Bloqueante:** No
+- **Origen:** cambio indicado por el Ingeniero sobre `PER-Q-037`
+- **Afecta:** datos opcionales del Empleado; `PER-ENT-004`; `PER-ENT-005`
+- **Pregunta:** ¿La especialidad continúa como catálogo de la Empresa con asociaciones históricas o se simplifica como un único dato opcional de la ficha del Empleado?
+- **Interpretaciones posibles:**
+  - a) Un único campo opcional de texto libre en la ficha del Empleado; se retiran el catálogo y su entidad de asociación.
+  - b) Mantener el catálogo de Especialidades y las asociaciones históricas aprobadas en `PER-Q-037`.
+- **Recomendación del agente:** opción a), conforme a la simplificación solicitada por el Ingeniero.
+- **Respuesta:** Opción a). La especialidad queda como un único campo opcional de texto libre en la ficha del Empleado. Se retiran el catálogo de Especialidades y la asociación histórica entre Empleado y Especialidad.
+- **Respondida por / fecha:** Parodi Lucas / 2026-11-13
+
+## PER-Q-042 — Auditoría de anulaciones laborales
+
+- **Estado:** Respondida
+- **Bloqueante:** Sí
+- **Origen:** observación del Ingeniero sobre `PER-UC-003`, `PER-ENT-007` y `PER-ENT-008`
+- **Afecta:** anulación de restricciones operativas e indisponibilidades
+- **Pregunta:** ¿Qué información debe conservarse al anular una restricción operativa o una indisponibilidad?
+- **Interpretaciones posibles:**
+  - a) Conservar obligatoriamente la Cuenta de Empresa del Administrador que anula, la fecha y hora y un motivo, sin eliminar físicamente el registro.
+  - b) Conservar solamente que el registro fue anulado.
+  - c) Permitir el borrado físico de la novedad.
+- **Recomendación del agente:** opción a), porque mantiene trazabilidad sobre novedades que afectan asistencia y pueden contener evidencia laboral sensible.
+- **Respuesta:** Opción a). Toda anulación de una restricción operativa o indisponibilidad conserva obligatoriamente actor, fecha y hora y motivo; el registro no se elimina físicamente.
+- **Respondida por / fecha:** Parodi Lucas / 2026-11-13
+
+## PER-Q-043 — Longitud de domicilio y especialidad
+
+- **Estado:** Respondida
+- **Bloqueante:** No
+- **Origen:** precisión indicada por el Ingeniero sobre los datos opcionales de `PER-ENT-001`
+- **Afecta:** domicilio y especialidad del Empleado
+- **Pregunta:** ¿Qué longitud máxima admiten el domicilio y la especialidad de texto libre?
+- **Interpretaciones posibles:**
+  - a) Hasta 100 caracteres para cada campo.
+  - b) Aplicar límites diferentes, indicándolos por separado.
+- **Recomendación del agente:** opción a), conforme al límite solicitado por el Ingeniero.
+- **Respuesta:** Opción a). El domicilio y la especialidad admiten hasta 100 caracteres cada uno.
+- **Respondida por / fecha:** Parodi Lucas / 2026-11-13

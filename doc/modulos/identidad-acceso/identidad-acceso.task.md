@@ -67,6 +67,6 @@ module: 'ACC'
 - **Estado:** Bloqueada
 - **Prioridad:** Alta
 - **Alcance:** `ACC-UC-013` a `ACC-UC-017`; `ACC-BR-023` a `ACC-BR-029`; `ACC-ENT-006`; `ACC-DEP-005`.
-- **Depende de:** `ACC-TASK-005`; contrato público de validación de Chacras de `TER`; `ACC-DEP-004`; `TER-DEP-002`.
+- **Depende de:** `ACC-TASK-005`; contrato público de validación de Chacras de `TER`; `ACC-DEP-004`; `TER-DEP-002`; `CMN-TASK-002`; `CMN-TASK-003`.
 - **Plan:** `planes/PLAN-ACC-0002-asignar-capataz-a-chacras.md`
-- **Bloqueo:** `PLAN-ACC-0002` continúa `Bloqueado`: `TER-TASK-002` y `PLAN-TER-0001` ya asumieron la propiedad del puerto público de `ACC-DEP-005` y D-12 está aprobada, pero falta implementarlo; también faltan una capacidad común aprobada de idempotencia persistente y el cierre conforme de los planes base `PLAN-CMN-0001` y `PLAN-ACC-0001`.
+- **Bloqueo:** `PLAN-ACC-0002` continúa `Bloqueado`: falta disponer del puerto público de Chacra de `PLAN-TER-0001`, ejecutar `CMN-TASK-002` y `CMN-TASK-003`, y cerrar o verificar conformes `PLAN-CMN-0001` y `PLAN-ACC-0001`. ACC es dueño de consultar sus asignaciones ACTIVA por solicitud y proyectarlas al `ContextoSolicitud`; ningún consumidor accede directamente a sus tablas.

@@ -1,4 +1,4 @@
-import { PaisReferencia, ZonaHoraria, MonedaPrincipal } from "../objetos-valor";
+import { PaisReferencia, ZonaHoraria, MonedaPrincipal } from '../objetos-valor';
 
 export interface ParametrosConfiguracionGeneral {
     id: string;
@@ -42,9 +42,9 @@ export class ConfiguracionGeneralEmpresa {
         return new ConfiguracionGeneralEmpresa({
             id,
             empresaId,
-            paisReferencia: new PaisReferencia("AR"),
-            zonaHoraria: new ZonaHoraria("America/Argentina/Buenos_Aires"),
-            monedaPrincipal: new MonedaPrincipal("ARS"),
+            paisReferencia: new PaisReferencia('AR'),
+            zonaHoraria: new ZonaHoraria('America/Argentina/Buenos_Aires'),
+            monedaPrincipal: new MonedaPrincipal('ARS'),
             creadoEn: fecha,
             creadoPor: actor,
             actualizadoEn: fecha,

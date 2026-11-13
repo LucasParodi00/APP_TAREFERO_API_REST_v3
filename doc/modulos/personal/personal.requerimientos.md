@@ -54,16 +54,16 @@ owner: "Analista"
 ### PER-BR-004 — Datos opcionales estructurados
 
 - **Estado:** Aprobado
-- **Origen:** `PER-Q-005`, `PER-Q-037`, `PER-Q-039`
+- **Origen:** `PER-Q-005`, `PER-Q-037`, `PER-Q-039`, `PER-Q-041`, `PER-Q-043`
 - **Tipo:** Validación
-- **Regla:** Los datos opcionales del Empleado se registran en su estructura aprobada; los archivos se referencian desde ARC y no se copian en PER.
+- **Regla:** Los datos opcionales del Empleado se registran en su estructura aprobada; domicilio y especialidad admiten hasta 100 caracteres, la especialidad es un único texto libre opcional y los archivos se referencian desde ARC sin copiarse en PER.
 - **Si se incumple:** se rechaza con `PER_DATO_PERSONAL_INVALIDO`.
 
 | Situación | Resultado |
 |---|---|
-| Licencia con tipo y vencimiento válidos | Se acepta |
-| Empleado sin dato de sangre | Se acepta |
-| Contacto de emergencia sin teléfono | Se rechaza con `PER_DATO_PERSONAL_INVALIDO` |
+| Domicilio y especialidad de hasta 100 caracteres | Se acepta |
+| Empleado sin especialidad | Se acepta |
+| Domicilio o especialidad de 101 caracteres | Se rechaza con `PER_DATO_PERSONAL_INVALIDO` |
 
 ### PER-BR-005 — Ciclo laboral e historia
 
@@ -388,6 +388,20 @@ owner: "Analista"
 | Tarifa por unidad productiva | PER conserva la tarifa y COS aporta la cantidad confirmada |
 | LAB o COS intenta ser dueño de la tarifa de remuneración | No se admite; la propiedad permanece en PER |
 
+### PER-BR-028 — Anulación auditada de novedades laborales
+
+- **Estado:** Aprobado
+- **Origen:** `PER-Q-038`, `PER-Q-042`
+- **Tipo:** Transición
+- **Regla:** Toda anulación de una restricción operativa o indisponibilidad la realiza un Administrador y conserva obligatoriamente la Cuenta de Empresa del actor, la fecha y hora y el motivo, sin eliminar físicamente el registro.
+- **Si se incumple:** se rechaza con `PER_ANULACION_NOVEDAD_INVALIDA`.
+
+| Situación | Resultado |
+|---|---|
+| Administrador anula una indisponibilidad con motivo | Se acepta y conserva actor, fecha y hora y motivo |
+| Se consulta una restricción anulada | Permanece disponible en la historia |
+| Se intenta anular sin motivo o eliminar físicamente | Se rechaza con `PER_ANULACION_NOVEDAD_INVALIDA` |
+
 ## 2. Requerimientos funcionales
 
 ### PER-REQ-001 — Administrar Empleados
@@ -399,9 +413,9 @@ owner: "Analista"
 
 ### PER-REQ-002 — Administrar datos personales y laborales
 - **Estado:** Aprobado
-- **Origen:** `PER-Q-005`, `PER-Q-037`, `PER-Q-039`
+- **Origen:** `PER-Q-005`, `PER-Q-037`, `PER-Q-039`, `PER-Q-041`, `PER-Q-043`
 - **Prioridad:** Must
-- **Requerimiento:** El sistema debe permitir al Administrador mantener datos opcionales estructurados, contactos, especialidades, licencias y referencias de archivos del Empleado.
+- **Requerimiento:** El sistema debe permitir al Administrador mantener datos opcionales estructurados, contactos, una especialidad opcional de texto libre, licencias y referencias de archivos del Empleado.
 - **Reglas que aplica:** `PER-BR-003`, `PER-BR-004`, `PER-BR-021`.
 
 ### PER-REQ-003 — Habilitar acceso de un Empleado
@@ -413,10 +427,10 @@ owner: "Analista"
 
 ### PER-REQ-004 — Administrar restricciones e indisponibilidades
 - **Estado:** Aprobado
-- **Origen:** `B-03`, `B-10`, `PER-Q-006`, `PER-Q-033`, `PER-Q-038`
+- **Origen:** `B-03`, `B-10`, `PER-Q-006`, `PER-Q-033`, `PER-Q-038`, `PER-Q-042`
 - **Prioridad:** Must
-- **Requerimiento:** El sistema debe permitir al Administrador mantener restricciones operativas e indisponibilidades con vigencia y evidencia referenciada.
-- **Reglas que aplica:** `PER-BR-021`, `PER-BR-022`.
+- **Requerimiento:** El sistema debe permitir al Administrador mantener y anular restricciones operativas e indisponibilidades con vigencia, evidencia referenciada y auditoría completa.
+- **Reglas que aplica:** `PER-BR-021`, `PER-BR-022`, `PER-BR-028`.
 
 ### PER-REQ-005 — Crear y mantener Cuadrillas
 - **Estado:** Aprobado

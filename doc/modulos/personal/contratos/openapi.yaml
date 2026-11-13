@@ -1,0 +1,1337 @@
+openapi: 3.1.0
+info:
+  title: API de Personal
+  version: 1.0.0
+  description: Contrato HTTP propuesto para PER-TASK-002.
+  contact:
+    name: Equipo Tarefero
+servers:
+  - url: /api/v1
+tags:
+  - name: Empleados
+  - name: Acceso de Empleados
+  - name: Novedades laborales
+
+paths:
+  /empleados:
+    get:
+      tags: [Empleados]
+      summary: Listar Empleados de la Empresa autorizada
+      description: Expone la consulta administrativa paginada prevista por PER-UC-001.
+      operationId: listarEmpleados
+      x-use-case: PER-UC-001
+      x-business-rules: [PER-BR-001]
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/Limite'
+        - $ref: '#/components/parameters/Desplazamiento'
+        - name: estado
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/EstadoEmpleado'
+        - name: busqueda
+          in: query
+          required: false
+          description: Coincidencia por nombre, apellido o número de documento.
+          schema:
+            type: string
+            maxLength: 150
+        - name: orden
+          in: query
+          required: false
+          schema:
+            type: string
+            default: apellido:asc
+            pattern: '^(apellido|nombre|numeroDocumento|creadoEn):(asc|desc)$'
+      responses:
+        '200':
+          description: Listado paginado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaListaEmpleados'
+        '400':
+          $ref: '#/components/responses/ErrorSolicitudInvalida'
+        '401':
+          $ref: '#/components/responses/ErrorAutenticacionRequerida'
+        '403':
+          $ref: '#/components/responses/ErrorAccesoDenegado'
+    post:
+      tags: [Empleados]
+      summary: Registrar un Empleado
+      description: Ejecuta el alta laboral definida por PER-UC-001.
+      operationId: registrarEmpleado
+      x-use-case: PER-UC-001
+      x-business-rules: [PER-BR-001, PER-BR-002, PER-BR-003, PER-BR-004, PER-BR-005, PER-BR-006]
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SolicitudRegistrarEmpleado'
+      responses:
+        '201':
+          description: Empleado registrado
+          headers:
+            ETag:
+              $ref: '#/components/headers/ETag'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaEmpleado'
+        '400':
+          $ref: '#/components/responses/ErrorSolicitudInvalida'
+        '401':
+          $ref: '#/components/responses/ErrorAutenticacionRequerida'
+        '403':
+          $ref: '#/components/responses/ErrorAccesoDenegado'
+        '409':
+          $ref: '#/components/responses/ErrorDocumentoOIdempotencia'
+        '422':
+          $ref: '#/components/responses/ErrorEmpleadoReglaNegocio'
+
+  /empleados/{empleadoId}:
+    parameters:
+      - $ref: '#/components/parameters/EmpleadoId'
+    get:
+      tags: [Empleados]
+      summary: Consultar la ficha laboral de un Empleado
+      description: Devuelve la ficha administrativa autorizada por PER-UC-001.
+      operationId: consultarEmpleado
+      x-use-case: PER-UC-001
+      x-business-rules: [PER-BR-001, PER-BR-004, PER-BR-005]
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Ficha laboral administrativa
+          headers:
+            ETag:
+              $ref: '#/components/headers/ETag'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaEmpleado'
+        '401':
+          $ref: '#/components/responses/ErrorAutenticacionRequerida'
+        '403':
+          $ref: '#/components/responses/ErrorAccesoDenegado'
+        '404':
+          $ref: '#/components/responses/ErrorEmpleadoNoEncontrado'
+    patch:
+      tags: [Empleados]
+      summary: Modificar la ficha laboral de un Empleado
+      description: Modifica datos permitidos conforme a PER-UC-001.
+      operationId: modificarEmpleado
+      x-use-case: PER-UC-001
+      x-business-rules: [PER-BR-001, PER-BR-002, PER-BR-003, PER-BR-004, PER-BR-005]
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IfMatch'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SolicitudModificarEmpleado'
+      responses:
+        '200':
+          description: Ficha modificada
+          headers:
+            ETag:
+              $ref: '#/components/headers/ETag'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaEmpleado'
+        '400':
+          $ref: '#/components/responses/ErrorSolicitudInvalida'
+        '401':
+          $ref: '#/components/responses/ErrorAutenticacionRequerida'
+        '403':
+          $ref: '#/components/responses/ErrorAccesoDenegado'
+        '404':
+          $ref: '#/components/responses/ErrorEmpleadoNoEncontrado'
+        '409':
+          $ref: '#/components/responses/ErrorDocumentoVersionOIdempotencia'
+        '422':
+          $ref: '#/components/responses/ErrorEmpleadoReglaNegocio'
+        '428':
+          $ref: '#/components/responses/ErrorIfMatchRequerido'
+
+  /empleados/{empleadoId}/inactivar:
+    parameters:
+      - $ref: '#/components/parameters/EmpleadoId'
+    post:
+      tags: [Empleados]
+      summary: Inactivar un Empleado y revocar su acceso cuando corresponda
+      description: Ejecuta la inactivación coordinada prevista por PER-UC-001 y PER-UC-002.
+      operationId: inactivarEmpleado
+      x-use-case: PER-UC-001
+      x-business-rules: [PER-BR-001, PER-BR-005, PER-BR-008]
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IfMatch'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SolicitudMotivo'
+      responses:
+        '200':
+          description: Empleado inactivado y acceso revocado atómicamente
+          headers:
+            ETag:
+              $ref: '#/components/headers/ETag'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaEmpleado'
+        '400':
+          $ref: '#/components/responses/ErrorSolicitudInvalida'
+        '401':
+          $ref: '#/components/responses/ErrorAutenticacionRequerida'
+        '403':
+          $ref: '#/components/responses/ErrorAccesoDenegado'
+        '404':
+          $ref: '#/components/responses/ErrorEmpleadoNoEncontrado'
+        '409':
+          $ref: '#/components/responses/ErrorVersionOIdempotencia'
+        '422':
+          $ref: '#/components/responses/ErrorInactivacionEmpleado'
+        '428':
+          $ref: '#/components/responses/ErrorIfMatchRequerido'
+
+  /empleados/{empleadoId}/reactivar:
+    parameters:
+      - $ref: '#/components/parameters/EmpleadoId'
+    post:
+      tags: [Empleados]
+      summary: Reactivar un Empleado sin reactivar automáticamente su acceso
+      description: Ejecuta el reingreso laboral definido por PER-UC-001.
+      operationId: reactivarEmpleado
+      x-use-case: PER-UC-001
+      x-business-rules: [PER-BR-001, PER-BR-005, PER-BR-006, PER-BR-008]
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IfMatch'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SolicitudReactivarEmpleado'
+      responses:
+        '200':
+          description: Empleado reactivado
+          headers:
+            ETag:
+              $ref: '#/components/headers/ETag'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaEmpleado'
+        '400':
+          $ref: '#/components/responses/ErrorSolicitudInvalida'
+        '401':
+          $ref: '#/components/responses/ErrorAutenticacionRequerida'
+        '403':
+          $ref: '#/components/responses/ErrorAccesoDenegado'
+        '404':
+          $ref: '#/components/responses/ErrorEmpleadoNoEncontrado'
+        '409':
+          $ref: '#/components/responses/ErrorVersionOIdempotencia'
+        '422':
+          $ref: '#/components/responses/ErrorReactivacionEmpleado'
+        '428':
+          $ref: '#/components/responses/ErrorIfMatchRequerido'
+
+  /empleados/{empleadoId}/acceso/habilitar:
+    parameters:
+      - $ref: '#/components/parameters/EmpleadoId'
+    post:
+      tags: [Acceso de Empleados]
+      summary: Habilitar acceso para un Empleado activo mediante ACC
+      description: Coordina con ACC la habilitación prevista por PER-UC-002.
+      operationId: habilitarAccesoEmpleado
+      x-use-case: PER-UC-002
+      x-business-rules: [PER-BR-001, PER-BR-007]
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SolicitudHabilitarAccesoEmpleado'
+      responses:
+        '201':
+          description: ACC creó la Cuenta de Empresa vinculada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaAccesoEmpleado'
+        '400':
+          $ref: '#/components/responses/ErrorSolicitudInvalida'
+        '401':
+          $ref: '#/components/responses/ErrorAutenticacionRequerida'
+        '403':
+          $ref: '#/components/responses/ErrorAccesoDenegado'
+        '404':
+          $ref: '#/components/responses/ErrorEmpleadoNoEncontrado'
+        '409':
+          $ref: '#/components/responses/ErrorConflictoAccesoOIdempotencia'
+        '422':
+          $ref: '#/components/responses/ErrorAccesoEmpleadoInvalido'
+
+  /empleados/{empleadoId}/acceso/revocar:
+    parameters:
+      - $ref: '#/components/parameters/EmpleadoId'
+    post:
+      tags: [Acceso de Empleados]
+      summary: Revocar el acceso de un Empleado mediante ACC
+      description: Coordina con ACC la revocación prevista por PER-UC-002.
+      operationId: revocarAccesoEmpleado
+      x-use-case: PER-UC-002
+      x-business-rules: [PER-BR-001, PER-BR-008]
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SolicitudMotivo'
+      responses:
+        '200':
+          description: ACC suspendió la Cuenta de Empresa y revocó sus Sesiones
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaAccesoEmpleado'
+        '400':
+          $ref: '#/components/responses/ErrorSolicitudInvalida'
+        '401':
+          $ref: '#/components/responses/ErrorAutenticacionRequerida'
+        '403':
+          $ref: '#/components/responses/ErrorAccesoDenegado'
+        '404':
+          $ref: '#/components/responses/ErrorEmpleadoNoEncontrado'
+        '409':
+          $ref: '#/components/responses/ErrorIdempotencia'
+        '422':
+          $ref: '#/components/responses/ErrorSuspensionAcceso'
+
+  /empleados/{empleadoId}/restricciones:
+    parameters:
+      - $ref: '#/components/parameters/EmpleadoId'
+    get:
+      tags: [Novedades laborales]
+      summary: Listar restricciones operativas de un Empleado
+      description: Consulta administrativa de restricciones conforme a PER-UC-003.
+      operationId: listarRestriccionesOperativas
+      x-use-case: PER-UC-003
+      x-business-rules: [PER-BR-001, PER-BR-021, PER-BR-028]
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/Limite'
+        - $ref: '#/components/parameters/Desplazamiento'
+        - $ref: '#/components/parameters/IncluirAnuladas'
+      responses:
+        '200':
+          description: Restricciones administrativas paginadas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaListaRestricciones'
+        '400':
+          $ref: '#/components/responses/ErrorSolicitudInvalida'
+        '401':
+          $ref: '#/components/responses/ErrorAutenticacionRequerida'
+        '403':
+          $ref: '#/components/responses/ErrorAccesoDenegado'
+        '404':
+          $ref: '#/components/responses/ErrorEmpleadoNoEncontrado'
+    post:
+      tags: [Novedades laborales]
+      summary: Registrar una restricción operativa
+      description: Registra una restricción conforme a PER-UC-003.
+      operationId: registrarRestriccionOperativa
+      x-use-case: PER-UC-003
+      x-business-rules: [PER-BR-001, PER-BR-021]
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SolicitudRegistrarRestriccion'
+      responses:
+        '201':
+          description: Restricción registrada
+          headers:
+            ETag:
+              $ref: '#/components/headers/ETag'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaRestriccionOperativa'
+        '400':
+          $ref: '#/components/responses/ErrorSolicitudInvalida'
+        '401':
+          $ref: '#/components/responses/ErrorAutenticacionRequerida'
+        '403':
+          $ref: '#/components/responses/ErrorAccesoDenegado'
+        '404':
+          $ref: '#/components/responses/ErrorEmpleadoNoEncontrado'
+        '409':
+          $ref: '#/components/responses/ErrorIdempotencia'
+        '422':
+          $ref: '#/components/responses/ErrorRestriccionInvalida'
+
+  /empleados/{empleadoId}/restricciones/{restriccionId}:
+    parameters:
+      - $ref: '#/components/parameters/EmpleadoId'
+      - $ref: '#/components/parameters/RestriccionId'
+    patch:
+      tags: [Novedades laborales]
+      summary: Modificar una restricción operativa
+      description: Modifica una restricción vigente conforme a PER-UC-003.
+      operationId: modificarRestriccionOperativa
+      x-use-case: PER-UC-003
+      x-business-rules: [PER-BR-001, PER-BR-021, PER-BR-028]
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IfMatch'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SolicitudModificarRestriccion'
+      responses:
+        '200':
+          description: Restricción modificada
+          headers:
+            ETag:
+              $ref: '#/components/headers/ETag'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaRestriccionOperativa'
+        '400':
+          $ref: '#/components/responses/ErrorSolicitudInvalida'
+        '401':
+          $ref: '#/components/responses/ErrorAutenticacionRequerida'
+        '403':
+          $ref: '#/components/responses/ErrorAccesoDenegado'
+        '404':
+          $ref: '#/components/responses/ErrorNovedadNoEncontrada'
+        '409':
+          $ref: '#/components/responses/ErrorVersionOIdempotencia'
+        '422':
+          $ref: '#/components/responses/ErrorRestriccionInvalida'
+        '428':
+          $ref: '#/components/responses/ErrorIfMatchRequerido'
+
+  /empleados/{empleadoId}/restricciones/{restriccionId}/anular:
+    parameters:
+      - $ref: '#/components/parameters/EmpleadoId'
+      - $ref: '#/components/parameters/RestriccionId'
+    post:
+      tags: [Novedades laborales]
+      summary: Anular una restricción operativa
+      description: Anula con auditoría conforme a PER-UC-003.
+      operationId: anularRestriccionOperativa
+      x-use-case: PER-UC-003
+      x-business-rules: [PER-BR-001, PER-BR-021, PER-BR-028]
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IfMatch'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SolicitudMotivo'
+      responses:
+        '200':
+          description: Restricción anulada con auditoría
+          headers:
+            ETag:
+              $ref: '#/components/headers/ETag'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaRestriccionOperativa'
+        '400':
+          $ref: '#/components/responses/ErrorSolicitudInvalida'
+        '401':
+          $ref: '#/components/responses/ErrorAutenticacionRequerida'
+        '403':
+          $ref: '#/components/responses/ErrorAccesoDenegado'
+        '404':
+          $ref: '#/components/responses/ErrorNovedadNoEncontrada'
+        '409':
+          $ref: '#/components/responses/ErrorVersionOIdempotencia'
+        '422':
+          $ref: '#/components/responses/ErrorAnulacionNovedad'
+        '428':
+          $ref: '#/components/responses/ErrorIfMatchRequerido'
+
+  /empleados/{empleadoId}/indisponibilidades:
+    parameters:
+      - $ref: '#/components/parameters/EmpleadoId'
+    get:
+      tags: [Novedades laborales]
+      summary: Listar indisponibilidades de un Empleado
+      description: Consulta administrativa de indisponibilidades conforme a PER-UC-003.
+      operationId: listarIndisponibilidades
+      x-use-case: PER-UC-003
+      x-business-rules: [PER-BR-001, PER-BR-022, PER-BR-028]
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/Limite'
+        - $ref: '#/components/parameters/Desplazamiento'
+        - $ref: '#/components/parameters/IncluirAnuladas'
+      responses:
+        '200':
+          description: Indisponibilidades administrativas paginadas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaListaIndisponibilidades'
+        '400':
+          $ref: '#/components/responses/ErrorSolicitudInvalida'
+        '401':
+          $ref: '#/components/responses/ErrorAutenticacionRequerida'
+        '403':
+          $ref: '#/components/responses/ErrorAccesoDenegado'
+        '404':
+          $ref: '#/components/responses/ErrorEmpleadoNoEncontrado'
+    post:
+      tags: [Novedades laborales]
+      summary: Registrar una indisponibilidad
+      description: Registra una indisponibilidad conforme a PER-UC-003.
+      operationId: registrarIndisponibilidad
+      x-use-case: PER-UC-003
+      x-business-rules: [PER-BR-001, PER-BR-004, PER-BR-022]
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SolicitudRegistrarIndisponibilidad'
+      responses:
+        '201':
+          description: Indisponibilidad registrada
+          headers:
+            ETag:
+              $ref: '#/components/headers/ETag'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaIndisponibilidad'
+        '400':
+          $ref: '#/components/responses/ErrorSolicitudInvalida'
+        '401':
+          $ref: '#/components/responses/ErrorAutenticacionRequerida'
+        '403':
+          $ref: '#/components/responses/ErrorAccesoDenegado'
+        '404':
+          $ref: '#/components/responses/ErrorEmpleadoNoEncontrado'
+        '409':
+          $ref: '#/components/responses/ErrorIdempotencia'
+        '422':
+          $ref: '#/components/responses/ErrorIndisponibilidadInvalida'
+
+  /empleados/{empleadoId}/indisponibilidades/{indisponibilidadId}:
+    parameters:
+      - $ref: '#/components/parameters/EmpleadoId'
+      - $ref: '#/components/parameters/IndisponibilidadId'
+    patch:
+      tags: [Novedades laborales]
+      summary: Modificar una indisponibilidad
+      description: Modifica una indisponibilidad vigente conforme a PER-UC-003.
+      operationId: modificarIndisponibilidad
+      x-use-case: PER-UC-003
+      x-business-rules: [PER-BR-001, PER-BR-004, PER-BR-022, PER-BR-028]
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IfMatch'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SolicitudModificarIndisponibilidad'
+      responses:
+        '200':
+          description: Indisponibilidad modificada
+          headers:
+            ETag:
+              $ref: '#/components/headers/ETag'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaIndisponibilidad'
+        '400':
+          $ref: '#/components/responses/ErrorSolicitudInvalida'
+        '401':
+          $ref: '#/components/responses/ErrorAutenticacionRequerida'
+        '403':
+          $ref: '#/components/responses/ErrorAccesoDenegado'
+        '404':
+          $ref: '#/components/responses/ErrorNovedadNoEncontrada'
+        '409':
+          $ref: '#/components/responses/ErrorVersionOIdempotencia'
+        '422':
+          $ref: '#/components/responses/ErrorIndisponibilidadInvalida'
+        '428':
+          $ref: '#/components/responses/ErrorIfMatchRequerido'
+
+  /empleados/{empleadoId}/indisponibilidades/{indisponibilidadId}/anular:
+    parameters:
+      - $ref: '#/components/parameters/EmpleadoId'
+      - $ref: '#/components/parameters/IndisponibilidadId'
+    post:
+      tags: [Novedades laborales]
+      summary: Anular una indisponibilidad
+      description: Anula con auditoría conforme a PER-UC-003.
+      operationId: anularIndisponibilidad
+      x-use-case: PER-UC-003
+      x-business-rules: [PER-BR-001, PER-BR-022, PER-BR-028]
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IfMatch'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SolicitudMotivo'
+      responses:
+        '200':
+          description: Indisponibilidad anulada con auditoría
+          headers:
+            ETag:
+              $ref: '#/components/headers/ETag'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespuestaIndisponibilidad'
+        '400':
+          $ref: '#/components/responses/ErrorSolicitudInvalida'
+        '401':
+          $ref: '#/components/responses/ErrorAutenticacionRequerida'
+        '403':
+          $ref: '#/components/responses/ErrorAccesoDenegado'
+        '404':
+          $ref: '#/components/responses/ErrorNovedadNoEncontrada'
+        '409':
+          $ref: '#/components/responses/ErrorVersionOIdempotencia'
+        '422':
+          $ref: '#/components/responses/ErrorAnulacionNovedad'
+        '428':
+          $ref: '#/components/responses/ErrorIfMatchRequerido'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  headers:
+    ETag:
+      description: Versión numérica del recurso entre comillas.
+      schema:
+        type: string
+        example: '"3"'
+
+  parameters:
+    EmpleadoId:
+      name: empleadoId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    RestriccionId:
+      name: restriccionId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    IndisponibilidadId:
+      name: indisponibilidadId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    Limite:
+      name: limite
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 25
+    Desplazamiento:
+      name: desplazamiento
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+    IncluirAnuladas:
+      name: incluirAnuladas
+      in: query
+      required: false
+      schema:
+        type: boolean
+        default: false
+    IfMatch:
+      name: If-Match
+      in: header
+      required: true
+      schema:
+        type: string
+        pattern: '^(W/)?"?[1-9][0-9]*"?$'
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 255
+
+  schemas:
+    TipoDocumento:
+      type: string
+      enum: [DNI, PASAPORTE, CEDULA, OTRO]
+    EstadoEmpleado:
+      type: string
+      enum: [ACTIVO, INACTIVO]
+    GrupoSanguineo:
+      type: string
+      enum: [A, B, AB, O]
+    FactorSanguineo:
+      type: string
+      enum: [POSITIVO, NEGATIVO]
+    TipoIndisponibilidad:
+      type: string
+      enum: [VACACIONES, LICENCIA_MEDICA, LICENCIA_ESPECIAL, SUSPENSION, OTRA_JUSTIFICADA]
+    RolCodigo:
+      type: string
+      enum: [ADMINISTRADOR, CAPATAZ, EMPLEADO]
+
+    ContactoEmergenciaEntrada:
+      type: object
+      additionalProperties: false
+      required: [nombre, vinculo, telefono]
+      properties:
+        id:
+          type: string
+          format: uuid
+        nombre:
+          type: string
+          minLength: 1
+          maxLength: 150
+        vinculo:
+          type: string
+          minLength: 1
+          maxLength: 150
+        telefono:
+          type: string
+          minLength: 1
+          maxLength: 30
+    ContactoEmergencia:
+      allOf:
+        - $ref: '#/components/schemas/ContactoEmergenciaEntrada'
+        - type: object
+          required: [id]
+
+    LicenciaEmpleadoEntrada:
+      type: object
+      additionalProperties: false
+      required: [tipo]
+      properties:
+        id:
+          type: string
+          format: uuid
+        tipo:
+          type: string
+          minLength: 1
+          maxLength: 150
+        numero:
+          type: string
+          maxLength: 150
+        emitidaEn:
+          type: string
+          format: date
+        venceEn:
+          type: string
+          format: date
+        archivoId:
+          type: string
+          format: uuid
+    LicenciaEmpleado:
+      allOf:
+        - $ref: '#/components/schemas/LicenciaEmpleadoEntrada'
+        - type: object
+          required: [id]
+
+    DatosEmpleadoBase:
+      type: object
+      additionalProperties: false
+      properties:
+        tipoDocumento:
+          $ref: '#/components/schemas/TipoDocumento'
+        detalleTipoDocumento:
+          type: string
+          maxLength: 150
+        numeroDocumento:
+          type: string
+          minLength: 1
+          maxLength: 50
+        nombre:
+          type: string
+          minLength: 1
+          maxLength: 150
+        apellido:
+          type: string
+          minLength: 1
+          maxLength: 150
+        telefonoContacto:
+          type: string
+          minLength: 1
+          maxLength: 30
+        fechaNacimiento:
+          type: string
+          format: date
+        domicilio:
+          type: string
+          maxLength: 100
+        grupoSanguineo:
+          $ref: '#/components/schemas/GrupoSanguineo'
+        factorSanguineo:
+          $ref: '#/components/schemas/FactorSanguineo'
+        especialidad:
+          type: string
+          maxLength: 100
+        notas:
+          type: string
+          maxLength: 1000
+        contactosEmergencia:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactoEmergenciaEntrada'
+        licencias:
+          type: array
+          items:
+            $ref: '#/components/schemas/LicenciaEmpleadoEntrada'
+
+    SolicitudRegistrarEmpleado:
+      allOf:
+        - $ref: '#/components/schemas/DatosEmpleadoBase'
+        - type: object
+          required: [tipoDocumento, numeroDocumento, nombre, apellido, telefonoContacto]
+    SolicitudModificarEmpleado:
+      allOf:
+        - $ref: '#/components/schemas/DatosEmpleadoBase'
+        - type: object
+          minProperties: 1
+
+    PeriodoLaboral:
+      type: object
+      additionalProperties: false
+      required: [id, inicio]
+      properties:
+        id:
+          type: string
+          format: uuid
+        inicio:
+          type: string
+          format: date
+        fin:
+          type: string
+          format: date
+        motivoFin:
+          type: string
+          maxLength: 1000
+
+    ResumenEmpleado:
+      type: object
+      required: [id, tipoDocumento, numeroDocumento, nombre, apellido, telefonoContacto, estado, version]
+      properties:
+        id:
+          type: string
+          format: uuid
+        tipoDocumento:
+          $ref: '#/components/schemas/TipoDocumento'
+        numeroDocumento:
+          type: string
+        nombre:
+          type: string
+        apellido:
+          type: string
+        telefonoContacto:
+          type: string
+        especialidad:
+          type: string
+        estado:
+          $ref: '#/components/schemas/EstadoEmpleado'
+        version:
+          type: integer
+          minimum: 1
+    RespuestaEmpleado:
+      allOf:
+        - $ref: '#/components/schemas/ResumenEmpleado'
+        - type: object
+          required: [periodosLaborales, contactosEmergencia, licencias]
+          properties:
+            detalleTipoDocumento:
+              type: string
+            fechaNacimiento:
+              type: string
+              format: date
+            domicilio:
+              type: string
+            grupoSanguineo:
+              $ref: '#/components/schemas/GrupoSanguineo'
+            factorSanguineo:
+              $ref: '#/components/schemas/FactorSanguineo'
+            notas:
+              type: string
+            periodosLaborales:
+              type: array
+              items:
+                $ref: '#/components/schemas/PeriodoLaboral'
+            contactosEmergencia:
+              type: array
+              items:
+                $ref: '#/components/schemas/ContactoEmergencia'
+            licencias:
+              type: array
+              items:
+                $ref: '#/components/schemas/LicenciaEmpleado'
+
+    Paginacion:
+      type: object
+      additionalProperties: false
+      required: [limite, desplazamiento, total]
+      properties:
+        limite:
+          type: integer
+        desplazamiento:
+          type: integer
+        total:
+          type: integer
+          minimum: 0
+    RespuestaListaEmpleados:
+      type: object
+      additionalProperties: false
+      required: [datos, paginacion]
+      properties:
+        datos:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResumenEmpleado'
+        paginacion:
+          $ref: '#/components/schemas/Paginacion'
+
+    SolicitudMotivo:
+      type: object
+      required: [motivo]
+      properties:
+        motivo:
+          type: string
+          minLength: 1
+          maxLength: 1000
+    SolicitudReactivarEmpleado:
+      allOf:
+        - $ref: '#/components/schemas/SolicitudMotivo'
+        - type: object
+          required: [fechaReingreso]
+          properties:
+            fechaReingreso:
+              type: string
+              format: date
+
+    SolicitudHabilitarAccesoEmpleado:
+      type: object
+      additionalProperties: false
+      required: [correoAcceso, contrasenia, accesoWeb, accesoMovil, roles]
+      properties:
+        correoAcceso:
+          type: string
+          format: email
+          maxLength: 254
+        contrasenia:
+          type: string
+          minLength: 15
+          maxLength: 128
+        accesoWeb:
+          type: boolean
+        accesoMovil:
+          type: boolean
+        roles:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/RolCodigo'
+    RespuestaAccesoEmpleado:
+      type: object
+      additionalProperties: false
+      required: [empleadoId, estado]
+      properties:
+        empleadoId:
+          type: string
+          format: uuid
+        cuentaEmpresaId:
+          type: string
+          format: uuid
+        estado:
+          type: string
+          enum: [ACTIVA, SUSPENDIDA]
+
+    SolicitudRegistrarRestriccion:
+      type: object
+      required: [tipo, inicio, mensajeOperativo]
+      properties:
+        tipo:
+          type: string
+          minLength: 1
+          maxLength: 150
+        inicio:
+          type: string
+          format: date
+        fin:
+          type: string
+          format: date
+        mensajeOperativo:
+          type: string
+          minLength: 1
+          maxLength: 1000
+    SolicitudModificarRestriccion:
+      type: object
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        tipo:
+          type: string
+          minLength: 1
+          maxLength: 150
+        inicio:
+          type: string
+          format: date
+        fin:
+          type: string
+          format: date
+        mensajeOperativo:
+          type: string
+          minLength: 1
+          maxLength: 1000
+    RespuestaRestriccionOperativa:
+      allOf:
+        - $ref: '#/components/schemas/SolicitudRegistrarRestriccion'
+        - type: object
+          required: [id, empleadoId, version]
+          properties:
+            id:
+              type: string
+              format: uuid
+            empleadoId:
+              type: string
+              format: uuid
+            anuladaEn:
+              type: string
+              format: date-time
+            anuladaPorCuentaId:
+              type: string
+              format: uuid
+            motivoAnulacion:
+              type: string
+              maxLength: 1000
+            version:
+              type: integer
+              minimum: 1
+    RespuestaListaRestricciones:
+      type: object
+      additionalProperties: false
+      required: [datos, paginacion]
+      properties:
+        datos:
+          type: array
+          items:
+            $ref: '#/components/schemas/RespuestaRestriccionOperativa'
+        paginacion:
+          $ref: '#/components/schemas/Paginacion'
+
+    SolicitudRegistrarIndisponibilidad:
+      type: object
+      required: [tipo, inicio, fin, mensajeOperativo]
+      properties:
+        tipo:
+          $ref: '#/components/schemas/TipoIndisponibilidad'
+        inicio:
+          type: string
+          format: date
+        fin:
+          type: string
+          format: date
+        mensajeOperativo:
+          type: string
+          minLength: 1
+          maxLength: 1000
+        archivoId:
+          type: string
+          format: uuid
+    SolicitudModificarIndisponibilidad:
+      type: object
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        tipo:
+          $ref: '#/components/schemas/TipoIndisponibilidad'
+        inicio:
+          type: string
+          format: date
+        fin:
+          type: string
+          format: date
+        mensajeOperativo:
+          type: string
+          minLength: 1
+          maxLength: 1000
+        archivoId:
+          type: string
+          format: uuid
+    RespuestaIndisponibilidad:
+      allOf:
+        - $ref: '#/components/schemas/SolicitudRegistrarIndisponibilidad'
+        - type: object
+          required: [id, empleadoId, version]
+          properties:
+            id:
+              type: string
+              format: uuid
+            empleadoId:
+              type: string
+              format: uuid
+            anuladaEn:
+              type: string
+              format: date-time
+            anuladaPorCuentaId:
+              type: string
+              format: uuid
+            motivoAnulacion:
+              type: string
+              maxLength: 1000
+            version:
+              type: integer
+              minimum: 1
+    RespuestaListaIndisponibilidades:
+      type: object
+      additionalProperties: false
+      required: [datos, paginacion]
+      properties:
+        datos:
+          type: array
+          items:
+            $ref: '#/components/schemas/RespuestaIndisponibilidad'
+        paginacion:
+          $ref: '#/components/schemas/Paginacion'
+
+    ErrorCampo:
+      type: object
+      additionalProperties: false
+      required: [campo, code, mensaje]
+      properties:
+        campo:
+          type: string
+        code:
+          type: string
+        mensaje:
+          type: string
+    ProblemaDetalle:
+      type: object
+      additionalProperties: true
+      required: [type, title, status, code, detail, solicitudId]
+      properties:
+        type:
+          type: string
+        title:
+          type: string
+        status:
+          type: integer
+        code:
+          type: string
+        detail:
+          type: string
+        instance:
+          type: string
+        solicitudId:
+          type: string
+          format: uuid
+        errores:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorCampo'
+
+  responses:
+    ErrorSolicitudInvalida:
+      description: Solicitud o cabecera inválida (`PER_SOLICITUD_INVALIDA`, `CMN_IF_MATCH_INVALIDO` o `CMN_IDEMPOTENCIA_INVALIDA`).
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemaDetalle'
+    ErrorAutenticacionRequerida:
+      description: Autenticación ausente, inválida o revocada (`ACC_AUTENTICACION_REQUERIDA`).
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemaDetalle'
+    ErrorAccesoDenegado:
+      description: El actor no posee el permiso del caso de uso (`PER_ACCESO_DENEGADO`).
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemaDetalle'
+    ErrorEmpleadoNoEncontrado:
+      description: El Empleado no existe dentro de la Empresa autorizada (`PER_EMPLEADO_NO_ENCONTRADO`).
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemaDetalle'
+    ErrorNovedadNoEncontrada:
+      description: El Empleado o la novedad no existe dentro de la Empresa autorizada (`PER_NOVEDAD_NO_ENCONTRADA`).
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemaDetalle'
+    ErrorDocumentoOIdempotencia:
+      description: Documento duplicado o conflicto de idempotencia (`PER_DOCUMENTO_DUPLICADO`, `CMN_IDEMPOTENCIA_CONFLICTO`).
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemaDetalle'
+    ErrorDocumentoVersionOIdempotencia:
+      description: Documento duplicado, versión o idempotencia en conflicto (`PER_DOCUMENTO_DUPLICADO`, `PER_VERSION_CONFLICTO`, `CMN_IDEMPOTENCIA_CONFLICTO`).
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemaDetalle'
+    ErrorVersionOIdempotencia:
+      description: Versión o idempotencia en conflicto (`PER_VERSION_CONFLICTO`, `CMN_IDEMPOTENCIA_CONFLICTO`).
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemaDetalle'
+    ErrorIdempotencia:
+      description: La clave fue reutilizada con otra carga (`CMN_IDEMPOTENCIA_CONFLICTO`).
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemaDetalle'
+    ErrorConflictoAccesoOIdempotencia:
+      description: Correo o Empleado ya vinculado en ACC, o idempotencia en conflicto (`ACC_CORREO_DUPLICADO`, `ACC_CUENTA_EMPLEADO_DUPLICADA`, `CMN_IDEMPOTENCIA_CONFLICTO`).
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemaDetalle'
+    ErrorEmpleadoReglaNegocio:
+      description: Regla de ficha incumplida (`PER_TENANT_INVALIDO`, `PER_EMPLEADO_INVALIDO`, `PER_DATO_PERSONAL_INVALIDO`, `PER_LIMITE_EMPLEADOS_ALCANZADO`, `PER_TRANSICION_EMPLEADO_INVALIDA`).
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemaDetalle'
+    ErrorInactivacionEmpleado:
+      description: Transición o suspensión de acceso fallida (`PER_TRANSICION_EMPLEADO_INVALIDA`, `PER_SUSPENSION_ACCESO_FALLIDA`).
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemaDetalle'
+    ErrorReactivacionEmpleado:
+      description: Transición o cupo inválido (`PER_TRANSICION_EMPLEADO_INVALIDA`, `PER_LIMITE_EMPLEADOS_ALCANZADO`).
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemaDetalle'
+    ErrorAccesoEmpleadoInvalido:
+      description: Ficha laboral o regla de acceso inválida (`PER_ACCESO_EMPLEADO_INVALIDO`) o regla propia de ACC incumplida.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemaDetalle'
+    ErrorSuspensionAcceso:
+      description: ACC no pudo suspender la Cuenta y revocar las Sesiones (`PER_SUSPENSION_ACCESO_FALLIDA`).
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemaDetalle'
+    ErrorRestriccionInvalida:
+      description: Restricción o referencia tenant inválida (`PER_RESTRICCION_INVALIDA`, `PER_TENANT_INVALIDO`).
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemaDetalle'
+    ErrorIndisponibilidadInvalida:
+      description: Indisponibilidad, dato o archivo inválido (`PER_INDISPONIBILIDAD_INVALIDA`, `PER_DATO_PERSONAL_INVALIDO`, `PER_TENANT_INVALIDO`).
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemaDetalle'
+    ErrorAnulacionNovedad:
+      description: La anulación carece de auditoría completa o la transición es inválida (`PER_ANULACION_NOVEDAD_INVALIDA`).
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemaDetalle'
+    ErrorIfMatchRequerido:
+      description: Falta la precondición de versión (`CMN_IF_MATCH_REQUERIDO`).
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemaDetalle'

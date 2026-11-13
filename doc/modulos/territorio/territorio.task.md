@@ -31,23 +31,23 @@ Completada exige: tarea de especificación con sus ítems Aprobado; o plan Cerra
 
 - **Épica:** `EPIC-003`
 - **Tipo:** Implementación
-- **Estado:** Lista
+- **Estado:** En curso
 - **Prioridad:** Alta
 - **Alcance:** `TER-UC-001`, `TER-UC-004`, `TER-UC-005`; cambios controlados aprobados en `TER-Q-018` y `TER-Q-022` sobre `TER-ENT-001` y la inactivación de Chacra; contrato público de lectura de identidad, Empresa y estado de Chacra requerido por `ACC-DEP-005`.
 - **Depende de:** `TER-TASK-001`; contratos acordados de `TER-DEP-001` y `TER-DEP-002`.
 - **Plan:** `planes/PLAN-TER-0001-administrar-y-consultar-chacras.md`
-- **Bloqueo:** Ninguno. `PLAN-TER-0001` está `En revisión`, habilitado para aprobación del Ingeniero tras autorizar el uso directo de `src/comun`.
+- **Bloqueo:** Ninguno. `PLAN-TER-0001` aprobado por el Ingeniero el 2026-11-13; en ejecución.
 
 ## TER-TASK-003 — Consultar Chacras dentro del alcance autorizado
 
 - **Épica:** `EPIC-003`
 - **Tipo:** Implementación
-- **Estado:** Lista
+- **Estado:** En curso
 - **Prioridad:** Alta
 - **Alcance:** `TER-UC-002`, `TER-UC-003`
 - **Depende de:** `TER-TASK-001`, `TER-TASK-002`; contexto y alcance de asignaciones de `TER-DEP-002`.
 - **Plan:** `planes/PLAN-TER-0001-administrar-y-consultar-chacras.md`
-- **Bloqueo:** Ninguno. Integrada en `PLAN-TER-0001` en estado `En revisión`, a la espera de aprobación formal del Ingeniero.
+- **Bloqueo:** Ninguno. `PLAN-TER-0001` aprobado por el Ingeniero el 2026-11-13; en ejecución.
 
 ## TER-TASK-004 — Especificar la segunda entrega de Territorio: Lotes y geometrías
 
@@ -67,9 +67,9 @@ Completada exige: tarea de especificación con sus ítems Aprobado; o plan Cerra
 - **Estado:** Bloqueada
 - **Prioridad:** Alta
 - **Alcance:** `TER-UC-006`, `TER-UC-009`, `TER-UC-011`, `TER-UC-012`
-- **Depende de:** `TER-TASK-004`; `PLAN-TER-0001`; contratos acordados de `TER-DEP-001` a `TER-DEP-004`.
+- **Depende de:** `TER-TASK-004`; `PLAN-TER-0001`; contratos acordados de `TER-DEP-001` a `TER-DEP-004`; `CMN-TASK-002`; `CMN-TASK-003`.
 - **Plan:** `planes/PLAN-TER-0002-administrar-consultar-y-delimitar-lotes.md`
-- **Bloqueo:** `PLAN-TER-0002` está `Bloqueado` a la espera de la implementación y cierre previo de Chacras (`PLAN-TER-0001`).
+- **Bloqueo:** `PLAN-TER-0002` continúa `Bloqueado`: además de `PLAN-TER-0001`, falta ejecutar `PLAN-CMN-0002` y `PLAN-CMN-0003`.
 
 ## TER-TASK-006 — Consultar Lotes e historial territorial
 
@@ -78,9 +78,9 @@ Completada exige: tarea de especificación con sus ítems Aprobado; o plan Cerra
 - **Estado:** Bloqueada
 - **Prioridad:** Alta
 - **Alcance:** `TER-UC-007`, `TER-UC-008`, `TER-UC-013`
-- **Depende de:** `TER-TASK-004`, `TER-TASK-005`; contexto de asignaciones de `TER-DEP-002`.
+- **Depende de:** `TER-TASK-004`, `TER-TASK-005`; `ACC-TASK-006` para la proyección de asignaciones de `TER-DEP-002` en el `ContextoSolicitud` canónico.
 - **Plan:** `planes/PLAN-TER-0002-administrar-consultar-y-delimitar-lotes.md`
-- **Bloqueo:** `PLAN-TER-0002` está `Bloqueado` a la espera de la implementación y cierre previo de Chacras (`PLAN-TER-0001`).
+- **Bloqueo:** `PLAN-TER-0002` continúa `Bloqueado`: las consultas pueden desarrollarse con dobles, pero la integración y E2E del Capataz requieren ejecutar `PLAN-ACC-0002`; también aplican los bloqueos técnicos de `TER-TASK-005`.
 
 ## TER-TASK-007 — Gestionar delimitaciones y superficies de Lotes
 
@@ -89,6 +89,6 @@ Completada exige: tarea de especificación con sus ítems Aprobado; o plan Cerra
 - **Estado:** Bloqueada
 - **Prioridad:** Alta
 - **Alcance:** `TER-UC-010`; `TER-BR-013` a `TER-BR-016`; `TER-ENT-003`.
-- **Depende de:** `TER-TASK-004`, `TER-TASK-005`.
+- **Depende de:** `TER-TASK-004`, `TER-TASK-005`; `CMN-TASK-002`.
 - **Plan:** `planes/PLAN-TER-0002-administrar-consultar-y-delimitar-lotes.md`
-- **Bloqueo:** `PLAN-TER-0002` está `Bloqueado` a la espera de la implementación y cierre previo de Chacras (`PLAN-TER-0001`).
+- **Bloqueo:** `PLAN-TER-0002` continúa `Bloqueado`: falta ejecutar `PLAN-CMN-0002` y aplican los bloqueos de `TER-TASK-005`.

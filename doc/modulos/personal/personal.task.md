@@ -25,29 +25,29 @@ Completada exige: tarea de especificación con sus ítems Aprobado; o plan Cerra
 - **Alcance:** Todo el brief; `PER-UC-001` a `PER-UC-013`
 - **Depende de:** Ninguna
 - **Plan:** No aplica
-- **Bloqueo:** Ninguno. Especificación aprobada por el Ingeniero el 06/11/2026.
+- **Bloqueo:** Ninguno. Especificación aprobada por el Ingeniero el 06/11/2026 y ajustes de Fase 1 aprobados el 13/11/2026.
 
-## PER-TASK-002 — Administrar Empleados e información laboral
+## PER-TASK-002 — Administrar Empleados, información laboral y acceso
 
 - **Épica:** `EPIC-005`
 - **Tipo:** Implementación
-- **Estado:** Lista
+- **Estado:** En curso
 - **Prioridad:** Alta
-- **Alcance:** `PER-UC-001`, `PER-UC-003`
-- **Depende de:** `PER-TASK-001`; contratos de `PER-DEP-001`, `PER-DEP-002`, `PER-DEP-004`
-- **Plan:** No aplica
-- **Bloqueo:** Ninguno. Los contratos técnicos se concretarán durante la planificación.
+- **Alcance:** `PER-UC-001` a `PER-UC-003`
+- **Depende de:** `PER-TASK-001`; contratos de `PER-DEP-001` a `PER-DEP-004`
+- **Plan:** `PLAN-PER-0001`
+- **Bloqueo:** Ninguno. `PLAN-PER-0001` aprobado por el Ingeniero el 13/11/2026; la ejecución respeta sus prerrequisitos técnicos.
 
 ## PER-TASK-003 — Integrar el acceso de Empleados
 
 - **Épica:** `EPIC-005`
 - **Tipo:** Implementación
-- **Estado:** Lista
+- **Estado:** Cancelada
 - **Prioridad:** Alta
-- **Alcance:** `PER-UC-002`
-- **Depende de:** `PER-TASK-002`; contrato de `PER-DEP-003`
+- **Alcance:** Sin alcance vigente; `PER-UC-002` fue absorbido por `PER-TASK-002`.
+- **Depende de:** No aplica
 - **Plan:** No aplica
-- **Bloqueo:** Ninguno. El contrato con Identidad y acceso se concretará durante la planificación.
+- **Bloqueo:** No aplica. Tarea cancelada por consolidación de su alcance en `PER-TASK-002` el 13/11/2026.
 
 ## PER-TASK-004 — Administrar Cuadrillas
 
@@ -56,7 +56,7 @@ Completada exige: tarea de especificación con sus ítems Aprobado; o plan Cerra
 - **Estado:** Lista
 - **Prioridad:** Alta
 - **Alcance:** `PER-UC-004` a `PER-UC-007`
-- **Depende de:** `PER-TASK-002`, `PER-TASK-003`
+- **Depende de:** `PER-TASK-002`
 - **Plan:** No aplica
 - **Bloqueo:** Ninguno.
 
@@ -67,7 +67,7 @@ Completada exige: tarea de especificación con sus ítems Aprobado; o plan Cerra
 - **Estado:** Lista
 - **Prioridad:** Alta
 - **Alcance:** `PER-UC-008`, `PER-UC-009`
-- **Depende de:** `PER-TASK-002`, `PER-TASK-003`
+- **Depende de:** `PER-TASK-002`
 - **Plan:** No aplica
 - **Bloqueo:** Ninguno.
 
@@ -78,7 +78,7 @@ Completada exige: tarea de especificación con sus ítems Aprobado; o plan Cerra
 - **Estado:** Lista
 - **Prioridad:** Media
 - **Alcance:** `PER-UC-010`
-- **Depende de:** `PER-TASK-002`, `PER-TASK-003`, `PER-TASK-005`
+- **Depende de:** `PER-TASK-002`, `PER-TASK-005`
 - **Plan:** No aplica
 - **Bloqueo:** Ninguno.
 
@@ -100,6 +100,6 @@ Completada exige: tarea de especificación con sus ítems Aprobado; o plan Cerra
 - **Estado:** Lista
 - **Prioridad:** Alta
 - **Alcance:** `PER-UC-013`
-- **Depende de:** `PER-TASK-002` a `PER-TASK-007`; contratos de `PER-DEP-003`, `PER-DEP-005`, `PER-DEP-006`, `PER-DEP-007`
+- **Depende de:** `PER-TASK-002`, `PER-TASK-004` a `PER-TASK-007`; contratos de `PER-DEP-003`, `PER-DEP-005`, `PER-DEP-006`, `PER-DEP-007`
 - **Plan:** No aplica
 - **Bloqueo:** Ninguno. Los contratos de integración se concretarán durante la planificación.
